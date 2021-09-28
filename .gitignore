@@ -1,3 +1,6 @@
+# Internal ignore
+database.json
+
 # Logs
 logs
 *.log
