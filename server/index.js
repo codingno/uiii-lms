@@ -23,4 +23,5 @@ app.use('/api', route)
 
 app.get('/', (req, res) => res.json({ message : "ok"}))
 
+// eslint-disable-next-line no-undef
 app.listen(PORT, () => console.log("server starting on PORT:", PORT))
