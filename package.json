@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "private":"false",
   "scripts": {
     "start": "react-scripts start",
-    "build": "simplebar/src/simplebar.css react-scripts build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "react-scripts build",
+    "test:server": "echo \"Error: no test specified\" && exit 1",
     "up": "db-migrate up",
-    "dev": "nodemon server/index.js"
+    "dev": "nodemon server/index.js",
+    "test:client": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .js,.jsx ./src",
+    "lint:fix": "eslint --fix --ext .js,.jsx ./src"
   },
   "keywords": [],
   "author": "",
@@ -62,7 +67,6 @@
     "@mui/material": "^5.0.0",
     "@mui/utils": "^5.0.0",
     "@testing-library/jest-dom": "^5.14.1",
-    "agent-base": "^6.0.2",
     "apexcharts": "^3.28.3",
     "async": "^3.2.1",
     "change-case": "^4.1.2",

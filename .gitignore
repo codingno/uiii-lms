@@ -1,5 +1,8 @@
 # Internal ignore
 database.json
+.vscode
+build/
+package-lock.json
 
 # Logs
 logs
