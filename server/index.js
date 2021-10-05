@@ -17,8 +17,8 @@ async function run() {
 }
 
 run();
-app.use(morgan('combined'))
-// app.use(morgan('tiny'))
+// app.use(morgan('combined'))
+app.use(morgan('tiny'))
 app.use(express.static("public"));
 app.use(express.json())
 app.use(resStatus())
@@ -33,5 +33,5 @@ app.use('/api', route)
 
 app.get('/', (req, res) => res.json({ message : "ok"}))
 
-// eslint-disable-next-line no-undef
+var PORT=process.env.PORT
 app.listen(PORT, () => console.log("server starting on PORT:", PORT))
