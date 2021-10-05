@@ -14,6 +14,7 @@ module.exports.passport = async function () {
 
   passport.deserializeUser(async function (user, done) {
     const user_id = user.id;
+    try {
     const user_login = await sequelize
       .query(
         "SELECT u.*, r.name role FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE u.id=:user_id",
@@ -35,10 +36,10 @@ module.exports.passport = async function () {
           };
           done(null, allowedInfo);
         } else done("invalid userid!");
-      // })
-      // .catch((error) => {
-      //   done(error);
-      // });
+      }
+      catch(error) {
+        done(error);
+      }
   });
 
   var passportLocalStrategy = new LocalStrategy(
@@ -48,6 +49,7 @@ module.exports.passport = async function () {
       passReqToCallback: true,
     },
     async function onCheckData(req, username, password, done) {
+      try {
       const user_login = await sequelize
         .query(
           "SELECT u.*, r.name role, ua.email, ua.password FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE ua.email=:email",
@@ -90,13 +92,13 @@ module.exports.passport = async function () {
               message: "Verifikasi berhasil",
             });
           });
-        // })
-        // .catch(err => {
-        //   if (err)
-        //     return done(null, false, {
-        //       message: "Gangguan pada sistem",
-        //     });
-        // });
+        }
+        catch(err) {
+          if (err)
+            return done(null, false, {
+              message: "Gangguan pada sistem",
+            });
+        };
     }
   );
 
