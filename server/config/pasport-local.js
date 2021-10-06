@@ -52,11 +52,12 @@ module.exports.passport = async function () {
       try {
       const user_login = await sequelize
         .query(
-          "SELECT u.*, r.name role, ua.email, ua.password FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE ua.email=:email",
+          "SELECT u.*, r.name role, ua.email, ua.password FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE ua.email=:email or u.username=:username",
           {
             type: sequelize.SELECT,
             replacements: {
               email: username,
+              username: username
             },
           }
         )
