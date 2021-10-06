@@ -1,4 +1,3 @@
-"use strict";
 
 const { Sequelize } = require("sequelize");
 const passport = require("passport"),
@@ -16,7 +15,7 @@ module.exports.passport = async function () {
     try {
     const user_login = await sequelize
       .query(
-        "SELECT u.*, r.name role FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE u.id=:user_id",
+        "SELECT u.*, r.id role_id, r.name role FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE u.id=:user_id",
         {
           type: sequelize.SELECT,
           replacements: {
@@ -51,7 +50,7 @@ module.exports.passport = async function () {
       try {
       const user_login = await sequelize
         .query(
-          "SELECT u.*, r.name role, ua.email, ua.password FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE ua.email=:email or u.username=:username",
+          "SELECT u.*, r.id role_id, r.name role, ua.email, ua.password FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE ua.email=:email or u.username=:username",
           {
             type: sequelize.SELECT,
             replacements: {
@@ -85,6 +84,7 @@ module.exports.passport = async function () {
               lastname: user_login[0].lastname,
               name: user_login[0].username,
               role: user_login[0].role,
+              role_id: user_login[0].role_id,
             };
             req.user = returnuser_login
 

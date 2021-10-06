@@ -89,9 +89,12 @@ const createUser = async (req, res) => {
 	// })
 
 }
-route.get('/:user_id', getUserInfo )
-route.get('/', getAllUser )
-route.put('/create', createUser )
-route.put('/createUserRole', createUserRole )
+
+const { isAdmin, isLogin, isNonEditTeacher } = require('../config/policies')
+
+route.get('/:user_id', isLogin, getUserInfo )
+route.get('/', isNonEditTeacher, getAllUser )
+route.put('/create', isAdmin, createUser )
+route.put('/createUserRole', isAdmin, createUserRole )
 
 module.exports = route
