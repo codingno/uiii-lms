@@ -7,7 +7,6 @@ const passport = require("passport"),
 const sequelize = require("../db/database");
 
 module.exports.passport = async function () {
-  console.log("kesini");
   passport.serializeUser(async function (user, done) {
     done(null, user);
   });

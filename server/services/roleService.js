@@ -3,7 +3,7 @@ const { QueryTypes } = require('sequelize')
 module.exports = {
     create: async function(data, callback){
         try {
-            const queryString = "INSERT INTO role (name) " +
+            const queryString = "INSERT INTO roles (name) " +
             "VALUES (:name);"
             const role = await sequelize.query(queryString,{type: sequelize.INSERT, replacements: data})
             if(role){
@@ -18,7 +18,7 @@ module.exports = {
     },
     findAll: async function(callback){
         try {
-            const queryString = "SELECT * FROM role"
+            const queryString = "SELECT * FROM roles"
             const roles = await sequelize.query(queryString)
             callback(null, roles)
         }
@@ -29,7 +29,7 @@ module.exports = {
     findById: async function(role_id,callback){
         try {
             const condition = ` id IN ${role_id}`
-            const queryString = "SELECT * FROM role WHERE " + condition
+            const queryString = "SELECT * FROM roles WHERE " + condition
             const roles = await sequelize.query(queryString, {type: sequelize.SELECT})
             callback(null, roles)
         } catch (err) {
@@ -38,7 +38,7 @@ module.exports = {
     },
     delete: async function(id, callback){
         try {
-            const queryString = "DELETE FROM role WHERE id = " + id
+            const queryString = "DELETE FROM roles WHERE id = " + id
             await sequelize.query(queryString, {type: sequelize.DELETE})
             callback(null, {message: "successfully deleted data"})
         }
@@ -48,7 +48,7 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE role SET name =:name WHERE id =: id"
+           const queryString = "UPDATE roles SET name =:name WHERE id =: id"
            const role_updated = await sequelize.query(queryString, {type: sequelize.UPDATE, replacements: data})
            if (role_updated){
                callback(null, role_updated)

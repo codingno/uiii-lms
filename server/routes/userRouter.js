@@ -6,6 +6,7 @@ const async = require('async')
 const userService = require('../services/userService')
 const userRoleService = require('../services/userRoleService')
 const userAuthService = require('../services/userAuthService')
+// const e = require('express')
 const getUserInfo = async (req, res) => {
 	const user_id = req.params.user_id
 	// const user = await sequelize.query('SELECT * FROM users WHERE id=:user_id', { type : sequelize.SELECT, replacements : {user_id} })
@@ -40,34 +41,53 @@ const createUserRole = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
-	const userInfo = req.body
-
-	async.eachSeries(Object.keys(userInfo), async.ensureAsync( function (key, nextInfo) {
-		if(key == 'email' || key == 'username') {
-			const replacements = {}
-			replacements[key] = userInfo[key]
-			sequelize.query(`SELECT * FROM users u left join user_auth ua on ua.user_id = u.id WHERE ua.${key}=:${key}`, { type : sequelize.SELECT, replacements })
-			.then(user => {
-      console.log(`🚀 ~ file: userRouter.js ~ line 24 ~ user`, user)
-				if(user.length == 0)
-					nextInfo(null)
-				else
-					return res.badRequest(`user with ${key} ${userInfo[key]} already exists.`)
-			})
-			.catch(error => {
-      	console.log(`🚀 ~ file: userRouter.js ~ line 32 ~ error`, error)
-				nextInfo(error)
-			})
-		}	
+	const userInfo = {
+		username: req.body.username ? req.body.username : '',
+		firstname: req.body.firstname ? req.body.firstname : '',
+		lastname: req.body.lastname ? req.body.lastname : ''
+	}
+	userService.create(userInfo, function(err1, result1){
+		if(err1)
+			res.json({err: err1, result: result1})
 		else {
-			nextInfo(null)
+			userRoleService.create({user_id: result1[0], role_id: req.body.role_id}, function(err, result){
+				if(err)
+					res.json({err, result})
+				else {
+					result1.role_id = result.role_id
+					res.json({err, result: result1})
+				}
+			})
 		}
-	}), function doneNext(err) {
-    console.log(`🚀 ~ file: userRouter.js ~ line 40 ~ err`, err)
-		if(err)
-			return res.internalServerError(err)
-		res.json({userInfo})
+
 	})
+	// async.eachSeries(Object.keys(userInfo), async.ensureAsync( function (key, nextInfo) {
+	// 	if(key == 'email' || key == 'username') {
+	// 		const replacements = {}
+	// 		replacements[key] = userInfo[key]
+	// 		sequelize.query(`SELECT * FROM users u left join user_auth ua on ua.user_id = u.id WHERE ua.${key}=:${key}`, { type : sequelize.SELECT, replacements })
+	// 		.then(user => {
+    //   console.log(`🚀 ~ file: userRouter.js ~ line 24 ~ user`, user)
+	// 			if(user.length == 0)
+	// 				nextInfo(null)
+	// 			else
+	// 				return res.badRequest(`user with ${key} ${userInfo[key]} already exists.`)
+	// 		})
+	// 		.catch(error => {
+    //   	console.log(`🚀 ~ file: userRouter.js ~ line 32 ~ error`, error)
+	// 			nextInfo(error)
+	// 		})
+	// 	}	
+	// 	else {
+	// 		nextInfo(null)
+	// 	}
+	// }), function doneNext(err) {
+    // console.log(`🚀 ~ file: userRouter.js ~ line 40 ~ err`, err)
+	// 	if(err)
+	// 		return res.internalServerError(err)
+	// 	res.json({userInfo})
+	// })
+
 }
 route.get('/:user_id', getUserInfo )
 route.get('/', getAllUser )
