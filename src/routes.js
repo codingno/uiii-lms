@@ -1,4 +1,5 @@
 import { Navigate, useRoutes } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
@@ -16,6 +17,12 @@ import NotFound from './pages/Page404';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+	const { user } = useSelector(state => state)
+
+	const isLogin = (Component) => {
+		return user.isLogin ? <Component /> : <Navigate to="/login" />
+	}
+
   return useRoutes([
     {
       path: '/dashboard',
@@ -37,8 +44,8 @@ export default function Router() {
         { path: 'blog', element: <Blog /> }
       ]
     },
-		{ path: '/login', element: <Login /> },
-		{ path: '/register', element: <Register /> },
+		{ path: '/login', element: !user.isLogin ? <Login /> : <Navigate to="/" /> },
+		{ path: '/register', element: !user.isLogin ? <Register /> : <Navigate to="/" />},
     {
       path: '/',
       element: <LogoOnlyLayout />,

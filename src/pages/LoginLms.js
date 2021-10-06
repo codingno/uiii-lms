@@ -23,6 +23,8 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import axios from 'axios';
+import { useSelector, useDispatch } from "react-redux";
 import './css/login.css'
 
 // ----------------------------------------------------------------------
@@ -71,6 +73,8 @@ const FormStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Login() {
+	const dispatch = useDispatch();
+	const { user } = useSelector(state => state)
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(0)
 	const [popUpForgotPassword, setPopUpForgotPassword] = useState(0)
@@ -80,27 +84,33 @@ export default function Login() {
 	const forgotPassword = (bool) => setPopUpForgotPassword(bool)
 	const signIn = async (e) => {
 		e.preventDefault()
-		const data = JSON.stringify({email, password})
+		// const data = JSON.stringify({email, password})
 		try {
-			const rawResponse = await fetch('/api/login', {
-																	method: 'POST',
-																	headers: {
-																		'Accept': 'application/json',
-																		'Content-Type': 'application/json'
-																	},
-																	mode: 'cors',
-																	body: data
-																})
-			const responseData= await rawResponse.json()
-			if(responseData.message)
-			 alert(responseData.message)
-			else {
-				setuserInfo(responseData)
-				navigate('/')
-			}
-
+			// const rawResponse = await fetch('/api/login', {
+			// 														method: 'POST',
+			// 														headers: {
+			// 															'Accept': 'application/json',
+			// 															'Content-Type': 'application/json'
+			// 														},
+			// 														mode: 'cors',
+			// 														body: data
+			// 													})
+			// const responseData= await rawResponse.json()
+			// if(responseData.message)
+			//  alert(responseData.message)
+			// else {
+			// 	setuserInfo(responseData)
+			// 	navigate('/')
+			// }
+			const getUserInfo = await axios.post('/api/login', {email, password})
+			localStorage.setItem('getUserInfo', JSON.stringify(getUserInfo.data));
+			dispatch({ type : 'getUserInfo', data : getUserInfo.data })
+			navigate('/')
 		} catch(err) {
-			alert(err)
+			if(err.response) {
+				dispatch({ type : 'err_getUserInfo', error : err.response.data.message })
+				alert(err.response.data.message)
+			}
 		}
 	}
 	const sendForgotPassword = (e) => {

@@ -8,7 +8,7 @@ module.exports = function(req, res, next) {
     }
 
     if (!user) {
-      return res.send(500, {message: 'email and password not match!'});
+			return res.badRequest({message: 'username or password not match!'});
     }
 
     req.logIn(user, function(err) {
