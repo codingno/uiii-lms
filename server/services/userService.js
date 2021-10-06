@@ -67,9 +67,6 @@ module.exports = {
       } else
         callback(null, null)
     } catch (err) {
-      console.log({
-        err
-      });
       callback(err, null)
     }
   },

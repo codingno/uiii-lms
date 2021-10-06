@@ -5,7 +5,7 @@ module.exports = {
         try {
             const queryString = "INSERT INTO roles (name) " +
             "VALUES (:name);"
-            const role = await sequelize.query(queryString,{type: sequelize.INSERT, replacements: data})
+            const role = await sequelize.query(queryString,{type: QueryTypes.INSERT, replacements: data})
             if(role){
                 callback(null, role)
             }
@@ -19,7 +19,7 @@ module.exports = {
     findAll: async function(callback){
         try {
             const queryString = "SELECT * FROM roles"
-            const roles = await sequelize.query(queryString)
+            const roles = await sequelize.query(queryString, {type:QueryTypes.SELECT})
             callback(null, roles)
         }
         catch(err) {
@@ -30,7 +30,7 @@ module.exports = {
         try {
             const condition = ` id IN ${role_id}`
             const queryString = "SELECT * FROM roles WHERE " + condition
-            const roles = await sequelize.query(queryString, {type: sequelize.SELECT})
+            const roles = await sequelize.query(queryString, {type: QueryTypes.SELECT})
             callback(null, roles)
         } catch (err) {
             callback(err, null)
@@ -39,7 +39,7 @@ module.exports = {
     delete: async function(id, callback){
         try {
             const queryString = "DELETE FROM roles WHERE id = " + id
-            await sequelize.query(queryString, {type: sequelize.DELETE})
+            await sequelize.query(queryString, {type: QueryTypes.DELETE})
             callback(null, {message: "successfully deleted data"})
         }
         catch(err) {
@@ -49,7 +49,7 @@ module.exports = {
     update: async function(data, callback){
         try {
            const queryString = "UPDATE roles SET name =:name WHERE id =: id"
-           const role_updated = await sequelize.query(queryString, {type: sequelize.UPDATE, replacements: data})
+           const role_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (role_updated){
                callback(null, role_updated)
            }

@@ -7,37 +7,37 @@ module.exports = {
 			res.forbidden()
 	},
 	isAdmin : (req, res, next) => {
-		if(req.user.role_id == 1)
+		if(req.user && req.user.role_id == 1)
 			next()
 		else 
 			res.forbidden()
 	},
 	isManager : (req, res, next) => {
-		if(req.user.role_id <= 2)
+		if(req.user && req.user.role_id <= 2)
 			next()
 		else 
 			res.forbidden()
 	},
 	isCourseCreator : (req, res, next) => {
-		if(req.user.role_id <= 3)
+		if(req.user && req.user.role_id <= 3)
 			next()
 		else 
 			res.forbidden()
 	},
 	isTeacher : (req, res, next) => {
-		if(req.user.role_id <= 4)
+		if(req.user && req.user.role_id <= 4)
 			next()
 		else 
 			res.forbidden()
 	},
 	isNonEditTeacher : (req, res, next) => {
-		if(req.user.role_id <= 5)
+		if(req.user && req.user.role_id <= 5)
 			next()
 		else 
 			res.forbidden()
 	},
 	isStudent : (req, res, next) => {
-		if(req.user.role_id <= 6)
+		if(req.user && req.user.role_id <= 6)
 			next()
 		else 
 			res.forbidden()

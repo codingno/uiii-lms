@@ -31,6 +31,7 @@ module.exports.passport = async function () {
             lastname: user_login[0].lastname,
             name: user_login[0].username,
             role: user_login[0].role,
+            role_id: user_login[0].role_id
           };
           done(null, allowedInfo);
         } else done("invalid userid!");

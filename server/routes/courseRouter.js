@@ -8,21 +8,10 @@ const categoryService = require('../services/categoryService')
 // const e = require('express')
 const getCourseInfo = async (req, res) => {
 	const id = req.params.course_id
-	// const user = await sequelize.query('SELECT * FROM users WHERE id=:user_id', { type : sequelize.SELECT, replacements : {user_id} })
-	// if(user.length == 0) {
-	// 	return res.sendStatus(404)
-	// }
-	courseService.findById(id, function(err, result){
-		// console.log({result});
-		// if(err){
-		// 	res.badRequest(err)
-		// }
-		// else if(!result)
-		// 	res.json({message: 'user not found'})
-		// else 
-			res.json({err,result})
+
+    courseService.findById(id, function(err, result){
+		res.json({err,result})
 	})
-	// res.json({user})
 }
 const getAllCourse = async (req, res) => {
 	courseService.findAll(function(err, result){

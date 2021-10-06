@@ -5,7 +5,7 @@ module.exports = {
         try {
             const queryString = "INSERT INTO categories (code, name, description, parent, position, status) " +
             "VALUES (:code, :name, :description, :parent, :position, :status);"
-            const category = await sequelize.query(queryString,{type: sequelize.INSERT, replacements: data})
+            const category = await sequelize.query(queryString,{type: QueryTypes.INSERT, replacements: data})
             if(category){
                 callback(null, category)
             }
@@ -19,7 +19,7 @@ module.exports = {
     findAll: async function(callback){
         try {
             const queryString = "SELECT * FROM categories"
-            const categories = await sequelize.query(queryString)
+            const categories = await sequelize.query(queryString, {type: QueryTypes.SELECT})
             callback(null, categories)
         }
         catch(err) {
@@ -30,7 +30,7 @@ module.exports = {
         try {
             const condition = ` id = ${id}`
             const queryString = "SELECT * FROM categories WHERE " + condition
-            const categories = await sequelize.query(queryString, {type: sequelize.SELECT})
+            const categories = await sequelize.query(queryString, {type: QueryTypes.SELECT})
             callback(null, categories)
         } catch (err) {
             callback(err, null)
@@ -39,7 +39,7 @@ module.exports = {
     delete: async function(id, callback){
         try {
             const queryString = "DELETE FROM categories WHERE id = " + id
-            await sequelize.query(queryString, {type: sequelize.DELETE})
+            await sequelize.query(queryString, {type: QueryTypes.DELETE})
             callback(null, {message: "successfully deleted data"})
         }
         catch(err) {
@@ -49,7 +49,7 @@ module.exports = {
     update: async function(data, callback){
         try {
            const queryString = "UPDATE categories SET code=:code, name=:name, description=:description, parent=:parent, position=:position, status=:status WHERE id=:id"
-           const categorie_updated = await sequelize.query(queryString, {type: sequelize.UPDATE, replacements: data})
+           const categorie_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (categorie_updated){
                callback(null, categorie_updated)
            }
