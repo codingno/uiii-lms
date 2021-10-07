@@ -5,6 +5,8 @@ const domain = process.env.DOMAIN || '/api'
 function objectToUrlParams(params) {
     let urlParams = '?'
     const urlKeys = Object.keys(params)
+		if(urlKeys.length == 0)
+			return ""
     // eslint-disable-next-line array-callback-return
     urlKeys.map((item, index) => {
         if(index !== 0)

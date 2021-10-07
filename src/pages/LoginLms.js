@@ -138,18 +138,18 @@ export default function Login() {
 				<div className="login-line"></div>
 				<div className="login-form">
 					<form>
-						<label for="email">
+						<label htmlFor="email">
 							Username
 						<input type="text" name="email" value={email} onChange={e => setEmail(e.target.value)}/>
 						</label>
-						<label for="password">
+						<label htmlFor="password">
 							Password
 						<input type={showPassword ? "text" : "password"} name="password" value={password} onChange={e => setPassword(e.target.value)}/>
 						<IconButton className="show-password" onClick={() => setShowPassword(!showPassword)} edge="end">
 							<Icon icon={showPassword ? eyeFill : eyeOffFill} />
 						</IconButton>
 						</label>
-						<label for="forgotPassword" className="login-options">
+						<label htmlFor="forgotPassword" className="login-options">
 							<span onClick={() => forgotPassword(true)}>Forgot your Password?</span>
 							<button type="submit" className="login-submit" onClick={signIn}>Sign In</button>
 						</label>
@@ -165,7 +165,7 @@ export default function Login() {
 						<span>Enter your email address to retrieve your password</span>
 					</div>
 					<br />
-					<label for="email">
+					<label htmlFor="email">
 						<input type="text" name="email" />
 					</label>
 					<label>

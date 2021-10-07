@@ -26,6 +26,8 @@ import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
+
+import CreateUser from './user/CreateUser';
 //
 import { getUserList } from '../store/actions/get/getUser';
 import { useDispatch, useSelector } from 'react-redux';
@@ -80,6 +82,9 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const {userList}= useSelector((state) => state);
+
+	// create user
+	const [createUser, setCreateUser] = useState(0)
 
   useEffect(() => {
     async function getDataUserList(){
@@ -142,6 +147,9 @@ export default function User() {
 
   const isUserNotFound = filteredUsers.length === 0;
 
+	if(createUser)
+		return <CreateUser setCreateUser={setCreateUser} />
+
   return userList.data && ( 
     <Page title="User | Minimal-UI">
       <Container>
@@ -151,8 +159,9 @@ export default function User() {
           </Typography>
           <Button
             variant="contained"
-            component={RouterLink}
-            to="#"
+            // component={RouterLink}
+            // to="#"
+						onClick={() => setCreateUser(true)}
             startIcon={<Icon icon={plusFill} />}
           >
             New User

@@ -5,6 +5,7 @@ const route = express.Router()
 // const async = require('async')
 const userService = require('../services/userService')
 const userRoleService = require('../services/userRoleService')
+const roleService = require('../services/roleService')
 // const userAuthService = require('../services/userAuthService')
 
 const getUserInfo = async (req, res) => {
@@ -19,6 +20,13 @@ const getAllUser = async (req, res) => {
 		res.json({err, data})
 	})
 }
+
+const getAllRoles = (req, res) => {
+	roleService.findAll((err, data) => {
+		res.ok({err, data})
+	})
+}
+
 const createUserRole = async (req, res) => {
 	if(!req.body.user_id || !req.body.role_id){
 		res.json({err: 'must include parameter user_id and role_id!'})
@@ -53,8 +61,9 @@ const createUser = async (req, res) => {
 
 const { isAdmin, isLogin, isNonEditTeacher } = require('../config/policies')
 
-route.get('/:user_id', isLogin, getUserInfo )
 route.get('/', isNonEditTeacher, getAllUser )
+route.get('/info/:user_id', isLogin, getUserInfo )
+route.get('/roles', isNonEditTeacher, getAllRoles )
 route.put('/create', isAdmin, createUser )
 route.put('/createUserRole', isAdmin, createUserRole )
 
