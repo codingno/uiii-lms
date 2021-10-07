@@ -5,13 +5,14 @@ const defaultState = {
 }
 
 function getReducer(type, initialState) {
+    console.log({type, initialState});
     return (state = initialState || defaultState, action) => {
         switch (action.type) {
             case type:
                 return {
                     error: null,
                         load: true,
-                        data: JSON.stringify(action.data),
+                        data: JSON.stringify(action.data.data),
                 }
                 case 'error_' + type:
                     return {

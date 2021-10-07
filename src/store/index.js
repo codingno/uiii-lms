@@ -4,6 +4,7 @@ import * as reducers from './reducers'
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (preloadState) =>  {
+    console.log({reducers});
     if(preloadState)    
      return createStore(combineReducers(reducers.default), preloadState, applyMiddleware(thunk))    
     return createStore(combineReducers(reducers.default), applyMiddleware(thunk))
