@@ -32,4 +32,10 @@ router.post('/register', function(req, res, next) {
 	  registerService(req, res, next);
 });
 
+router.get('/auth/info', (req, res) => {
+	if(req.user)
+		res.ok({user : req.user})
+	else res.ok(null)
+})
+
 module.exports = router;
