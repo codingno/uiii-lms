@@ -18,47 +18,56 @@ const sidebarConfig = [
   {
     title: 'Dashboard',
     path: '/dashboard/app',
+    role:[8],
     icon: getIcon(pieChart2Fill)
   },
   {
     title: 'User',
     path: '/dashboard/user',
+    role: [1],
     icon: getIcon(peopleFill)
   },
   {
     title: 'Courses',
     path: '/dashboard/courses',
     icon: getIcon(bookFill),
+    role: [8],
     children: [
       {
         title: 'Course',
-        path: '/dashboard/courses/list'
+        path: '/dashboard/courses/list',
+        role: [8]
       },
       {
         title: 'Enrollment',
-        path: '/dashboard/courses/enrollment'
+        path: '/dashboard/courses/enrollment',
+        role: [8,4]
       }
     ]
   },
   {
     title: 'Activity',
     path: '/dashboard/activity',
-    icon: getIcon(activityFill)
+    icon: getIcon(activityFill),
+    role: [8]
   },
   {
     title: 'Resources/materials',
     path: '/dashboard/resources',
-    icon: getIcon(fileFill)
+    icon: getIcon(fileFill),
+    role: [8]
   },
   {
     title: 'Grades',
     path: '/dashboard/grades',
-    icon: getIcon(shoppingBagFill)
+    icon: getIcon(shoppingBagFill),
+    role: [1,4,7]
   },
   {
     title: 'blog',
     path: '/dashboard/blog',
-    icon: getIcon(fileTextFill)
+    icon: getIcon(fileTextFill),
+    role:[8]
   },
   {
     title: 'login',

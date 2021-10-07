@@ -12,6 +12,7 @@ import { MHidden } from '../../components/@material-extend';
 //
 import sidebarConfig from './SidebarConfig';
 import account from '../../_mocks_/account';
+import { useSelector } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -41,7 +42,21 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-
+  const {user} = useSelector(state => state)
+  const User = user.data
+  const sidebarConfigRole = sidebarConfig.filter(data => {
+    if(data.children)
+      data.children.filter(child => {
+        if(child.role)
+          return child.role.indexOf(User ? User.role_id : 8) >= 0 || child.role.indexOf(8) >= 0
+        else 
+          return true     
+      })
+    if(data.role)
+      return data.role.indexOf(User ? User.role_id : 8) >= 0 || data.role.indexOf(8) >= 0
+    else 
+      return true
+})
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -78,7 +93,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         </Link>
       </Box>
 
-      <NavSection navConfig={sidebarConfig} />
+      <NavSection navConfig={sidebarConfigRole} />
 
       <Box sx={{ flexGrow: 1 }} />
 
