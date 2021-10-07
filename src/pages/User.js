@@ -35,8 +35,8 @@ import { useDispatch, useSelector } from 'react-redux';
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
-  { id: 'usename', label: 'Username', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'username', label: 'Username', alignRight: false },
+  { id: 'role_name', label: 'Role', alignRight: false },
   { id: '' }
 ];
 
@@ -84,10 +84,8 @@ export default function User() {
   useEffect(() => {
     async function getDataUserList(){
       if (!userList.load) {
-        console.log("fetch getCatalogue");
         return await dispatch(getUserList());
       }
-      console.log("useEffect getCatalogue");
     }
     getDataUserList();
   }, [userList]);

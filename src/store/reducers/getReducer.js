@@ -5,7 +5,6 @@ const defaultState = {
 }
 
 function getReducer(type, initialState) {
-    console.log({type, initialState});
     return (state = initialState || defaultState, action) => {
         switch (action.type) {
             case type:

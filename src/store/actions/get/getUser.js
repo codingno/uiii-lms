@@ -12,7 +12,6 @@ export function getUserList(type, params) {
     if(!type)
       type = typeDefault
 
-		console.log({params});
 		
     if(params)
       defaultParams = {        

@@ -27,8 +27,8 @@ export default function App() {
 			try {
 				const getUserInfo = await axios.get('/api/auth/info')
 				if(getUserInfo.data)	{
-					localStorage.setItem('getUserInfo', JSON.stringify(getUserInfo.data));
-					dispatch({ type : 'getUserInfo', data : getUserInfo.data })
+					localStorage.setItem('getUserInfo', JSON.stringify(getUserInfo.data.user));
+					dispatch({ type : 'getUserInfo', data : getUserInfo.data.user })
 					navigate('/')
 				}
 				else {

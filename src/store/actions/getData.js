@@ -19,11 +19,9 @@ export default function(path , type , params )  {
     const paramsString = params ? objectToUrlParams(params) : ''
     const url = `${domain}${path}${paramsString}`
     const reducerType = type[Object.keys(type)[0]]
-    console.log({path, type, reducerType, url}, Object.keys(type));
     return async dispatch => {
       try {
         const data = await axios.get(url)
-        console.log({data});
         dispatch({ type : reducerType, data : data.data})
       }
       catch (error) {

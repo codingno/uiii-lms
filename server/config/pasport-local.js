@@ -29,6 +29,7 @@ module.exports.passport = async function () {
             id: user_login[0].id,
             firstname: user_login[0].firstname,
             lastname: user_login[0].lastname,
+            email: user_login[0].email,
             name: user_login[0].username,
             role: user_login[0].role,
             role_id: user_login[0].role_id
@@ -84,6 +85,7 @@ module.exports.passport = async function () {
               firstname: user_login[0].firstname,
               lastname: user_login[0].lastname,
               name: user_login[0].username,
+              email: user_login[0].email,
               role: user_login[0].role,
               role_id: user_login[0].role_id,
             };
