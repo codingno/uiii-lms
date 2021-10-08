@@ -63,6 +63,41 @@ const createCourse = async (req, res) => {
 
 	})
 }
+const updateCourse = async (req, res) => {
+	const courseInfo = {
+		id: req.body.id ? req.body.id : '',
+		code: req.body.code ? req.body.code : '',
+		name: req.body.name ? req.body.name : '',
+		shortname: req.body.shortname ? req.body.shortname : '',
+		description: req.body.description ? req.body.description : '',
+		status: req.body.status ? req.body.status : ''
+	}
+	courseService.update(courseInfo, function(err1, result1){
+		if(err1)
+			res.json({err: err1, result: result1})
+		else {
+            const data = {
+				id: req.body.course_category_id ? req.body.course_category_id : '',
+                course: courseInfo.id,
+                category: req.body.category,
+                updatedAt: new Date(),
+                updatedBy: req.user.id,
+                startDate: req.body.startDate ? new Date(req.body.startDate) : new Date(),
+                endDate: req.body.endDate ? new Date(req.body.endDate) : new Date(),
+                status: 1
+            }
+			courseCategoryService.update(data, function(err, result){
+				if(err)
+					res.json({err, result})
+				else {
+					result1.role_id = result.role_id
+					res.json({err, result: result1})
+				}
+			})
+		}
+
+	})
+}
 route.get('/:course_id', getCourseInfo )
 route.get('/', getAllCourse )
 route.put('/create', createCourse )

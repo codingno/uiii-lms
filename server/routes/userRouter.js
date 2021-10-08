@@ -58,6 +58,28 @@ const createUser = async (req, res) => {
 		}
 	})
 }
+const updateUser = async (req, res) => {
+	const userInfo = {
+		id: req.body.id ? req.body.id : '',
+		username: req.body.username ? req.body.username : '',
+		firstname: req.body.firstname ? req.body.firstname : '',
+		lastname: req.body.lastname ? req.body.lastname : ''
+	}
+	userService.update(userInfo, function(err1, data1){
+		if(err1)
+			res.json({err: err1, data: data1})
+		else {
+			userRoleService.update({user_id: userInfo.id, role_id: req.body.role_id}, function(err, data){
+				if(err)
+					res.json({err, data})
+				else {
+					data1.role_id = data.role_id
+					res.json({err, data: data1})
+				}
+			})
+		}
+	})
+}
 
 const { isAdmin, isLogin, isNonEditTeacher } = require('../config/policies')
 
@@ -66,5 +88,6 @@ route.get('/info/:user_id', isLogin, getUserInfo )
 route.get('/roles', isNonEditTeacher, getAllRoles )
 route.put('/create', isAdmin, createUser )
 route.put('/createUserRole', isAdmin, createUserRole )
+route.patch('/update', isAdmin, updateUser )
 
 module.exports = route
