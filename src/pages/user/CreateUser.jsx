@@ -5,16 +5,63 @@ import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { getUserList } from '../../store/actions/get/getUser'
 
+import { useNavigate, useLocation } from 'react-router-dom'
+
 // import './create-user.css'
 
+function FormContainer(props) {
+	return (
+		<Stack direction="row" alignItems="center" ml={5} mt={2} sx={{ width : "40%", display: "flex", justifyContent: "flex-start"}} >
+			<span style={{ width : "35%"}}>
+				{props.label}
+			</span>
+			<FormControl sx={{ width: '25ch' }} variant="outlined">
+				<OutlinedInput
+					value={props.value}
+					onChange={e => props.setValue(e.target.value)}
+				/>
+			</FormControl>
+		</Stack>
+	)
+}
+
 function CreateUser(props) {
+	const { state } = useLocation();
+  const navigate = useNavigate()
 	const dispatch = useDispatch()
+	const [userID, setUserID] = useState(null)
 	const [firstname, setFirstname] = useState("")
 	const [lastname, setLastname] = useState("")
 	const [username, setUsername] = useState("")
 	const [email, setEmail] = useState("")
+	const [code, setCode] = useState("")
 	const [role_id, setRoleID] = useState(7)
 	const [roles, setRoles] = useState([])
+
+	useEffect(() => {
+		if(props.edit) 
+			getUserInfo()
+
+		async function getUserInfo() {
+			try {
+				const user = await axios.get('/api/user/info/'+state.username)	
+				const { data } = user.data
+				setUserID(data.id)
+				setFirstname(data.firstname)
+				setLastname(data.lastname)
+				setUsername(data.username)
+				setEmail(data.email)
+				setCode(data.code)
+				setRoleID(data.roles.id)
+			} catch (error) {
+				if(error.response) {
+					alert(error.response.data.message)
+					navigate('/dashboard/user')
+				}
+			}
+		}
+
+	}, [])
 
 	useEffect(() => {
 		if(roles.length == 0)
@@ -25,7 +72,11 @@ function CreateUser(props) {
 				const getRolesData = await axios.get('/api/user/roles')
 				setRoles(getRolesData.data.data)
 			} catch (error) {
-				alert(error)	
+				if(error.response) {
+					alert(error.response.data.message)
+					// props.setCreateUser(false)
+					navigate('/dashboard/user')
+				}
 			}
 		}
 			
@@ -33,11 +84,29 @@ function CreateUser(props) {
 
 	const createUser = async () => {
 		try {
-			const user = await axios.put('/api/user/create', {firstname, lastname, username, email, role_id})
+			await axios.put('/api/user/create', {firstname, lastname, username, email, role_id, code})
 			await dispatch(getUserList());
-			props.setCreateUser(false)
-		} catch(err) {
-			alert(err)
+			alert(`User created successfully.`)
+			// props.setCreateUser(false)
+					navigate('/dashboard/user')
+		} catch(error) {
+			if(error.response) {
+				alert(error.response.data.message)
+			}
+		}
+	}
+
+	const updateUser = async () => {
+		try {
+			await axios.patch('/api/user/update', { id : userID, firstname, lastname, username, email, role_id, code})
+			await dispatch(getUserList());
+			alert(`User updated successfully.`)
+			// props.setCreateUser(false)
+					navigate('/dashboard/user')
+		} catch(error) {
+			if(error.response) {
+				alert(error.response.data.message)
+			}
 		}
 	}
 
@@ -49,14 +118,14 @@ function CreateUser(props) {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Create User
+            {props.edit ? "Edit" : "Create"} User
           </Typography>
         </Stack>
 
         <Card>
 					<Stack>
 					{/* <form className="create-user-form" action=""> */}
-        		<Stack direction="row" alignItems="center" ml={5} mt={5} >
+        		{/* <Stack direction="row" alignItems="center" ml={5} mt={5} >
 							<span>
 								First Name
 							</span>
@@ -66,8 +135,13 @@ function CreateUser(props) {
 									onChange={e => setFirstname(e.target.value)}
 								/>
 							</FormControl>
-						</Stack>
-        		<Stack direction="row" alignItems="center" ml={5} mt={2} >
+						</Stack> */}
+						<FormContainer label="First Name" value={firstname} setValue={setFirstname} />
+						<FormContainer label="Last Name" value={lastname} setValue={setLastname} />
+						<FormContainer label="Username" value={username} setValue={setUsername} />
+						<FormContainer label="Email" value={email} setValue={setEmail} />
+						<FormContainer label="User Code" value={code} setValue={setCode} />
+        		{/* <Stack direction="row" alignItems="center" ml={5} mt={2} >
 							<span>
 								Last Name
 							</span>
@@ -89,17 +163,28 @@ function CreateUser(props) {
 								/>
 							</FormControl>
 						</Stack>
-        		<Stack direction="row" alignItems="center" ml={5} mt={2} >
+        		<Stack direction="row" alignItems="center" ml={5} mt={2} sx={{ width : "40%", display: "flex", justifyContent: "space-between"}} >
 							<span>
 								Email
 							</span>
-							<FormControl sx={{ ml: 9, width: '25ch' }} variant="outlined">
+							<FormControl sx={{ width: '25ch' }} variant="outlined">
 								<OutlinedInput
 									value={email}
 									onChange={e => setEmail(e.target.value)}
 								/>
 							</FormControl>
 						</Stack>
+        		<Stack direction="row" alignItems="center" ml={5} mt={2} sx={{ width : "40%", display: "flex", justifyContent: "space-between"}} >
+							<span>
+								User Code
+							</span>
+							<FormControl sx={{ width: '25ch' }} variant="outlined">
+								<OutlinedInput
+									value={code}
+									onChange={e => setCode(e.target.value)}
+								/>
+							</FormControl>
+						</Stack> */}
 						{/* <label htmlFor="firstname">
 							<input type="text" name="firstname" value={firstname} onChange={e => setFirstname(e.target.value)} />
 						</label>
@@ -126,13 +211,12 @@ function CreateUser(props) {
 						</label> */}
 						{
 							roles.length > 0 &&
-        			<Stack direction="row" alignItems="center" ml={5} mt={2} >
+        		<Stack direction="row" alignItems="center" ml={5} mt={2} sx={{ width : "40%", display: "flex", justifyContent: "flex-start"}} >
 							{/* <label htmlFor="role_id"> */}
-								<span>
+								<span style={{ width : "35%"}}>
 								Role
 								</span>
 								<Select
-									sx={{ ml: 10 }}
 									value={role_id}
 									onChange={e => setRoleID(e.target.value)}
 									inputProps={{ 'aria-label': 'Without label' }}
@@ -142,15 +226,18 @@ function CreateUser(props) {
 							{/* </label> */}
 							</Stack>
 						}
-        			<Stack direction="row" alignItems="center" ml={19} mt={2} mb={5} >
+        			{/* <Stack direction="row" alignItems="center" ml={19} mt={2} mb={5} > */}
+        		<Stack direction="row" alignItems="center" ml={5} mt={2} mb={5} sx={{ width : "40%", display: "flex", justifyContent: "flex-start"}} >
+								<span style={{ width : "35%"}}>
+								</span>
 						<Button
 							variant="contained"
 							// component={RouterLink}
 							// to="#"
-							onClick={createUser}
+							onClick={props.edit ? updateUser : createUser}
 							// startIcon={<Icon icon={plusFill} />}
 						>
-							Create
+							{props.edit ? "Update" : "Create" }
 						</Button>
 							</Stack>
 					{/* </form> */}

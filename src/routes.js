@@ -14,6 +14,8 @@ import Blog from './pages/Blog';
 import User from './pages/User';
 import NotFound from './pages/Page404';
 
+import CreateUser from './pages/user/CreateUser';
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -30,7 +32,13 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
+        { path: 'user',
+					children: [
+						{ element: <User />,},
+						{ path: 'create', element: <CreateUser /> },
+						{ path: 'edit', element: <CreateUser edit={true} /> },
+					]
+			 	},
         {
           path: 'courses',
           children: [

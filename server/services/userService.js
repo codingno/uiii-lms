@@ -13,25 +13,43 @@ module.exports = {
         callback('username is used!')
       } else {
         try {
-          const queryString = "INSERT INTO users (firstname, lastname, username) " +
-            "VALUES (:firstname, :lastname, :username);"
+          const queryString = "INSERT INTO users (firstname, lastname, username, code) " +
+            "VALUES (:firstname, :lastname, :username, :code);"
           const user = await sequelize.query(queryString, {
             type: QueryTypes.INSERT,
             replacements: data
           })
-          if (user) {
-            callback(null, user)
-          } else
-            callback('Failed to create users!', null)
+					// if (!user)
+          //   return callback('Failed to create users!', null)
+
+    			// await this.findByUserId(data.username, function (err, newUser) {
+					// 		user_id = newUser.id
+					// })
+          const getNewUserQuery = "SELECT id FROM users WHERE username = :username;"
+          const newUser = await sequelize.query(getNewUserQuery, {
+            type: QueryTypes.SELECT,
+            replacements: { username : data.username }
+          })
+          console.log(`🚀 ~ file: userService.js ~ line 34 ~ newUser`, newUser)
+					const user_id = newUser[0].id
+          const userAuthQuery = "INSERT INTO user_auth (user_id, username, email) " +
+            "VALUES (:user_id, :username, :email);"
+          const user_auth = await sequelize.query(userAuthQuery, {
+            type: QueryTypes.INSERT,
+            replacements: { ...data, user_id }
+          })
+					if(!user_auth)
+          	return callback('Failed to create user auth!', null)
+					return callback(null, user)
         } catch (err) {
-          callback(err, null)
+          return callback(err, null)
         }
       }
     })
   },
   findAll: async function (callback) {
     try {
-      const queryString = "SELECT u.*, CONCAT(ur.role_id) role_id, CONCAT(r.name) role_name, ua.email FROM users u, user_role ur, user_auth ua, roles r WHERE u.id = ur.user_id AND ua.id = u.id AND ur.role_id = r.id GROUP BY u.id"
+      const queryString = "SELECT u.*, CONCAT(ur.role_id) role_id, CONCAT(r.name) role_name, ua.email FROM users u, user_role ur, user_auth ua, roles r WHERE u.id = ur.user_id AND ua.user_id = u.id AND ur.role_id = r.id GROUP BY u.id"
       const users = await sequelize.query(queryString)
       callback(null, users[0])
     } catch (err) {
@@ -52,16 +70,17 @@ module.exports = {
       if (user.length > 0) {
         const result = {
           id: user[0].id,
-          fistname: user[0].firstname,
+          firstname: user[0].firstname,
           lastname: user[0].lastname,
           username: user[0].username,
+          code: user[0].code,
           email: user[0].email,
           roles: user.map(data => {
             return {
               id: data.role_id,
               role_name: data.role_name
             }
-          })
+          })[0]
         }
         callback(null, result)
       } else
@@ -96,7 +115,7 @@ module.exports = {
   },
   update: async function (data, callback) {
     try {
-      const queryString = "UPDATE users SET firstname=:firstname, lastname=:lastname, username =:username WHERE id =: user_id"
+      const queryString = "UPDATE users SET firstname=:firstname, lastname=:lastname, username =:username, code =:code WHERE id =:id"
       const user_auth_updated = await sequelize.query(queryString, {
         type: sequelize.UPDATE,
         replacements: data

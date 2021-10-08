@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import {
   Card,
@@ -73,7 +73,8 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User() {
+export default function User(props) {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -82,9 +83,6 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const {userList}= useSelector((state) => state);
-
-	// create user
-	const [createUser, setCreateUser] = useState(0)
 
   useEffect(() => {
     async function getDataUserList(){
@@ -147,8 +145,6 @@ export default function User() {
 
   const isUserNotFound = filteredUsers.length === 0;
 
-	if(createUser)
-		return <CreateUser setCreateUser={setCreateUser} />
 
   return userList.data && ( 
     <Page title="User | Minimal-UI">
@@ -161,7 +157,10 @@ export default function User() {
             variant="contained"
             // component={RouterLink}
             // to="#"
-						onClick={() => setCreateUser(true)}
+						// onClick={() => setCreateUser(true)}
+						onClick={() => {
+							navigate('/dashboard/user/create')
+						}}
             startIcon={<Icon icon={plusFill} />}
           >
             New User
@@ -221,7 +220,7 @@ export default function User() {
                           <TableCell align="left">{username}</TableCell>
                           <TableCell align="left">{role_name}</TableCell>
                           <TableCell align="right">
-                            <UserMoreMenu />
+                            <UserMoreMenu username={username} />
                           </TableCell>
                         </TableRow>
                       );

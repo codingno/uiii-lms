@@ -38,21 +38,25 @@ const createUserRole = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
+	if(!req.body.username || !req.body.firstname || !req.body.lastname || !req.body.email)
+		return res.badRequest({ message : "Please fill out the form completely."})
 	const userInfo = {
 		username: req.body.username ? req.body.username : '',
 		firstname: req.body.firstname ? req.body.firstname : '',
-		lastname: req.body.lastname ? req.body.lastname : ''
+		lastname: req.body.lastname ? req.body.lastname : '',
+		email: req.body.email ? req.body.email : '',
+		code: req.body.code ? req.body.code : '',
 	}
 	userService.create(userInfo, function(err1, data1){
 		if(err1)
-			res.json({err: err1, data: data1})
+			res.internalServerError({message: err1, data: data1})
 		else {
 			userRoleService.create({user_id: data1[0], role_id: req.body.role_id}, function(err, data){
 				if(err)
-					res.json({err, data})
+					res.internalServerError({message : err, data})
 				else {
 					data1.role_id = data.role_id
-					res.json({err, data: data1})
+					res.ok({err, data: data1})
 				}
 			})
 		}
@@ -63,7 +67,8 @@ const updateUser = async (req, res) => {
 		id: req.body.id ? req.body.id : '',
 		username: req.body.username ? req.body.username : '',
 		firstname: req.body.firstname ? req.body.firstname : '',
-		lastname: req.body.lastname ? req.body.lastname : ''
+		lastname: req.body.lastname ? req.body.lastname : '',
+		code: req.body.code ? req.body.code : '',
 	}
 	userService.update(userInfo, function(err1, data1){
 		if(err1)
