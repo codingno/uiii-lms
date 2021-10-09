@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import Page from '../../components/Page'
-import { Container, Stack, Typography, Button, Icon, Card, Select, MenuItem, FormControl, FilledInput, OutlinedInput } from '@mui/material'
+import {
+  Container,
+  Stack,
+  Typography,
+  Button,
+  Icon,
+  Card,
+  Select,
+  MenuItem,
+  FormControl,
+  FilledInput,
+  OutlinedInput,
+  CircularProgress,
+} from "@mui/material";
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { getUserList } from '../../store/actions/get/getUser'
@@ -11,11 +24,11 @@ import { useNavigate, useLocation } from 'react-router-dom'
 
 function FormContainer(props) {
 	return (
-		<Stack direction="row" alignItems="center" ml={5} mt={2} sx={{ width : "40%", display: "flex", justifyContent: "flex-start"}} >
+		<Stack direction="row" alignItems="center" ml={5} mt={2} sx={{ width : "60%", display: "flex", justifyContent: "flex-start"}} >
 			<span style={{ width : "35%"}}>
 				{props.label}
 			</span>
-			<FormControl sx={{ width: '25ch' }} variant="outlined">
+			<FormControl sx={{ width: '65%' }} variant="outlined">
 				<OutlinedInput
 					value={props.value}
 					onChange={e => props.setValue(e.target.value)}
@@ -38,28 +51,32 @@ function CreateUser(props) {
 	const [role_id, setRoleID] = useState(7)
 	const [roles, setRoles] = useState([])
 
+	const [isLoading, setLoading] = useState(false)
+	
+	async function getUserInfo() {
+		setLoading(true)
+		try {
+			const user = await axios.get('/api/user/info/'+state.username)	
+			const { data } = user.data
+			setUserID(data.id)
+			setFirstname(data.firstname)
+			setLastname(data.lastname)
+			setUsername(data.username)
+			setEmail(data.email)
+			setCode(data.code)
+			setRoleID(data.roles.id)
+			setLoading(false)
+		} catch (error) {
+			if(error.response) {
+				alert(error.response.data.message)
+				navigate('/dashboard/user')
+			}
+		}
+	}
+
 	useEffect(() => {
 		if(props.edit) 
 			getUserInfo()
-
-		async function getUserInfo() {
-			try {
-				const user = await axios.get('/api/user/info/'+state.username)	
-				const { data } = user.data
-				setUserID(data.id)
-				setFirstname(data.firstname)
-				setLastname(data.lastname)
-				setUsername(data.username)
-				setEmail(data.email)
-				setCode(data.code)
-				setRoleID(data.roles.id)
-			} catch (error) {
-				if(error.response) {
-					alert(error.response.data.message)
-					navigate('/dashboard/user')
-				}
-			}
-		}
 
 	}, [])
 
@@ -122,6 +139,9 @@ function CreateUser(props) {
           </Typography>
         </Stack>
 
+				{
+					isLoading ?
+					<CircularProgress /> :
         <Card>
 					<Stack>
 					{/* <form className="create-user-form" action=""> */}
@@ -211,7 +231,7 @@ function CreateUser(props) {
 						</label> */}
 						{
 							roles.length > 0 &&
-        		<Stack direction="row" alignItems="center" ml={5} mt={2} sx={{ width : "40%", display: "flex", justifyContent: "flex-start"}} >
+        		<Stack direction="row" alignItems="center" ml={5} mt={2} sx={{ width : "60%", display: "flex", justifyContent: "flex-start"}} >
 							{/* <label htmlFor="role_id"> */}
 								<span style={{ width : "35%"}}>
 								Role
@@ -227,7 +247,7 @@ function CreateUser(props) {
 							</Stack>
 						}
         			{/* <Stack direction="row" alignItems="center" ml={19} mt={2} mb={5} > */}
-        		<Stack direction="row" alignItems="center" ml={5} mt={2} mb={5} sx={{ width : "40%", display: "flex", justifyContent: "flex-start"}} >
+        		<Stack direction="row" alignItems="center" ml={5} mt={2} mb={5} sx={{ width : "60%", display: "flex", justifyContent: "flex-start"}} >
 								<span style={{ width : "35%"}}>
 								</span>
 						<Button
@@ -243,6 +263,7 @@ function CreateUser(props) {
 					{/* </form> */}
 					</Stack>
 				</Card>
+			}
 			</Container>
 		</Page>
 	)

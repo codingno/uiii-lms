@@ -19,7 +19,7 @@ const getCategory = async (req, res) => {
         // else 
         res.json({
             err,
-            result
+            data : result
         })
     })
     // res.json({user})
@@ -27,8 +27,7 @@ const getCategory = async (req, res) => {
 const getAllCategory = async (req, res) => {
     categoryService.findAll(function (err, result) {
         res.json({
-            err,
-            result
+            data : result
         })
     })
 }
@@ -36,15 +35,15 @@ const createCategory = async (req, res) => {
     const data = {
         code: req.body.code ? req.body.code : '',
         name: req.body.name ? req.body.name : '',
-        parent: req.body.parent ? req.body.parent : 1,
-        position: req.body.position ? req.body.position : 1,
+        parent: req.body.parent ? req.body.parent : null,
+        position: req.body.position ? req.body.position : null,
         description: req.body.description ? req.body.description : '',
         status: req.body.status ? req.body.status : 1
     }
     categoryService.create(data, function (err, result) {
         res.json({
             err,
-            result
+            data : result
         })
     })
 }
@@ -53,15 +52,15 @@ const updateCategory = async (req, res) => {
         id: req.body.id,
         code: req.body.code ? req.body.code : '',
         name: req.body.name ? req.body.name : '',
-        parent: req.body.parent ? req.body.parent : 1,
-        position: req.body.position ? req.body.position : 1,
+        parent: req.body.parent ? req.body.parent : null,
+        position: req.body.position ? req.body.position : null,
         description: req.body.description ? req.body.description : '',
         status: req.body.status ? req.body.status : 1
     }
     categoryService.update(data, function (err, result) {
         res.json({
             err,
-            result
+            data : result
         })
     })
 }
@@ -76,9 +75,9 @@ const deleteCategory = async (req, res) => {
         })
     })
 }
-route.get('/:category_id', getCategory)
 route.get('/', getAllCategory)
-route.put('/create', createCategory)
+route.get('/info/:category_id', getCategory)
+route.post('/create', createCategory)
 route.patch('/update', updateCategory)
 route.delete('/delete', deleteCategory)
 

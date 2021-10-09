@@ -1,0 +1,34 @@
+
+.create-user-form {
+	display: flex;
+  flex-direction: column;
+	padding: 1rem;
+}
+
+.create-user-form label {
+    margin: 1rem;
+    font-size: 1.2rem;
+}
+
+.create-user-form span {
+    display: inline-block;
+    min-width: 150px;
+}
+
+.create-user-form input {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border: solid thin #999;
+    border-radius: 8px;
+}
+
+.create-user-form input:focus-visible {
+    outline: none;
+    border-color: #00778B;
+}
+
+.create-user-form button {
+    margin: auto;
+    margin-left: calc(150px + 1rem);
+    margin-top: 1rem;
+}

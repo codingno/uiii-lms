@@ -13,9 +13,11 @@ import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
 import User from './pages/User';
+import Categories from './pages/Categories';
 import NotFound from './pages/Page404';
 
 import CreateUser from './pages/user/CreateUser';
+import CreateCategory from './pages/category/CreateCategory';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +45,13 @@ export default function Router() {
         {
           path: 'courses',
           children: [
+            { path: 'category', 
+							children: [
+								{ element: <Categories /> },
+								{ path: 'create', element: <CreateCategory /> },
+								{ path: 'edit', element: <CreateCategory edit={true} /> },
+							]
+					 	},
             { path: 'list', element: <User /> },
             { path: 'enrollment', element: <Products /> }
           ]

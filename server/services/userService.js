@@ -30,7 +30,6 @@ module.exports = {
             type: QueryTypes.SELECT,
             replacements: { username : data.username }
           })
-          console.log(`🚀 ~ file: userService.js ~ line 34 ~ newUser`, newUser)
 					const user_id = newUser[0].id
           const userAuthQuery = "INSERT INTO user_auth (user_id, username, email) " +
             "VALUES (:user_id, :username, :email);"

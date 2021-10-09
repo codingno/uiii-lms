@@ -34,6 +34,11 @@ const sidebarConfig = [
     role: [8],
     children: [
       {
+        title: 'Course Category',
+        path: '/dashboard/courses/category',
+        role: [8]
+      },
+      {
         title: 'Course',
         path: '/dashboard/courses/list',
         role: [8]

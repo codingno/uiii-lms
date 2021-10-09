@@ -27,19 +27,20 @@ import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
+import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/category';
 
 import CreateUser from './user/CreateUser';
 //
-import { getUserList } from '../store/actions/get/getUser';
+import { getCategoryList } from '../store/actions/get/getCategories';
 import { useDispatch, useSelector } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false },
-  { id: 'username', label: 'Username', alignRight: false },
-  { id: 'role_name', label: 'Role', alignRight: false },
+  { id: 'code', label: 'Category Code', alignRight: false },
+  { id: 'position', label: 'Position', alignRight: false },
+  { id: 'parent', label: 'Parent', alignRight: false },
   { id: '' }
 ];
 
@@ -69,12 +70,12 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.username.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function User(props) {
+export default function Categories(props) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [page, setPage] = useState(0);
@@ -83,24 +84,24 @@ export default function User(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const {userList}= useSelector((state) => state);
+  const {categoryList}= useSelector((state) => state);
 
 	const [isLoading, setLoading] = useState(false)
 
-	async function getDataUserList(){
+	async function getDataCategoryList(){
 			setLoading(true)
 			try {
-				await dispatch(getUserList());
+				await dispatch(getCategoryList());
 				setLoading(false)
 			} catch(error) {
-				
+
 			}
 	}
-
   useEffect(() => {
-		if (!userList.load) 
-    	getDataUserList();
-  }, [userList]);
+		if (!categoryList.load) {
+  	  getDataCategoryList();
+		}
+  }, [categoryList]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -110,7 +111,7 @@ export default function User(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = JSON.parse(userList.data).map((n) => n.username);
+      const newSelecteds = JSON.parse(categoryList.data).map((n) => n.code);
       setSelected(newSelecteds);
       return;
     }
@@ -148,20 +149,19 @@ export default function User(props) {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(userList.data).length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(categoryList.data).length) : 0;
 
-  // const filteredUsers = userList.data ? applySortFilter(JSON.parse(userList.data), getComparator(order, orderBy), filterName) : [];
+  const filteredUsers = categoryList.data ? applySortFilter(categoryList.data.length > 0 ? JSON.parse(categoryList.data) : [], getComparator(order, orderBy), filterName) : [];
 
-  const filteredUsers = userList.data ? applySortFilter(userList.data.length > 0 ? JSON.parse(userList.data) : [], getComparator(order, orderBy), filterName) : [];
   const isUserNotFound = filteredUsers.length === 0;
 
-
+  // return categoryList.data && ( 
   return ( 
     <Page title="User | Minimal-UI">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            Categories
           </Typography>
           <Button
             variant="contained"
@@ -169,20 +169,20 @@ export default function User(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate('/dashboard/user/create')
+							navigate('/dashboard/courses/category/create')
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New User
+            New Category
           </Button>
         </Stack>
 
         <Card>
-          <UserListToolbar
+          <CategoryListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
-						refresh={getDataUserList}
+						refresh={getDataCategoryList}
           />
 
           <Scrollbar>
@@ -193,11 +193,11 @@ export default function User(props) {
 						</div> :
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <UserListHead
+                <CategoryListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={userList.length}
+                  rowCount={categoryList.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -206,8 +206,8 @@ export default function User(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, username, role_name, email, firstname, lastname } = row;
-                      const isItemSelected = selected.indexOf(username) !== -1;
+                      const { id, name, code, position, parent } = row;
+                      const isItemSelected = selected.indexOf(code) !== -1;
 
                       return (
                         <TableRow
@@ -221,22 +221,22 @@ export default function User(props) {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, username)}
+                              onChange={(event) => handleClick(event, code)}
                             />
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>
-                                {firstname + ' ' + lastname}
+																{name}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{email}</TableCell>
-                          <TableCell align="left">{username}</TableCell>
-                          <TableCell align="left">{role_name}</TableCell>
+                          <TableCell align="left">{code}</TableCell>
+                          <TableCell align="left">{position || "None"}</TableCell>
+                          <TableCell align="left">{parent || "None"}</TableCell>
                           <TableCell align="right">
-                            <UserMoreMenu username={username} />
+                            <CategoryMoreMenu code={code} />
                           </TableCell>
                         </TableRow>
                       );
@@ -264,7 +264,7 @@ export default function User(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={userList.data ? JSON.parse(userList.data).length : 0}
+            count={categoryList.data ? JSON.parse(categoryList.data).length : 0}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

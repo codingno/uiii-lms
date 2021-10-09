@@ -64,7 +64,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         <SearchStyle
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder="Search Category..."
           startAdornment={
             <InputAdornment position="start">
               <Box component={Icon} icon={searchFill} sx={{ color: 'text.disabled' }} />
@@ -91,6 +91,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         </Tooltip>
 				</div>
       )}
+			{/* { numSelected == 0 && <RefreshIcon onClick={refresh} sx={{ marginLeft : 0}} />} */}
     </RootStyle>
   );
 }
