@@ -1,7 +1,7 @@
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Card, Stack, Link, Container, Typography } from '@mui/material';
+import { Card, Stack, Link, Container, Typography, CircularProgress } from '@mui/material';
 // layouts
 import AuthLayout from '../layouts/AuthLayout';
 // components
@@ -171,7 +171,7 @@ export default function Login() {
 			</div>
 			{ popUpForgotPassword && <div className="login-form forgot-password">
 				<form>
-					<CancelIcon className="cancel" onClick={() => forgotPassword(false)} />
+					<CancelIcon disabled={disableReset} className="cancel" onClick={() => forgotPassword(false)} />
 					<h2>Forgot Password</h2>
 					<br />
 					<div>
@@ -183,7 +183,7 @@ export default function Login() {
 					</label>
 					<span style={{color: "red"}}>{errorReset}</span>
 					<label>
-						<button type="submit" disabled={disableReset} className="login-submit" onClick={sendForgotPassword}>Send Email</button>
+						<button type="submit" disabled={disableReset} className="login-submit" onClick={sendForgotPassword}>{!disableReset ? 'Send Email' : <CircularProgress color="inherit" size={10}/>}</button>
 					</label>
 				</form>
 			</div>

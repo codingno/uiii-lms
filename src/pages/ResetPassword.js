@@ -1,31 +1,22 @@
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Card, Stack, Link, Container, Typography } from '@mui/material';
+import { Link, Typography, CircularProgress } from '@mui/material';
 // layouts
 import AuthLayout from '../layouts/AuthLayout';
 // components
 import Page from '../components/Page';
-import { MHidden } from '../components/@material-extend';
-import LoginForm from '../components/authentication/login/LoginFormLms';
-import AuthSocial from '../components/authentication/AuthSocial';
 import { mockImgCover } from '../utils/mockImages';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
-import CancelIcon from '@mui/icons-material/Cancel';
 // material
 import {
-  Checkbox,
-  TextField,
-  IconButton,
-  InputAdornment,
+  IconButton
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import axios from 'axios';
-import { useSelector, useDispatch } from "react-redux";
 import './css/login.css'
 
 // ----------------------------------------------------------------------
@@ -41,60 +32,29 @@ const RootStyle = styled(Page)(({ theme }) => ({
   width: '100%',
 }));
 
-const SectionStyle = styled(Card)(({ theme }) => ({
-  width: '100%',
-  maxWidth: 464,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  margin: theme.spacing(2, 0, 2, 2)
-}));
-
-const ContentStyle = styled('div')(({ theme }) => ({
-  // maxWidth: 480,
-  maxWidth: '100%',
-  margin: 'auto',
-  display: 'flex',
-  minHeight: '100vh',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  padding: theme.spacing(12, 0)
-}));
-
-const FormStyle = styled('div')(({ theme }) => ({
-  // maxWidth: 464,
-  maxWidth: '100%',
-  display: 'flex',
-  flexDirection: 'rows',
-  justifyContent: 'space-around',
-  padding: theme.spacing(5, 5),
-  borderRadius: '16px',
-  // backgroundColor: 'white'
-}));
-// ----------------------------------------------------------------------
 
 export default function Login() {
-	const dispatch = useDispatch();
-	const { user } = useSelector(state => state)
-    const { token } = useParams()
+  const { token } = useParams()
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(0)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(0)
-	const [popUpForgotPassword, setPopUpForgotPassword] = useState(0)
-	const [email, setEmail] = useState("")
+	const [isSend, setIsSend] = useState(false)
 	const [password, setPassword] = useState("")
 	const [confirmPassword, setConfirmPassword] = useState("")
     console.log({token});
 	const resetPassword = async (e) => {
 		e.preventDefault()
+    setIsSend(true)
 		// const data = JSON.stringify({email, password})
     if(password === confirmPassword){
       try {
         const resetPassword = await axios.post('/api/resetPassword', {password, token})
         if(resetPassword)
-          alert('Reset Password Success')
+          setIsSend(false)
+        alert('Reset Password Success')
         navigate('/login')
       } catch(err) {
+          setIsSend(false)
         if(err.response) {
           alert('Reset Password Failed')
         }
@@ -103,10 +63,7 @@ export default function Login() {
     else
       alert('Password not match!')
 	}
-	const sendForgotPassword = (e) => {
-		e.preventDefault()
-		alert("send forgot password")
-	}
+	
   return (
     <RootStyle title="Login | UIII LMS">
       <AuthLayout>
@@ -143,7 +100,7 @@ export default function Login() {
 						</IconButton>
 						</label>
 						<label htmlFor="forgotPassword" className="login-options">
-							<button style={{marginLeft: 'auto'}} type="submit" className="login-submit" onClick={resetPassword}>Reset Password</button>
+							<button disabled={isSend} style={{marginLeft: 'auto'}} type="submit" className="login-submit" onClick={resetPassword}>{!isSend ? 'Reset Password' : <CircularProgress color="inherit" size={10}/>}</button>
 						</label>
 					</form>
 				</div>
