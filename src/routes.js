@@ -70,7 +70,7 @@ export default function Router() {
       element: <LogoOnlyLayout />,
       children: [
         { path: '404', element: <NotFound /> },
-        { path: '/', element: !user.isLogin ? <Login /> : <Navigate to="/dashboard" /> },
+        { path: '/', element: !user.isLogin ? <Navigate to="/login" /> : <Navigate to="/dashboard" /> },
         { path: '*', element: <Navigate to="/404" /> }
       ]
     },

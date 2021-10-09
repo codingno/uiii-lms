@@ -50,7 +50,7 @@ router.get('/auth/info', (req, res) => {
 	else res.ok(null)
 });
 
-router.post('/resetPassword', function(req, res){
+router.post('/resetPasswordToken', function(req, res){
 	async.waterfall([
 		function(cb){
 			userAuthService.findByEmail(req.body.email, function(err, data) {
@@ -82,11 +82,7 @@ router.post('/resetPassword', function(req, res){
 			  });			
 		},
 		function(data, cb) {
-			var mailOptions = {
-				from: 'sendemailtest032@gmail.com',
-				to: data.email,
-				subject: 'reset password uiii-lsm',
-				html:`
+				const html =`
 				<!doctype html>
 				<html lang="en-US">
 
@@ -138,7 +134,7 @@ router.post('/resetPassword', function(req, res){
 															password has been generated for you. To reset your password, click the
 															following link and follow the instructions.
 														</p>
-														<a href="${BaseUrlClient}/resetpassword/${data.resetPasswordToken}"
+														<a href="${BaseUrlClient}/resetPassword/${data.resetPasswordToken}"
 															style="background:#20e277;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Reset
 															Password</a>
 													</td>
@@ -168,6 +164,12 @@ router.post('/resetPassword', function(req, res){
 
 				</html>
 				`	
+			console.log({html});
+			var mailOptions = {
+				from: 'sendemailtest032@gmail.com',
+				to: data.email,
+				subject: 'reset password uiii-lsm',
+				html
 			};
 			transporter.sendMail(mailOptions, function(error, info){
 				console.log({error, info});
@@ -179,6 +181,26 @@ router.post('/resetPassword', function(req, res){
 			  });
 		}
 	])
+})
+
+router.get('/checkResetToken/:token', function(req, res){
+	console.log('kesini lah', req.params.token);
+	userAuthService.findByPasswordToken(req.params.token, function(err, data){
+		if(err)
+			res.badRequest('invalid token')
+		else
+			res.ok('valid token')
+	})
+})
+
+router.post('/resetPassword', function(req, res){
+	userAuthService.resetPassword(req.body, function(err, data){
+		if(err){
+			res.badRequest('failed to reset password')
+		}
+		else
+			res.ok('success to reset password')
+	})
 })
 
 module.exports = router;

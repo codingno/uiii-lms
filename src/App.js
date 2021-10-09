@@ -32,15 +32,29 @@ export default function App() {
 					dispatch({ type : 'getUserInfo', data : getUserInfo.data.user })
 					navigate('/')
 				}
-				else if(path.indexOf('/register') >= 0 || path.indexOf('/resetPassword') >= 0) {
-					console.log('kesini dong', path, path.indexOf('/register') === 0 || path.indexOf('/resetPassword' === 0));
+				else if(path.indexOf('/register') === 0) {
 					localStorage.removeItem("getUserInfo")
 					localStorage.clear()
 					dispatch({type : 'logout'})
 					navigate(path)
 				}
+				else if(path.indexOf('/resetPassword') === 0){
+					const token = path.slice(15)
+					console.log('kesini dong', path, path.indexOf('/resetPassword' === 0), token);
+					localStorage.removeItem("getUserInfo")
+					localStorage.clear()
+					dispatch({type : 'logout'})
+					try {
+						const validToken = await axios.get('/api/checkResetToken/'+token)
+						if(validToken)
+							navigate(path)
+					} catch (error) {
+						console.log({error});
+						alert('Invalid Token')
+						navigate('/login')
+					}
+				}
 				else {
-					console.log('kesini', path.indexOf('/register') !== 0 && path.indexOf('/resetPassword' !== 0), path);
 					localStorage.removeItem("getUserInfo")
 					localStorage.clear()
 					dispatch({type : 'logout'})

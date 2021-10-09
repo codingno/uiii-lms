@@ -17,7 +17,7 @@ module.exports = async function (req, res, next) {
         } else {
             bcrypt.hash(data.password, 8, async function (err, hash) {
                 if (err)
-                    res.severError(err)
+                    res.badRequest(err)
                 else {
                     try {
                         const queryString = "INSERT INTO user_auth (email, username, user_id, password) " +

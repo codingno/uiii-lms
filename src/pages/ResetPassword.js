@@ -84,39 +84,24 @@ export default function Login() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const [confirmPassword, setConfirmPassword] = useState("")
-	const [userInfo, setuserInfo] = useState({})
-	const forgotPassword = (bool) => setPopUpForgotPassword(bool)
     console.log({token});
-	const signIn = async (e) => {
+	const resetPassword = async (e) => {
 		e.preventDefault()
 		// const data = JSON.stringify({email, password})
-		try {
-			// const rawResponse = await fetch('/api/login', {
-			// 														method: 'POST',
-			// 														headers: {
-			// 															'Accept': 'application/json',
-			// 															'Content-Type': 'application/json'
-			// 														},
-			// 														mode: 'cors',
-			// 														body: data
-			// 													})
-			// const responseData= await rawResponse.json()
-			// if(responseData.message)
-			//  alert(responseData.message)
-			// else {
-			// 	setuserInfo(responseData)
-			// 	navigate('/')
-			// }
-			const getUserInfo = await axios.post('/api/login', {email, password})
-			localStorage.setItem('getUserInfo', JSON.stringify(getUserInfo.data));
-			dispatch({ type : 'getUserInfo', data : getUserInfo.data })
-			navigate('/')
-		} catch(err) {
-			if(err.response) {
-				dispatch({ type : 'err_getUserInfo', error : err.response.data.message })
-				alert(err.response.data.message)
-			}
-		}
+    if(password === confirmPassword){
+      try {
+        const resetPassword = await axios.post('/api/resetPassword', {password, token})
+        if(resetPassword)
+          alert('Reset Password Success')
+        navigate('/login')
+      } catch(err) {
+        if(err.response) {
+          alert('Reset Password Failed')
+        }
+      }
+    }
+    else
+      alert('Password not match!')
 	}
 	const sendForgotPassword = (e) => {
 		e.preventDefault()
@@ -158,7 +143,7 @@ export default function Login() {
 						</IconButton>
 						</label>
 						<label htmlFor="forgotPassword" className="login-options">
-							<button style={{marginLeft: 'auto'}} type="submit" className="login-submit" onClick={signIn}>Reset Password</button>
+							<button style={{marginLeft: 'auto'}} type="submit" className="login-submit" onClick={resetPassword}>Reset Password</button>
 						</label>
 					</form>
 				</div>
