@@ -3,8 +3,8 @@ const { QueryTypes } = require('sequelize')
 module.exports = {
     create: async function(data, callback){
         try {
-            const queryString = "INSERT INTO user_auth (user_id, username, email, emailToken, emailTokenExpired, password, resetPassword, resetPasswordExpired) " +
-            "VALUES (:user_id, :username, :email, :emailToken, :emailTokenExpired, :password, :resetPassword, :resetPasswordExpired);"
+            const queryString = "INSERT INTO user_auth (user_id, username, email, emailToken, emailTokenExpired, password, resetPasswordToken, resetPasswordExpired) " +
+            "VALUES (:user_id, :username, :email, :emailToken, :emailTokenExpired, :password, :resetPasswordToken, :resetPasswordExpired);"
             const user_auth = await sequelize.query(queryString,{type: QueryTypes.INSERT, replacements: data})
             if(user_auth){
                 callback(null, user_auth)
@@ -36,6 +36,16 @@ module.exports = {
             callback(err, null)
         }
     },
+    findByEmail: async function(email,callback){
+        try {
+            const condition = `email = '${email}'`
+            const queryString = "SELECT * FROM user_auth WHERE " + condition
+            const user_auths = await sequelize.query(queryString, {type: QueryTypes.SELECT})
+            callback(null, user_auths)
+        } catch (err) {
+            callback(err, null)
+        }
+    },
     delete: async function(user_id, callback){
         try {
             const queryString = "DELETE FROM user_auth WHERE user_id = " + user_id
@@ -48,7 +58,7 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE user_auth SET username =:username, email =: email, emailToken =: emailToken, emailTokenExpired =: emailTokenExpired, password =: password, resetPassword =: resetPassword, resetPasswordExpired =: resetPasswordExpired WHERE user_id =: user_id"
+           const queryString = "UPDATE user_auth SET username =:username, email =:email, emailToken =:emailToken, emailTokenExpired =:emailTokenExpired, password =:password, resetPasswordToken =:resetPasswordToken, resetPasswordExpired =:resetPasswordExpired WHERE user_id =:user_id"
            const user_auth_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (user_auth_updated){
                callback(null, user_auth_updated)

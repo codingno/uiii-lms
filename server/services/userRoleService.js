@@ -48,7 +48,7 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE user_role SET role_id =: role_id WHERE user_id =: user_id"
+           const queryString = "UPDATE user_role SET role_id =:role_id WHERE user_id =:user_id"
            const user_role_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (user_role_updated){
                callback(null, user_role_updated)

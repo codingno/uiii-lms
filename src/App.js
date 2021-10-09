@@ -21,6 +21,7 @@ export default function App() {
 	const navigate = useNavigate()
 	const [loading, setLoading] = useState(true)
 	const { user } = useSelector(state => state)
+	const path = window.location.pathname 
 
 	useEffect(() => {
 		async function getUserInfoMethod() {
@@ -31,7 +32,15 @@ export default function App() {
 					dispatch({ type : 'getUserInfo', data : getUserInfo.data.user })
 					navigate('/')
 				}
+				else if(path.indexOf('/register') >= 0 || path.indexOf('/resetPassword') >= 0) {
+					console.log('kesini dong', path, path.indexOf('/register') === 0 || path.indexOf('/resetPassword' === 0));
+					localStorage.removeItem("getUserInfo")
+					localStorage.clear()
+					dispatch({type : 'logout'})
+					navigate(path)
+				}
 				else {
+					console.log('kesini', path.indexOf('/register') !== 0 && path.indexOf('/resetPassword' !== 0), path);
 					localStorage.removeItem("getUserInfo")
 					localStorage.clear()
 					dispatch({type : 'logout'})

@@ -8,6 +8,7 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 import Login from './pages/LoginLms';
 // import Register from './pages/Register';
 import Register from './pages/RegisterLms';
+import ResetPassword from './pages/ResetPassword';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
@@ -54,12 +55,13 @@ export default function Router() {
     },
 		{ path: '/login', element: !user.isLogin ? <Login /> : <Navigate to="/" /> },
 		{ path: '/register', element: !user.isLogin ? <Register /> : <Navigate to="/" />},
+		{ path: '/resetPassword/:token', element: !user.isLogin ? <ResetPassword /> : <Navigate to="/" />},
     {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
         { path: '404', element: <NotFound /> },
-        { path: '/', element: <Navigate to="/dashboard" /> },
+        { path: '/', element: !user.isLogin ? <Login /> : <Navigate to="/dashboard" /> },
         { path: '*', element: <Navigate to="/404" /> }
       ]
     },

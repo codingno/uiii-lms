@@ -48,7 +48,7 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE course_categories SET course=:course, category=:category, status=:status, updatedAt=:updatedAt, updatedBy=:updatedBy, startDate=:startDate, endDate=:endDate WHERE id =: id"
+           const queryString = "UPDATE course_categories SET course=:course, category=:category, status=:status, updatedAt=:updatedAt, updatedBy=:updatedBy, startDate=:startDate, endDate=:endDate WHERE id =:id"
            const course_categorie_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (course_categorie_updated){
                callback(null, course_categorie_updated)

@@ -11,6 +11,7 @@ import LoginForm from '../components/authentication/login/LoginFormLms';
 import AuthSocial from '../components/authentication/AuthSocial';
 import { mockImgCover } from '../utils/mockImages';
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
@@ -75,15 +76,17 @@ const FormStyle = styled('div')(({ theme }) => ({
 export default function Login() {
 	const dispatch = useDispatch();
 	const { user } = useSelector(state => state)
+    const { token } = useParams()
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(0)
+	const [showConfirmPassword, setShowConfirmPassword] = useState(0)
 	const [popUpForgotPassword, setPopUpForgotPassword] = useState(0)
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
-	const [errorReset, setErrorReset] = useState("")
-	const [disableReset, setDisableReset] = useState(false)
+	const [confirmPassword, setConfirmPassword] = useState("")
 	const [userInfo, setuserInfo] = useState({})
 	const forgotPassword = (bool) => setPopUpForgotPassword(bool)
+    console.log({token});
 	const signIn = async (e) => {
 		e.preventDefault()
 		// const data = JSON.stringify({email, password})
@@ -115,20 +118,9 @@ export default function Login() {
 			}
 		}
 	}
-	const sendForgotPassword = async (e) => {
+	const sendForgotPassword = (e) => {
 		e.preventDefault()
-		setDisableReset(true)
-		try {
-		const resetPass = await axios.post('/api/resetPassword', {email})
-			console.log({resetPass});
-			// e.preventDefault()
-			alert("send forgot password")
-			navigate('/')
-			setDisableReset(false)
-		} catch (error) {
-			setErrorReset(error.response.data.err)
-			setDisableReset(false)
-		}
+		alert("send forgot password")
 	}
   return (
     <RootStyle title="Login | UIII LMS">
@@ -151,43 +143,26 @@ export default function Login() {
 				<div className="login-line"></div>
 				<div className="login-form">
 					<form>
-						<label htmlFor="email">
-							Username
-						<input type="text" name="email" value={email} onChange={e => setEmail(e.target.value)}/>
-						</label>
 						<label htmlFor="password">
-							Password
-						<input type={showPassword ? "text" : "password"} name="password" value={password} onChange={e => setPassword(e.target.value)}/>
+                        Password
+						<input style={{marginLeft: 'auto'}} placeholder="Password" type={showPassword ? "text" : "password"} name="password" value={password} onChange={e => setPassword(e.target.value)}/>
 						<IconButton className="show-password" onClick={() => setShowPassword(!showPassword)} edge="end">
 							<Icon icon={showPassword ? eyeFill : eyeOffFill} />
 						</IconButton>
 						</label>
+						<label htmlFor="confirmPassword">
+                        Confirm Password
+						<input placeholder="Confirm Password" type={showConfirmPassword ? "text" : "password"} name="confirmpassword" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}/>
+						<IconButton className="show-password" onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+							<Icon icon={showConfirmPassword ? eyeFill : eyeOffFill} />
+						</IconButton>
+						</label>
 						<label htmlFor="forgotPassword" className="login-options">
-							<span onClick={() => forgotPassword(true)}>Forgot your Password?</span>
-							<button type="submit" className="login-submit" onClick={signIn}>Sign In</button>
+							<button style={{marginLeft: 'auto'}} type="submit" className="login-submit" onClick={signIn}>Reset Password</button>
 						</label>
 					</form>
 				</div>
 			</div>
-			{ popUpForgotPassword && <div className="login-form forgot-password">
-				<form>
-					<CancelIcon className="cancel" onClick={() => forgotPassword(false)} />
-					<h2>Forgot Password</h2>
-					<br />
-					<div>
-						<span>Enter your email address to retrieve your password</span>
-					</div>
-					<br />
-					<label htmlFor="email">
-						<input type="text" name="email" value={email} onChange={e => setEmail(e.target.value)} />
-					</label>
-					<span style={{color: "red"}}>{errorReset}</span>
-					<label>
-						<button type="submit" disabled={disableReset} className="login-submit" onClick={sendForgotPassword}>Send Email</button>
-					</label>
-				</form>
-			</div>
-			}
 			<div className="login-copyright">
 				<span>&copy;{ new Date().getFullYear()} Universitas Islam International Indonesia</span>
 			</div>
