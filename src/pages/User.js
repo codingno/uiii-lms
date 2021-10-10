@@ -157,7 +157,7 @@ export default function User(props) {
 
 
   return ( 
-    <Page title="User | Minimal-UI">
+    <Page title="User | UIII LMS">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>

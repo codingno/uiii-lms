@@ -1,4 +1,5 @@
 const sequelize = require('./db/database')
+const path = require('path')
 const express = require('express')
 const app = express()
 const route = require('./routes/route')
@@ -19,7 +20,7 @@ async function run() {
 run();
 // app.use(morgan('combined'))
 app.use(morgan('tiny'))
-app.use(express.static("public"));
+app.use(express.static("build"));
 app.use(express.json())
 app.use(resStatus())
 app.use(cookieParser());
@@ -31,7 +32,7 @@ require('./config/pasport-local').passport();
 // app.use(passport.authenticate('session'));
 app.use('/api', route)
 
-app.get('/', (req, res) => res.json({ message : "ok"}))
+app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')))
 
 var PORT=process.env.PORT
 app.listen(PORT, () => console.log("server starting on PORT:", PORT))

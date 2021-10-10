@@ -35,4 +35,5 @@ function getReducer(type, initialState) {
 export default {
     userList: getReducer('getUserList'),
     categoryList: getReducer('getCategoryList'),
+		courseList: getReducer('getCourseList'),
 }

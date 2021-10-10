@@ -26,21 +26,21 @@ import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
-import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/category';
+import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/course';
 
 import CreateUser from './user/CreateUser';
 //
-import { getCategoryList } from '../store/actions/get/getCategories';
+import { getCourseList } from '../store/actions/get/getCourses';
 import { useDispatch, useSelector } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'code', label: 'Category Code', alignRight: false },
+  { id: 'shortname', label: 'Short Name', alignRight: false },
+  { id: 'code', label: 'Course Code', alignRight: false },
+  { id: 'category', label: 'Category', alignRight: false },
   { id: 'position', label: 'Position', alignRight: false },
-  { id: 'parent', label: 'Parent', alignRight: false },
   { id: '' }
 ];
 
@@ -75,7 +75,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Categories(props) {
+export default function Courses(props) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [page, setPage] = useState(0);
@@ -84,24 +84,24 @@ export default function Categories(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const {categoryList}= useSelector((state) => state);
+  const {courseList}= useSelector((state) => state);
 
 	const [isLoading, setLoading] = useState(false)
 
 	async function getDataCategoryList(){
 			setLoading(true)
 			try {
-				await dispatch(getCategoryList());
+				await dispatch(getCourseList());
 				setLoading(false)
 			} catch(error) {
 
 			}
 	}
   useEffect(() => {
-		if (!categoryList.load) {
+		if (!courseList.load) {
   	  getDataCategoryList();
 		}
-  }, [categoryList]);
+  }, [courseList]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -111,7 +111,7 @@ export default function Categories(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = JSON.parse(categoryList.data).map((n) => n.code);
+      const newSelecteds = JSON.parse(courseList.data).map((n) => n.code);
       setSelected(newSelecteds);
       return;
     }
@@ -149,19 +149,19 @@ export default function Categories(props) {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(categoryList.data).length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(courseList.data).length) : 0;
 
-  const filteredUsers = categoryList.data ? applySortFilter(categoryList.data.length > 0 ? JSON.parse(categoryList.data) : [], getComparator(order, orderBy), filterName) : [];
+  const filteredUsers = courseList.data ? applySortFilter(courseList.data.length > 0 ? JSON.parse(courseList.data) : [], getComparator(order, orderBy), filterName) : [];
 
   const isUserNotFound = filteredUsers.length === 0;
 
   // return categoryList.data && ( 
   return ( 
-    <Page title="Categories | UIII LMS">
+    <Page title="Courses | UIII LMS">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Categories
+            Courses
           </Typography>
           <Button
             variant="contained"
@@ -169,11 +169,11 @@ export default function Categories(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate('/dashboard/courses/category/create')
+							navigate('/dashboard/courses/create')
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New Category
+            New Courses
           </Button>
         </Stack>
 
@@ -197,7 +197,7 @@ export default function Categories(props) {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={categoryList.length}
+                  rowCount={courseList.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -206,7 +206,7 @@ export default function Categories(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, code, position, parent } = row;
+                      const { id, name, shortname, code, category_code, position } = row;
                       const isItemSelected = selected.indexOf(code) !== -1;
 
                       return (
@@ -232,9 +232,10 @@ export default function Categories(props) {
                               </Typography>
                             </Stack>
                           </TableCell>
+                          <TableCell align="left">{shortname}</TableCell>
                           <TableCell align="left">{code}</TableCell>
+                          <TableCell align="left">{category_code}</TableCell>
                           <TableCell align="left">{position || "None"}</TableCell>
-                          <TableCell align="left">{parent || "None"}</TableCell>
                           <TableCell align="right">
                             <CategoryMoreMenu code={code} />
                           </TableCell>
@@ -264,7 +265,7 @@ export default function Categories(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={categoryList.data ? JSON.parse(categoryList.data).length : 0}
+            count={courseList.data ? JSON.parse(courseList.data).length : 0}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

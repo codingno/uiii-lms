@@ -18,20 +18,23 @@ module.exports = {
     },
     findAll: async function(callback){
         try {
-            const queryString = "SELECT * FROM courses c LEFT JOIN course_categories cc ON cc.course = c.id LEFT JOIN categories ct ON ct.id = cc.category ORDER BY c.position ASC"
+            const queryString = "SELECT c.*, ct.code as category_code FROM courses c LEFT JOIN course_categories cc ON cc.course = c.id LEFT JOIN categories ct ON ct.id = cc.category ORDER BY c.position ASC"
             const courses = await sequelize.query(queryString, {type: QueryTypes.SELECT})
+            console.log(`🚀 ~ file: courseService.js ~ line 23 ~ findAll:function ~ courses`, courses)
             callback(null, courses)
         }
         catch(err) {
             callback(err, null)
         }
     },
-    findById: async function(course_id, status,callback){
+    findById: async function(course_id, callback){
         try {
-            const condition = ` id = ${course_id} AND status = ${status}`
-            const queryString = "SELECT * FROM courses c LEFT JOIN course_categories cc ON cc.course = c.id LEFT JOIN categories ct ON ct.id = cc.category WHERE " + condition
+            let condition = isNaN(parseInt(course_id)) ? ` c.code = "${course_id}" ` : ` c.id = ${course_id}`
+            const queryString = "SELECT c.*, ct.id as category FROM courses c LEFT JOIN course_categories cc ON cc.course = c.id LEFT JOIN categories ct ON ct.id = cc.category WHERE " + condition
             const courses = await sequelize.query(queryString, {type: QueryTypes.SELECT})
-            callback(null, courses)
+						if(courses.length === 0)
+							return callback("No Courses found.", null)
+            callback(null, courses[0])
         } catch (err) {
             callback(err, null)
         }

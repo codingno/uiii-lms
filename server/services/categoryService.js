@@ -31,7 +31,7 @@ module.exports = {
             const condition = isNaN(parseInt(id)) ? ` code = "${id}" ` : ` id = ${id}`
             const queryString = "SELECT * FROM categories WHERE " + condition
             const categories = await sequelize.query(queryString, {type: QueryTypes.SELECT})
-						if(categories.length === 1)
+						if(categories.length === 0)
 							return callback("No Category found.", null)
             callback(null, categories[0])
         } catch (err) {

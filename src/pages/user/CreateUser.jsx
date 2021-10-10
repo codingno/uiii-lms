@@ -131,7 +131,7 @@ function CreateUser(props) {
 	roles.map(item => <MenuItem value={item.id}>{item.name}</MenuItem>)
 
 	return (
-    <Page title="Create User | Minimal-UI">
+    <Page title="Create User | UIII LMS">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>

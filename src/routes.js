@@ -19,6 +19,9 @@ import NotFound from './pages/Page404';
 import CreateUser from './pages/user/CreateUser';
 import CreateCategory from './pages/category/CreateCategory';
 
+import Course from './pages/Courses'
+import CreateCourse from './pages/course/CreateCourse'
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -52,7 +55,9 @@ export default function Router() {
 								{ path: 'edit', element: <CreateCategory edit={true} /> },
 							]
 					 	},
-            { path: 'list', element: <User /> },
+            { path: 'list', element: <Course /> },
+            { path: 'create', element: <CreateCourse /> },
+            { path: 'edit', element: <CreateCourse edit={true} /> },
             { path: 'enrollment', element: <Products /> }
           ]
         },

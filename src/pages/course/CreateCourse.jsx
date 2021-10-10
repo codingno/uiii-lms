@@ -54,24 +54,17 @@ function CreateCategory(props) {
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const [userID, setUserID] = useState(null);
-  // const [firstname, setFirstname] = useState("");
-  // const [lastname, setLastname] = useState("");
-  // const [username, setUsername] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [code, setCode] = useState("");
-  // const [role_id, setRoleID] = useState(7);
-  // const [roles, setRoles] = useState([]);
 
-  const [categoryID, setCategoryID] = useState(null);
+  // const [categoryID, setCategoryID] = useState(null);
+  const [courseID, setCourseID] = useState(null);
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
+  const [shortname, setShortName] = useState("");
   const [description, setDescription] = useState("");
-	const [categoryStatus, setCategoryStatus] = useState(1)
+	const [courseStatus, setCourseStatus] = useState(1)
 
-  const [subCategory, setSubCategory] = useState(0);
+  const [courseCategory, setCourseCategory] = useState("");
   const [mainCategories, setMainCategories] = useState([]);
-  const [parent, setParent] = useState("");
   const [position, setPosition] = useState("");
 
 	const [isLoading, setLoading] = useState(false)
@@ -81,19 +74,20 @@ function CreateCategory(props) {
 		try {
 			const user = await axios.get("/api/course/info/" + state.code);
 			const { data } = user.data;
-			setCategoryID(data.id);
+      console.log(`🚀 ~ file: CreateCourse.jsx ~ line 77 ~ getUserInfo ~ data`, data)
+			setCourseID(data.id);
 			setName(data.name);
 			setCode(data.code);
+			setShortName(data.shortname);
 			setDescription(data.description);
-			setCategoryStatus(data.status);
-			setParent(data.parent || "");
+			setCourseStatus(data.status);
+			setCourseCategory(parseInt(data.category));
 			setPosition(parseInt(data.position))
-			setSubCategory(data.parent ? 1 : 0);
 			setLoading(false)
 		} catch (error) {
 			if (error.response) {
 				alert(error.response.data.message);
-				navigate("/dashboard/courses/category");
+				navigate("/dashboard/courses/list");
 			}
 		}
 	}
@@ -110,39 +104,34 @@ function CreateCategory(props) {
       try {
         const getCategoryData = await axios.get("/api/category");
         const { data } = getCategoryData.data;
-				const filterdData = data.filter(item => item.code != code)
-        setMainCategories(filterdData);
+        setMainCategories(data);
       } catch (error) {
         if (error.response) {
           alert(error.response.data.message);
           // props.setCreateUser(false)
-          navigate("/dashboard/courses/category");
+          navigate("/dashboard/courses/list");
         }
       }
     }
 
   }, [mainCategories]);
 
-	useEffect(() => {
-		const isParent = mainCategories.filter(item => item.code === code)
-		if(isParent.length > 0)
-			setMainCategories(mainCategories.filter(item => item.code !== code ))
-	}, [code])
-
   const createUser = async () => {
 		
     try {
-      await axios.post("/api/category/create", {
-				name,
+      await axios.post("/api/course/create", {
 				code,
+				name,
+				shortname,
 				description,
-				parent,
-				status : categoryStatus,	
+				position,
+				category : courseCategory,
+				status : courseStatus,	
       });
       await dispatch(getCategoryList());
-      alert(`User created successfully.`);
+      alert(`Course created successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/category");
+      navigate("/dashboard/courses/list");
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -152,18 +141,20 @@ function CreateCategory(props) {
 
   const updateUser = async () => {
     try {
-      await axios.patch("/api/category/update", {
-        id: categoryID,
-				name,
+      await axios.patch("/api/course/update", {
+        id: courseID,
 				code,
+				name,
+				shortname,
 				description,
-				parent,
-				status : categoryStatus,	
+				position,
+				category : courseCategory,
+				status : courseStatus,	
       });
       await dispatch(getCategoryList());
       alert(`User updated successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/category");
+      navigate("/dashboard/courses/list");
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -174,7 +165,7 @@ function CreateCategory(props) {
   const mainCategoryList =
     mainCategories.length === 0
       ? ""
-      : mainCategories.map((item) => <MenuItem value={item.code}>{item.code}</MenuItem>);
+      : mainCategories.map((item) => <MenuItem value={item.id}>{item.code}</MenuItem>);
 
   return (
     <Page title="Create User | UIII LMS">
@@ -186,7 +177,7 @@ function CreateCategory(props) {
           mb={5}
         >
           <Typography variant="h4" gutterBottom>
-            {props.edit ? "Edit" : "Create"} Category
+            {props.edit ? "Edit" : "Create"} Course
           </Typography>
         </Stack>
 
@@ -209,10 +200,11 @@ function CreateCategory(props) {
 						</Stack> */}
             <FormContainer label="Name" value={name} setValue={setName} />
             <FormContainer
-              label="Category Code"
+              label="Course Code"
               value={code}
               setValue={setCode}
             />
+            <FormContainer label="Short Name" value={shortname} setValue={setShortName} />
             <Stack
               direction="row"
               alignItems="center"
@@ -317,42 +309,6 @@ function CreateCategory(props) {
 							<input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} />
 						</label> */}
             <FormContainer label="Position" value={position} setValue={setPosition} type="number" helper="Fill number or blank" />
-            <Stack
-              direction="row"
-              alignItems="center"
-              ml={5}
-              mt={2}
-              sx={{
-                width: "60%",
-                display: "flex",
-                justifyContent: "flex-start",
-              }}
-            >
-              <span style={{ width: "35%" }}>Sub Category?</span>
-              <FormControl component="fieldset">
-                <RadioGroup
-                  row
-                  aria-label="subcategories"
-                  name="radio-buttons-group"
-                  value={subCategory}
-                  onChange={(e) => setSubCategory(parseInt(e.target.value))}
-                >
-                  <FormControlLabel
-                    value={1}
-                    control={<Radio />}
-                    label="Yes"
-                  />
-                  <FormControlLabel
-                    value={0}
-                    control={<Radio />}
-                    label="No"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </Stack>
-						{
-							subCategory > 0 &&
-							<>
             {mainCategories.length > 0 && (
               <Stack
                 direction="row"
@@ -365,11 +321,11 @@ function CreateCategory(props) {
                   justifyContent: "flex-start",
                 }}
               >
-                <span style={{ width: "35%" }}>Parent</span>
+                <span style={{ width: "35%" }}>Course Category</span>
                 <Select
 									displayEmpty
-                  value={parent}
-                  onChange={(e) => setParent(e.target.value)}
+                  value={courseCategory}
+                  onChange={(e) => setCourseCategory(e.target.value)}
                   inputProps={{ "aria-label": "Without label" }}
                 >
 									<MenuItem value={""}>
@@ -379,8 +335,6 @@ function CreateCategory(props) {
                 </Select>
               </Stack>
             )}
-							</> 
-						}
             <Stack
               direction="row"
               alignItems="center"
@@ -399,8 +353,8 @@ function CreateCategory(props) {
                   aria-label="gender"
                   defaultValue="female"
                   name="radio-buttons-group"
-                  value={categoryStatus}
-                  onChange={(e) => setCategoryStatus(parseInt(e.target.value))}
+                  value={courseStatus}
+                  onChange={(e) => setCourseStatus(parseInt(e.target.value))}
                 >
                   <FormControlLabel
                     value={1}
