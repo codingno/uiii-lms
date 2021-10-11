@@ -8,16 +8,6 @@ const resStatus = require('express-res-status')
 const passport = require('passport')
 var cookieParser = require('cookie-parser');
 
-async function run() {
-	try {
-		await sequelize.authenticate();
-		console.log('Connection has been established successfully.');
-	} catch (error) {
-		console.error('Unable to connect to the database:', error);
-	}
-}
-
-run();
 // app.use(morgan('combined'))
 app.use(morgan('tiny'))
 app.use(express.static("build"));
