@@ -79,7 +79,7 @@ function CreateCategory(props) {
 	async function getUserInfo() {
 		setLoading(true)
 		try {
-			const user = await axios.get("/api/course/info/" + state.code);
+			const user = await axios.get("/api/category/info/" + state.code);
 			const { data } = user.data;
 			setCategoryID(data.id);
 			setName(data.name);
