@@ -125,15 +125,15 @@ function CreateCourse(props) {
   }, [mainCategories]);
 
 	const uploadImage = async () => {
+		if(appearance === "")
+			return
+		const formData = new FormData();
+
+		formData.append('course', appearance);
 		try {
-      await axios.post("/api/image/upload", 
-				appearance[0], 
-				{
-					headers: {
-						'Content-type' : appearance[0].type
-					}
-				}
-			)
+      const file = await axios.post("/api/image/upload", 
+				formData)
+			return file
 		} catch (error) {
 			alert(error)	
 		}
@@ -142,7 +142,8 @@ function CreateCourse(props) {
   const createUser = async () => {
 		
     try {
-			await uploadImage()
+			const imageFile = await uploadImage()
+      console.log(`🚀 ~ file: CreateCourse.jsx ~ line 146 ~ createUser ~ imageFile`, imageFile)
 			return
       await axios.post("/api/course/create", {
 				code,
@@ -382,7 +383,7 @@ function CreateCourse(props) {
 						{
 							appearance &&
 						<StackFormat>
-							<img style={{ width : '300px'}} src={appearance && URL.createObjectURL(appearance[0])} alt="appearance" />
+							<img style={{ width : '300px'}} src={appearance && URL.createObjectURL(appearance)} alt="appearance" />
 						</StackFormat>
 						}
             <Stack
@@ -401,7 +402,7 @@ function CreateCourse(props) {
 								<label htmlFor="contained-button-file">
 								<Input accept="image/*" id="contained-button-file" multiple type="file" 
 									sx={{ display : 'none'}}
-                  onChange={(e) => { console.log(e.target.files); setAppearance(e.target.files)}}
+                  onChange={(e) => e.target.files[0] && setAppearance(e.target.files[0])}
 								/>
 								<Button variant="contained" component="span">
 									Upload File

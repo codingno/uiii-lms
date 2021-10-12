@@ -15,7 +15,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx ./src",
     "lint:fix": "eslint --fix --ext .js,.jsx ./src",
-		"serve": "node server/index.js"
+    "serve": "node server/index.js"
   },
   "keywords": [],
   "author": "",
@@ -78,6 +78,7 @@
     "change-case": "^4.1.2",
     "concurrently": "^6.3.0",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.24.0",
     "db-migrate": "^1.0.0-beta.16",
@@ -92,6 +93,7 @@
     "history": "^5.0.1",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
+    "multer": "^1.4.3",
     "mysql2": "^2.3.0",
     "nodemailer": "^6.6.5",
     "numeral": "^2.0.6",

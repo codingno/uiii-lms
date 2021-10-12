@@ -3,6 +3,7 @@ database.json
 .vscode
 build/
 package-lock.json
+uploads/
 
 # Logs
 logs

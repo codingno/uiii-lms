@@ -1,3 +1,4 @@
+require('dotenv').config()
 const sequelize = require('./db/database')
 const path = require('path')
 const express = require('express')
@@ -7,6 +8,7 @@ const morgan = require('morgan')
 const resStatus = require('express-res-status')
 const passport = require('passport')
 var cookieParser = require('cookie-parser');
+var cors = require('cors')
 
 // app.use(morgan('combined'))
 app.use(morgan('tiny'))
@@ -19,8 +21,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./config/pasport-local').passport();
 
+if(process.env.APP_ENV === 'development')
+	app.use(cors())
+
 // app.use(passport.authenticate('session'));
 app.use('/api', route)
+app.use('/uploads', express.static("uploads"))
 
 app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')))
 
