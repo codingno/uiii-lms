@@ -5,6 +5,7 @@ import {
   Stack,
   Typography,
   Button,
+	Input,
   Icon,
   Card,
   Select,
@@ -50,7 +51,7 @@ function FormContainer(props) {
   );
 }
 
-function CreateCategory(props) {
+function CreateCourse(props) {
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -61,9 +62,12 @@ function CreateCategory(props) {
   const [code, setCode] = useState("");
   const [shortname, setShortName] = useState("");
   const [description, setDescription] = useState("");
+  const [appearance, setAppearance] = useState("");
+  console.log(`🚀 ~ file: CreateCourse.jsx ~ line 66 ~ CreateCourse ~ appearance`, appearance)
 	const [courseStatus, setCourseStatus] = useState(1)
 
   const [courseCategory, setCourseCategory] = useState("");
+  const [courseCategoryName, setCourseCategoryName] = useState("");
   const [mainCategories, setMainCategories] = useState([]);
   const [position, setPosition] = useState("");
 
@@ -104,6 +108,10 @@ function CreateCategory(props) {
       try {
         const getCategoryData = await axios.get("/api/category");
         const { data } = getCategoryData.data;
+        console.log(`🚀 ~ file: CreateCourse.jsx ~ line 107 ~ getRoles ~ data`, data)
+				const categorySelected = data.filter(item => item.code === state.category_code)[0]
+				setCourseCategory(categorySelected.id)
+				setCourseCategoryName(categorySelected.name)
         setMainCategories(data);
       } catch (error) {
         if (error.response) {
@@ -116,9 +124,26 @@ function CreateCategory(props) {
 
   }, [mainCategories]);
 
+	const uploadImage = async () => {
+		try {
+      await axios.post("/api/image/upload", 
+				appearance[0], 
+				{
+					headers: {
+						'Content-type' : appearance[0].type
+					}
+				}
+			)
+		} catch (error) {
+			alert(error)	
+		}
+	}
+
   const createUser = async () => {
 		
     try {
+			await uploadImage()
+			return
       await axios.post("/api/course/create", {
 				code,
 				name,
@@ -167,6 +192,25 @@ function CreateCategory(props) {
       ? ""
       : mainCategories.map((item) => <MenuItem value={item.id}>{item.code}</MenuItem>);
 
+	const StackFormat = (props) => {
+		return (
+            <Stack
+              direction="row"
+              alignItems="center"
+              ml={5}
+              mt={2}
+              sx={{
+                width: "60%",
+                display: "flex",
+                justifyContent: "flex-start",
+              }}
+            >
+              <span style={{ width: "35%" }}>{props.title}</span>
+							{props.children}
+						</Stack>
+		)
+	}
+
   return (
     <Page title="Create User | UIII LMS">
       <Container>
@@ -177,7 +221,7 @@ function CreateCategory(props) {
           mb={5}
         >
           <Typography variant="h4" gutterBottom>
-            {props.edit ? "Edit" : "Create"} Course
+            {props.edit ? "Edit" : "Create"} Course {courseCategoryName.length > 0 && `of ${courseCategoryName}`}
           </Typography>
         </Stack>
 
@@ -309,7 +353,7 @@ function CreateCategory(props) {
 							<input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} />
 						</label> */}
             <FormContainer label="Position" value={position} setValue={setPosition} type="number" helper="Fill number or blank" />
-            {mainCategories.length > 0 && (
+            {/* {mainCategories.length > 0 && (
               <Stack
                 direction="row"
                 alignItems="center"
@@ -334,7 +378,37 @@ function CreateCategory(props) {
                   {mainCategoryList}
                 </Select>
               </Stack>
-            )}
+            )} */}
+						{
+							appearance &&
+						<StackFormat>
+							<img style={{ width : '300px'}} src={appearance && URL.createObjectURL(appearance[0])} alt="appearance" />
+						</StackFormat>
+						}
+            <Stack
+              direction="row"
+              alignItems="center"
+              ml={5}
+              mt={2}
+              sx={{
+                width: "60%",
+                display: "flex",
+                justifyContent: "flex-start",
+              }}
+            >
+              <span style={{ width: "35%" }}>Appearance</span>
+              <FormControl component="fieldset">
+								<label htmlFor="contained-button-file">
+								<Input accept="image/*" id="contained-button-file" multiple type="file" 
+									sx={{ display : 'none'}}
+                  onChange={(e) => { console.log(e.target.files); setAppearance(e.target.files)}}
+								/>
+								<Button variant="contained" component="span">
+									Upload File
+								</Button>
+							</label>
+              </FormControl>
+            </Stack>
             <Stack
               direction="row"
               alignItems="center"
@@ -402,4 +476,4 @@ function CreateCategory(props) {
   );
 }
 
-export default CreateCategory;
+export default CreateCourse;

@@ -8,9 +8,19 @@ import arrowIosDownwardFill from '@iconify/icons-eva/arrow-ios-downward-fill';
 import { alpha, useTheme, styled } from '@mui/material/styles';
 import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 
+
+// redux
+import { useDispatch } from 'react-redux'
+
 // ----------------------------------------------------------------------
 
-const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(
+const ListItemStyle = styled((props) => { 
+	const dispatch = useDispatch()
+	return <ListItemButton 
+									onClick={() => 
+ 										dispatch({ type : 'refresh_start'})
+										}
+disableGutters {...props} />})(
   ({ theme }) => ({
     ...theme.typography.body2,
     height: 48,

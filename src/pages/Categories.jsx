@@ -1,9 +1,9 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 // material
 import {
   Card,
@@ -34,6 +34,7 @@ import CreateUser from './user/CreateUser';
 import { getCategoryList } from '../store/actions/get/getCategories';
 import { useDispatch, useSelector } from 'react-redux';
 
+import axios from 'axios';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -84,24 +85,43 @@ export default function Categories(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const {categoryList}= useSelector((state) => state);
+  // const {categoryList}= useSelector((state) => state);
+  const {refresh}= useSelector((state) => state);
+  const [categoryList, setCategoryList] = useState([]);
 
 	const [isLoading, setLoading] = useState(false)
+
+	// const category_code = props.match ? props.match.params ? props.match.params.category_code : null : null;
+	const { category_code } = useParams()
 
 	async function getDataCategoryList(){
 			setLoading(true)
 			try {
-				await dispatch(getCategoryList());
+				// await dispatch(getCategoryList());
+				let url = '/api/category'
+				if(props.main_category)
+					url += '/main_category'
+				if(category_code)
+					url += `/${category_code}`
+				const getCategories = await axios.get(url)
+				setCategoryList(getCategories.data.data)
 				setLoading(false)
+				dispatch({type : 'refresh_done'})
 			} catch(error) {
 
 			}
 	}
   useEffect(() => {
-		if (!categoryList.load) {
-  	  getDataCategoryList();
-		}
-  }, [categoryList]);
+		// if (categoryList.length == 0 || category_code)
+		if(refresh)
+			getDataCategoryList()
+  }, [refresh]);
+
+  useEffect(() => {
+		// if (categoryList.length == 0 || category_code)
+		if(category_code)
+			dispatch({ type : 'refresh_start'})
+  }, [category_code]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -111,7 +131,8 @@ export default function Categories(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = JSON.parse(categoryList.data).map((n) => n.code);
+      // const newSelecteds = JSON.parse(categoryList.data).map((n) => n.code);
+      const newSelecteds = categoryList.map((n) => n.code);
       setSelected(newSelecteds);
       return;
     }
@@ -149,9 +170,10 @@ export default function Categories(props) {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(categoryList.data).length) : 0;
+  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(categoryList.data).length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - categoryList.length) : 0;
 
-  const filteredUsers = categoryList.data ? applySortFilter(categoryList.data.length > 0 ? JSON.parse(categoryList.data) : [], getComparator(order, orderBy), filterName) : [];
+  const filteredUsers = categoryList ? applySortFilter(categoryList.length > 0 ? categoryList : [], getComparator(order, orderBy), filterName) : [];
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -161,8 +183,10 @@ export default function Categories(props) {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Categories
+            { !props.main_category ? 'Category Management' : !category_code ? 'Category' : 'Sub Category' }
           </Typography>
+					{
+						!props.main_category &&
           <Button
             variant="contained"
             // component={RouterLink}
@@ -175,6 +199,7 @@ export default function Categories(props) {
           >
             New Category
           </Button>
+					}
         </Stack>
 
         <Card>
@@ -224,7 +249,14 @@ export default function Categories(props) {
                               onChange={(event) => handleClick(event, code)}
                             />
                           </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
+                          <TableCell component="th" scope="row" padding="none"
+														onClick={() => {
+															if(!category_code)
+																navigate(`/dashboard/courses/main_category/${code}`)
+															if(category_code)
+																navigate(`/dashboard/courses/sub_category/${code}`)
+														}} sx={{ cursor : 'pointer'}}
+													>
                             <Stack direction="row" alignItems="center" spacing={2}>
                               {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>

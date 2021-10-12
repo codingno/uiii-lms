@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 // material
 import {
   Card,
@@ -76,6 +76,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Courses(props) {
+	const {category_code} = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [page, setPage] = useState(0);
@@ -169,7 +170,7 @@ export default function Courses(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate('/dashboard/courses/create')
+							navigate('/dashboard/courses/create', {state:{category_code}})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >

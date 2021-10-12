@@ -16,9 +16,13 @@ module.exports = {
             callback(err, null)
         }
     },
-    findAll: async function(callback){
+    findAll: async function(req, callback){
         try {
-            const queryString = "SELECT * FROM categories"
+            let queryString = "SELECT * FROM categories"
+						if(req.params.category_code && req.main_categories)
+							queryString += ` where parent = '${req.params.category_code}'`
+						else if(req.main_categories)
+							queryString += " where parent is null"
             const categories = await sequelize.query(queryString, {type: QueryTypes.SELECT})
             callback(null, categories)
         }

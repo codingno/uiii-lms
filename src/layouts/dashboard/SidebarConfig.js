@@ -40,9 +40,14 @@ const sidebarConfig = [
       },
       {
         title: 'Course',
-        path: '/dashboard/courses/list',
+        path: '/dashboard/courses/main_category',
         role: [8]
       },
+      // {
+      //   title: 'Course',
+      //   path: '/dashboard/courses/list',
+      //   role: [8]
+      // },
       {
         title: 'Enrollment',
         path: '/dashboard/courses/enrollment',

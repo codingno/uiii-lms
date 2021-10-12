@@ -55,6 +55,15 @@ export default function Router() {
 								{ path: 'edit', element: <CreateCategory edit={true} /> },
 							]
 					 	},
+            { path: 'main_category', 
+							children : [
+								{ element: <Categories main_category={true}  /> },
+								{ path : ':category_code', element: <Categories main_category={true} />}
+							]},
+            { path: 'sub_category/:category_code', 
+							children : [
+								{ element: <Course /> },
+							]},
             { path: 'list', element: <Course /> },
             { path: 'create', element: <CreateCourse /> },
             { path: 'edit', element: <CreateCourse edit={true} /> },

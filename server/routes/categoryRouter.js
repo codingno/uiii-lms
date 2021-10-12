@@ -25,7 +25,7 @@ const getCategory = async (req, res) => {
     // res.json({user})
 }
 const getAllCategory = async (req, res) => {
-    categoryService.findAll(function (err, result) {
+    categoryService.findAll(req, function (err, result) {
         res.json({
             data : result
         })
@@ -75,7 +75,14 @@ const deleteCategory = async (req, res) => {
         })
     })
 }
+const isMainCategory = (req, res, next) => {
+	req.main_categories = true
+	return next()
+}
 route.get('/', getAllCategory)
+// route.get('/:category_code/sub_category', getAllCategory)
+route.get('/main_category', isMainCategory, getAllCategory)
+route.get('/main_category/:category_code', isMainCategory, getAllCategory)
 route.get('/info/:category_id', getCategory)
 route.post('/create', createCategory)
 route.patch('/update', updateCategory)
