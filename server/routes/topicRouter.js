@@ -39,7 +39,7 @@ const createTopic = async (req, res) => {
 	})
 }
 const updateTopic = async (req, res) => {
-	const courseInfo = {
+	const topicInfo = {
 		id: req.body.id ? req.body.id : '',
 		course_category_id: req.body.course_category_id ? req.body.course_category_id : '',
 		name: req.body.name ? req.body.name : '',
@@ -48,7 +48,7 @@ const updateTopic = async (req, res) => {
 		startDate: req.body.startDate ? new Date(req.body.startDate) : new Date(),
 		endDate: req.body.endDate ? new Date(req.body.endDate) : null
 	}
-	topicService.update(courseInfo, function(err, result){
+	topicService.update(topicInfo, function(err, result){
 		if(err)	
             res.badRequest({err, data: null})
         else
