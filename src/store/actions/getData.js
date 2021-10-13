@@ -20,6 +20,7 @@ function objectToUrlParams(params) {
 export default function(path , type , params )  {
     const paramsString = params ? objectToUrlParams(params) : ''
     const url = `${domain}${path}${paramsString}`
+    console.log(`🚀 ~ file: getData.js ~ line 23 ~ function ~ url`, url)
     const reducerType = type[Object.keys(type)[0]]
     return async dispatch => {
       try {

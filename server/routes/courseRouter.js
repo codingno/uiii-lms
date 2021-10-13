@@ -14,7 +14,7 @@ const getCourseInfo = async (req, res) => {
 	})
 }
 const getAllCourse = async (req, res) => {
-	courseService.findAll(function(err, result){
+	courseService.findAll(req, function(err, result){
 		res.ok({err, data : result})
 	})
 }
@@ -35,10 +35,10 @@ const createCourse = async (req, res) => {
 		shortname: req.body.shortname ? req.body.shortname : '',
 		description: req.body.description ? req.body.description : '',
 		position: req.body.position ? req.body.position : '',
-		status: req.body.status ? req.body.status : ''
+		status: req.body.status ? req.body.status : '',
+		image_url: req.body.image_url? req.body.image_url: '',
 	}
 	courseService.create(courseInfo, function(err1, result1){
-    console.log(`🚀 ~ file: courseRouter.js ~ line 41 ~ courseService.create ~ result1`, result1, err1)
 		if(err1)
 			res.badRequest({message: err1, result: result1})
 		else {
@@ -53,7 +53,6 @@ const createCourse = async (req, res) => {
                 endDate: req.body.endDate ? new Date(req.body.endDate) : new Date(),
                 status: 1
             }
-            console.log(`🚀 ~ file: courseRouter.js ~ line 55 ~ courseService.create ~ data`, data)
 			courseCategoryService.create(data, function(err, result){
 				if(err)
 					res.json({err, result})
@@ -73,7 +72,9 @@ const updateCourse = async (req, res) => {
 		name: req.body.name ? req.body.name : '',
 		shortname: req.body.shortname ? req.body.shortname : '',
 		description: req.body.description ? req.body.description : '',
-		status: req.body.status ? req.body.status : ''
+		status: req.body.status ? req.body.status : '',
+		position: req.body.position ? req.body.position : '',
+		image_url: req.body.image_url? req.body.image_url: '',
 	}
 	courseService.update(courseInfo, function(err1, result1){
 		if(err1)
@@ -105,6 +106,7 @@ const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/pol
 route.get('/', getAllCourse )
 route.get('/info/:course_id', getCourseInfo )
 route.post('/create', isTeacher, createCourse )
+route.patch('/update', isTeacher, updateCourse )
 route.post('/createCourseCategory', createCourseCategory )
 
 module.exports = route

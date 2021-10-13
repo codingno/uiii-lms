@@ -108,7 +108,7 @@ function CreateCategory(props) {
 
     async function getRoles() {
       try {
-        const getCategoryData = await axios.get("/api/category");
+        const getCategoryData = await axios.get("/api/category/main_category");
         const { data } = getCategoryData.data;
 				const filterdData = data.filter(item => item.code != code)
         setMainCategories(filterdData);
@@ -140,7 +140,7 @@ function CreateCategory(props) {
 				status : categoryStatus,	
       });
       await dispatch(getCategoryList());
-      alert(`User created successfully.`);
+      alert(`Category created successfully.`);
       // props.setCreateUser(false)
       navigate("/dashboard/courses/category");
     } catch (error) {

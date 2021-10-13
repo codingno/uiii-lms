@@ -85,24 +85,32 @@ export default function Courses(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const {courseList}= useSelector((state) => state);
+  const {courseList, refresh}= useSelector((state) => state);
+  const [courseList1, setCourseList] = useState([]);
 
 	const [isLoading, setLoading] = useState(false)
 
 	async function getDataCategoryList(){
 			setLoading(true)
 			try {
-				await dispatch(getCourseList());
+				await dispatch(getCourseList(null, {category_code}));
 				setLoading(false)
+				dispatch({type : 'refresh_done'})
 			} catch(error) {
 
 			}
 	}
   useEffect(() => {
-		if (!courseList.load) {
+		if (refresh) {
   	  getDataCategoryList();
 		}
-  }, [courseList]);
+  }, [refresh]);
+
+  useEffect(() => {
+		if (category_code) {
+			dispatch({type : 'refresh_start'})
+		}
+  }, [category_code]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';

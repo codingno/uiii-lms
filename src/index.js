@@ -7,6 +7,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux'
 import createStore from './store';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 //
 import App from './App';
@@ -21,6 +23,7 @@ const getUserInfo = localStorage.getItem("getUserInfo");
 store.dispatch({type : 'getUserInfo', data : JSON.parse(getUserInfo)})
 
 ReactDOM.render(
+			<LocalizationProvider dateAdapter={AdapterDateFns}>
 	<HelmetProvider>
 		<Provider store={ store } >
 			<BrowserRouter>
@@ -28,6 +31,7 @@ ReactDOM.render(
 			</BrowserRouter>
 		</Provider>
 	</HelmetProvider>
+			</LocalizationProvider>
 	,
   document.getElementById('root')
 );

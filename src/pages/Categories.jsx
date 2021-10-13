@@ -193,6 +193,7 @@ export default function Categories(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
+							dispatch({type : 'refresh_start'})
 							navigate('/dashboard/courses/category/create')
 						}}
             startIcon={<Icon icon={plusFill} />}

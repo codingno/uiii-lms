@@ -7,10 +7,9 @@ const path = require('path');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/images')
+    cb(null, 'uploads/images/' + file.fieldname)
   },
   filename: function (req, file, cb) {
-		console.log(file);
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
     cb(null, file.fieldname + '-' + uniqueSuffix + "." +file.originalname.split('.').pop())
   }
@@ -34,6 +33,6 @@ const uploadImage =
 
 const { isAdmin, isLogin, isNonEditTeacher } = require('../config/policies')
 
-route.post('/upload',upload.single("course"), uploadImage)
+route.post('/upload/course',upload.single("course"), uploadImage)
 
 module.exports = route

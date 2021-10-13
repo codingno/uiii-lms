@@ -60,12 +60,14 @@
     "prettier": "^2.4.1"
   },
   "dependencies": {
+    "@date-io/date-fns": "1.x",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@iconify/icons-ant-design": "^1.1.0",
     "@iconify/icons-eva": "^1.1.0",
     "@iconify/icons-ic": "^1.1.10",
     "@iconify/react": "^3.0.1",
+    "@material-ui/pickers": "^3.3.10",
     "@mui/icons-material": "^5.0.1",
     "@mui/lab": "^5.0.0-alpha.47",
     "@mui/material": "^5.0.0",
@@ -80,7 +82,6 @@
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
-    "date-fns": "^2.24.0",
     "db-migrate": "^1.0.0-beta.16",
     "db-migrate-mysql": "^2.2.0",
     "dotenv": "^10.0.0",

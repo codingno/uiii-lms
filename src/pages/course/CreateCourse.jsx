@@ -13,6 +13,7 @@ import {
   FormControl,
   FilledInput,
   OutlinedInput,
+	TextField,
 	TextareaAutosize,
 	FormLabel,
 	FormControlLabel,
@@ -21,6 +22,7 @@ import {
 	Radio,
 	CircularProgress,
 } from "@mui/material";
+import DatePicker from '@mui/lab/DatePicker';
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { getCategoryList } from '../../store/actions/get/getCategories';
@@ -51,6 +53,21 @@ function FormContainer(props) {
   );
 }
 
+function FormParent(props) {
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      ml={5}
+      mt={2}
+      sx={{ width: "60%", display: "flex", justifyContent: "flex-start" }}
+    >
+      <span style={{ width: "35%" }}>{props.label}</span>
+			{props.children}
+    </Stack>
+  );
+}
+
 function CreateCourse(props) {
   const { state } = useLocation();
   const navigate = useNavigate();
@@ -62,14 +79,22 @@ function CreateCourse(props) {
   const [code, setCode] = useState("");
   const [shortname, setShortName] = useState("");
   const [description, setDescription] = useState("");
-  const [appearance, setAppearance] = useState("");
-  console.log(`🚀 ~ file: CreateCourse.jsx ~ line 66 ~ CreateCourse ~ appearance`, appearance)
+  const [courseImage, setCourseImage] = useState("");
+  const [image_url, setImageUrl] = useState("");
 	const [courseStatus, setCourseStatus] = useState(1)
 
   const [courseCategory, setCourseCategory] = useState("");
+  const [courseFormat, setCourseFormat] = useState("single");
   const [courseCategoryName, setCourseCategoryName] = useState("");
+  const [categoryCode, setCategoryCode] = useState(state.category_code);
   const [mainCategories, setMainCategories] = useState([]);
   const [position, setPosition] = useState("");
+
+  const [activity, setActivity] = useState(1);
+	const [startDate, setStartDate] = useState(new Date());
+	const [endDate, setEndDate] = useState(new Date().setDate(new Date().getDate() + 1));
+
+  const [numberOfTopics, setNumberOfTopics] = useState(4);
 
 	const [isLoading, setLoading] = useState(false)
 
@@ -78,14 +103,16 @@ function CreateCourse(props) {
 		try {
 			const user = await axios.get("/api/course/info/" + state.code);
 			const { data } = user.data;
-      console.log(`🚀 ~ file: CreateCourse.jsx ~ line 77 ~ getUserInfo ~ data`, data)
 			setCourseID(data.id);
 			setName(data.name);
 			setCode(data.code);
 			setShortName(data.shortname);
 			setDescription(data.description);
+			setImageUrl(data.image_url);
 			setCourseStatus(data.status);
 			setCourseCategory(parseInt(data.category));
+			setCourseCategoryName(data.category_name)
+			setCategoryCode(data.category_code)
 			setPosition(parseInt(data.position))
 			setLoading(false)
 		} catch (error) {
@@ -108,16 +135,16 @@ function CreateCourse(props) {
       try {
         const getCategoryData = await axios.get("/api/category");
         const { data } = getCategoryData.data;
-        console.log(`🚀 ~ file: CreateCourse.jsx ~ line 107 ~ getRoles ~ data`, data)
 				const categorySelected = data.filter(item => item.code === state.category_code)[0]
 				setCourseCategory(categorySelected.id)
 				setCourseCategoryName(categorySelected.name)
+				setCategoryCode(categorySelected.code)
         setMainCategories(data);
       } catch (error) {
         if (error.response) {
           alert(error.response.data.message);
           // props.setCreateUser(false)
-          navigate("/dashboard/courses/list");
+      		navigate("/dashboard/courses/sub_category/"+state.category_code);
         }
       }
     }
@@ -125,13 +152,14 @@ function CreateCourse(props) {
   }, [mainCategories]);
 
 	const uploadImage = async () => {
-		if(appearance === "")
-			return
+		if(courseImage === "")
+			return null
 		const formData = new FormData();
 
-		formData.append('course', appearance);
+		formData.append('course', courseImage);
+		formData.append('folder', 'course');
 		try {
-      const file = await axios.post("/api/image/upload", 
+      const file = await axios.post("/api/image/upload/course", 
 				formData)
 			return file
 		} catch (error) {
@@ -143,8 +171,6 @@ function CreateCourse(props) {
 		
     try {
 			const imageFile = await uploadImage()
-      console.log(`🚀 ~ file: CreateCourse.jsx ~ line 146 ~ createUser ~ imageFile`, imageFile)
-			return
       await axios.post("/api/course/create", {
 				code,
 				name,
@@ -153,11 +179,12 @@ function CreateCourse(props) {
 				position,
 				category : courseCategory,
 				status : courseStatus,	
+				image_url : imageFile ? imageFile.data : null
       });
       await dispatch(getCategoryList());
       alert(`Course created successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/list");
+      navigate("/dashboard/courses/sub_category/"+categoryCode);
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -167,6 +194,7 @@ function CreateCourse(props) {
 
   const updateUser = async () => {
     try {
+			const imageFile = await uploadImage()
       await axios.patch("/api/course/update", {
         id: courseID,
 				code,
@@ -176,11 +204,12 @@ function CreateCourse(props) {
 				position,
 				category : courseCategory,
 				status : courseStatus,	
+				image_url : imageFile ? imageFile.data : null
       });
       await dispatch(getCategoryList());
-      alert(`User updated successfully.`);
+      alert(`Course updated successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/list");
+      navigate("/dashboard/courses/sub_category/"+categoryCode);
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -192,7 +221,7 @@ function CreateCourse(props) {
     mainCategories.length === 0
       ? ""
       : mainCategories.map((item) => <MenuItem value={item.id}>{item.code}</MenuItem>);
-
+	
 	const StackFormat = (props) => {
 		return (
             <Stack
@@ -381,9 +410,14 @@ function CreateCourse(props) {
               </Stack>
             )} */}
 						{
-							appearance &&
+							 courseImage ?
 						<StackFormat>
-							<img style={{ width : '300px'}} src={appearance && URL.createObjectURL(appearance)} alt="appearance" />
+							<img style={{ width : '300px'}} src={courseImage && URL.createObjectURL(courseImage)} alt="course" />
+						</StackFormat>
+						:
+						image_url &&
+						<StackFormat>
+							<img style={{ width : '300px'}} src={'/' + image_url} alt="course" />
 						</StackFormat>
 						}
             <Stack
@@ -397,12 +431,12 @@ function CreateCourse(props) {
                 justifyContent: "flex-start",
               }}
             >
-              <span style={{ width: "35%" }}>Appearance</span>
+              <span style={{ width: "35%" }}>Course Image</span>
               <FormControl component="fieldset">
 								<label htmlFor="contained-button-file">
 								<Input accept="image/*" id="contained-button-file" multiple type="file" 
 									sx={{ display : 'none'}}
-                  onChange={(e) => e.target.files[0] && setAppearance(e.target.files[0])}
+                  onChange={(e) => e.target.files[0] && setCourseImage(e.target.files[0])}
 								/>
 								<Button variant="contained" component="span">
 									Upload File
@@ -444,6 +478,89 @@ function CreateCourse(props) {
                 </RadioGroup>
               </FormControl>
             </Stack>
+              <Stack
+                direction="row"
+                alignItems="center"
+                ml={5}
+                mt={2}
+                sx={{
+                  width: "60%",
+                  display: "flex",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <span style={{ width: "35%" }}>Course Format</span>
+                <Select
+									displayEmpty
+                  value={courseFormat}
+                  onChange={(e) => setCourseFormat(e.target.value)}
+                  inputProps={{ "aria-label": "Without label" }}
+                >
+									<MenuItem value={"single"}>
+										Single activity format
+									</MenuItem>
+									<MenuItem value={"topic"}>
+										Topics format
+									</MenuItem>
+									<MenuItem value={"weekly"}>
+										Weekly format
+									</MenuItem>
+                </Select>
+              </Stack>
+							{
+								courseFormat === 'single' &&
+								<>
+									<FormParent label="Type of activity" >
+										<Select
+											displayEmpty
+											value={activity}
+											onChange={(e) => setActivity(e.target.value)}
+											inputProps={{ "aria-label": "Without label" }}
+										>
+											<MenuItem value={1}>
+												Assignment
+											</MenuItem>
+											<MenuItem value={2}>
+												Book
+											</MenuItem>
+											<MenuItem value={3}>
+												Zoom Meeting
+											</MenuItem>
+										</Select>
+									</FormParent>
+									<FormParent label="Topic Start Date" >
+											<DatePicker 
+												ampm={false}
+												// label="With keyboard"
+												value={startDate}
+												onChange={setStartDate}
+												onError={alert}
+												disablePast
+												inputFormat="dd-MM-yyyy HH:mm"
+												renderInput={props => <TextField {...props}  /> }
+											/>
+									</FormParent>
+									<FormParent label="Topic End Date" >
+											<DatePicker 
+												ampm={false}
+												// label="With keyboard"
+												value={endDate}
+												onChange={setEndDate}
+												onError={alert}
+												disablePast
+												// format="yyyy/MM/dd HH:mm"
+												inputFormat="dd-MM-yyyy HH:mm"
+												renderInput={props => <TextField {...props}  /> }
+											/>
+									</FormParent>
+								</>
+							}
+							{
+								(courseFormat === 'topic' ||
+								courseFormat === 'weekly') &&
+            		<FormContainer label="Number of sections" value={numberOfTopics} setValue={setNumberOfTopics} type="number" helper="Fill number" />
+							}
+
             {/* <Stack direction="row" alignItems="center" ml={19} mt={2} mb={5} > */}
             <Stack
               direction="row"
