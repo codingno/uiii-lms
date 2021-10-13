@@ -3,6 +3,7 @@ const express = require('express')
 const route = express.Router()
 const async = require('async')
 const topicActivityService = require('../services/topicActivityService')
+const activityService = require('../services/activityService')
 // const e = require('express')
 const getTopicById = async (req, res) => {
 	const id = req.params.id
@@ -12,14 +13,32 @@ const getTopicById = async (req, res) => {
 	})
 }
 const getAllActivityByTopicId = async (req, res) => {
-	topicActivityService.findByTopic(req.body.topic_id,function(err, result){
+	topicActivityService.findByTopic(req.params.id,function(err, result){
 		res.ok({err, data : result})
 	})
+}
+const getAllActivity = async (req, res) => {
+	activityService.findAll(function(err, data){
+		if(err){
+			res.badRequest({err: 'Bad Request', data: null})
+		}
+		else
+			res.ok({err, data})
+	})	
+}
+const getActivity = async (req, res) => {
+	activityService.findById(req.params.id,function(err, data){
+		if(err){
+			res.badRequest({err: 'Bad Request', data: null})
+		}
+		else
+			res.ok({err, data})
+	})	
 }
 
 const createTopicActivity = async (req, res) => {
 	const topicActivityInfo = {
-		topic_id: req.body.course_category_id ? req.body.course_category_id : '',
+		topic_id: req.body.topic_id ? req.body.topic_id : '',
 		activity: req.body.activity ? req.body.activity : '',
 		attachment: req.body.attachment ? req.body.attachment : '',
 		createdAt: new Date(),
@@ -55,8 +74,10 @@ const updateTopicActivity = async (req, res) => {
 	})
 }
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
-route.get('/list', getAllActivityByTopicId )
-route.get('/info/:id', getTopicById )
+route.get('/', getAllActivity )
+route.get('/:id', getActivity )
+route.get('/course', getAllActivityByTopicId )
+route.get('/course/:id', getTopicById )
 route.post('/create', isTeacher, createTopicActivity )
 route.post('/update', isTeacher, updateTopicActivity )
 

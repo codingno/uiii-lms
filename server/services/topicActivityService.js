@@ -28,8 +28,8 @@ module.exports = {
     },
     findById: async function(topic_activity_id,callback){
         try {
-            const condition = ` id = ${topic_activity_id}`
-            const queryString = "SELECT * FROM topic_activity WHERE " + condition
+            const condition = ` ta.id = ${topic_activity_id}`
+            const queryString = "SELECT ta.*, a.name activity_name FROM topic_activity ta LEFT JOIN actvity a ON ta.activity = a.id WHERE " + condition
             const topic_activity = await sequelize.query(queryString, {type: QueryTypes.SELECT})
             callback(null, topic_activity)
         } catch (err) {
@@ -38,8 +38,8 @@ module.exports = {
     },
     findByTopic: async function(topic_id,callback){
         try {
-            const condition = ` topic_id = ${topic_id}`
-            const queryString = "SELECT * FROM topic_activity WHERE " + condition
+            const condition = ` ta.topic_id = ${topic_id}`
+            const queryString = "SELECT ta.* FROM topic_activity ta LEFT JOIN actvity a ON ta.activity = a.id WHERE " + condition
             const topic_activity = await sequelize.query(queryString, {type: QueryTypes.SELECT})
             callback(null, topic_activity)
         } catch (err) {
