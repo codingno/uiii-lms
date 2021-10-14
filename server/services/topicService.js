@@ -3,8 +3,8 @@ const { QueryTypes } = require('sequelize')
 module.exports = {
     create: async function(data, callback){
         try {
-            const queryString = "INSERT INTO topic (course_category_id, name, createdAt, createdBy, updatedAt, updatedBy, startDate, endDate) " +
-            "VALUES (:course_category_id, :name, :createdAt, :createdBy, :updatedAt, :updatedBy, :startDate, :endDate);"
+            const queryString = "INSERT INTO topic (course_id, name, createdAt, createdBy, updatedAt, updatedBy, startDate, endDate) " +
+            "VALUES (:course_id, :name, :createdAt, :createdBy, :updatedAt, :updatedBy, :startDate, :endDate);"
             const topic = await sequelize.query(queryString,{type: QueryTypes.INSERT, replacements: data})
             if(topic){
                 callback(null, topic)

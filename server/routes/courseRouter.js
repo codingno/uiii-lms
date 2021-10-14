@@ -4,6 +4,7 @@ const route = express.Router()
 const async = require('async')
 const courseService = require('../services/courseService')
 const courseCategoryService = require('../services/courseCategoryService')
+const topicService= require('../services/topicService')
 const categoryService = require('../services/categoryService')
 // const e = require('express')
 const getCourseInfo = async (req, res) => {
@@ -29,40 +30,93 @@ const createCourseCategory = async (req, res) => {
 }
 
 const createCourse = async (req, res) => {
-	const courseInfo = {
-		code: req.body.code ? req.body.code : '',
-		name: req.body.name ? req.body.name : '',
-		shortname: req.body.shortname ? req.body.shortname : '',
-		description: req.body.description ? req.body.description : '',
-		position: req.body.position ? req.body.position : '',
-		status: req.body.status ? req.body.status : '',
-		image_url: req.body.image_url? req.body.image_url: '',
-	}
-	courseService.create(courseInfo, function(err1, result1){
-		if(err1)
-			res.badRequest({message: err1, result: result1})
-		else {
-            const data = {
-                course: result1[0],
-                category: req.body.category,
-                createdAt: new Date(),
-                createdBy: req.user.id,
-                updatedAt: null,
-                updatedBy: null,
-                startDate: req.body.startDate ? new Date(req.body.startDate) : new Date(),
-                endDate: req.body.endDate ? new Date(req.body.endDate) : new Date(),
-                status: 1
-            }
+	async.waterfall([
+		function create_course(cb) {
+			const courseInfo = {
+				code: req.body.code ? req.body.code : '',
+				name: req.body.name ? req.body.name : '',
+				shortname: req.body.shortname ? req.body.shortname : '',
+				description: req.body.description ? req.body.description : '',
+				position: req.body.position ? req.body.position : '',
+				status: req.body.status ? req.body.status : '',
+				image_url: req.body.image_url? req.body.image_url: '',
+			}
+			courseService.create(courseInfo, function(err, result){
+				if(err)
+					return cb({message: err})
+				return cb(null, result)	
+			})
+		},
+		function create_course_category(course, cb) {
+			
+			const data = {
+					course: course[0],
+					category: req.body.category,
+					createdAt: new Date(),
+					createdBy: req.user.id,
+					updatedAt: null,
+					updatedBy: null,
+					startDate: req.body.startDate ? new Date(req.body.startDate) : new Date(),
+					endDate: req.body.endDate ? new Date(req.body.endDate) : new Date(),
+					status: 1
+			}
 			courseCategoryService.create(data, function(err, result){
 				if(err)
-					res.json({err, result})
-				else {
-					result1.role_id = result.role_id
-					res.ok({err, data: result1})
-				}
+					return cb({message : err})
+				// course[0].role_id = result.role_id
+				return cb(null, { id : course[0], role_id : result.role_id})
 			})
+		},
+		function create_topic_course(course, cb) {
+			if(req.body.topics.courseFormat === 'single') {
+				const topicInfo = {
+					course_id: course.id ,
+					name: req.body.topics.nameOfTopics ? req.body.topics.nameOfTopics: 'Topic 1',
+					createdAt: new Date(),
+					createdBy: req.user.id,
+					updatedAt: null,
+					updatedBy: null,
+					startDate: req.body.topics.startDate ? new Date(req.body.topics.startDate) : new Date(),
+					endDate: req.body.topics.endDate ? new Date(req.body.topics.endDate) : null
+					}
+				topicService.create(topicInfo, function(err, result){
+					if(err)
+						return cb({message: err})
+					return cb(null, course)	
+				})
+			} else {
+				const numberOfTopics = req.body.topics.numberOfTopics
+				const arrayTopics = []
+				for (let i = 1; i <= numberOfTopics; i++) {
+					arrayTopics[i] = i
+				}
+				async.eachSeries(arrayTopics, async.ensureAsync(function createEachTopic(topicNumber, nextTopic) {
+					const topicInfo = {
+						course_id: course.id ,
+						name: 'Topic ' + topicNumber,
+						createdAt: new Date(),
+						createdBy: req.user.id,
+						updatedAt: null,
+						updatedBy: null,
+						startDate: req.body.topics.startDate ? new Date(req.body.topics.startDate) : new Date(),
+						endDate: req.body.topics.endDate ? new Date(req.body.topics.endDate) : null
+						}
+					topicService.create(topicInfo, function(err, result){
+						if(err)
+							return nextTopic({message: err})
+						return nextTopic(null)	
+					})
+				}), function endLoop(err) {
+					if(err)
+						return cb({message: err})
+					return cb(null, course)	
+				})
+			}
 		}
-
+	], function end_create_course(err, data) {
+		if(err)
+			return res.internalServerError(err)
+		return res.ok({data})
 	})
 }
 const updateCourse = async (req, res) => {

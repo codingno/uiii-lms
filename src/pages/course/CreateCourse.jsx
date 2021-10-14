@@ -91,10 +91,11 @@ function CreateCourse(props) {
   const [position, setPosition] = useState("");
 
   const [activity, setActivity] = useState(1);
-	const [startDate, setStartDate] = useState(new Date());
+	const [startDate, setStartDate] = useState(new Date().setDate(new Date().getDate()));
 	const [endDate, setEndDate] = useState(new Date().setDate(new Date().getDate() + 1));
 
   const [numberOfTopics, setNumberOfTopics] = useState(4);
+  const [nameOfTopics, setNameOfTopics] = useState("");
 
 	const [isLoading, setLoading] = useState(false)
 
@@ -170,7 +171,9 @@ function CreateCourse(props) {
   const createUser = async () => {
 		
     try {
-			const imageFile = await uploadImage()
+			console.log(courseFormat, numberOfTopics, startDate, endDate, nameOfTopics);
+			// const imageFile = await uploadImage()
+			const imageFile = null
       await axios.post("/api/course/create", {
 				code,
 				name,
@@ -179,7 +182,14 @@ function CreateCourse(props) {
 				position,
 				category : courseCategory,
 				status : courseStatus,	
-				image_url : imageFile ? imageFile.data : null
+				image_url : imageFile ? imageFile.data : null,
+				topics : {
+					courseFormat,
+					numberOfTopics,
+					nameOfTopics,
+					startDate,
+					endDate
+				}
       });
       await dispatch(getCategoryList());
       alert(`Course created successfully.`);
@@ -510,6 +520,7 @@ function CreateCourse(props) {
 							{
 								courseFormat === 'single' &&
 								<>
+									<FormContainer label="Name of Topics" value={nameOfTopics} setValue={setNameOfTopics} type="text" helper="Fill text or blank"/>
 									<FormParent label="Type of activity" >
 										<Select
 											displayEmpty

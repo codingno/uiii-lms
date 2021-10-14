@@ -19,7 +19,7 @@ const getAllTopicByCourseId = async (req, res) => {
 
 const createTopic = async (req, res) => {
 	const topicInfo = {
-		course_category_id: req.body.course_category_id ? req.body.course_category_id : '',
+		course_id: req.body.course_id ? req.body.course_id : '',
 		name: req.body.name ? req.body.name : '',
 		createdAt: new Date(),
 		createdBy: req.user.id,
@@ -29,7 +29,6 @@ const createTopic = async (req, res) => {
 		endDate: req.body.endDate ? new Date(req.body.endDate) : null
     }
 	topicService.create(topicInfo, function(err, result){
-    console.log(`🚀 ~ file: courseRouter.js ~ line 41 ~ courseService.create ~ result1`, result, err)
 		if(err)
 			res.badRequest({message: err, data: null})
 		else {
