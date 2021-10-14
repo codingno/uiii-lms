@@ -48,6 +48,15 @@ export default function Router() {
         {
           path: 'courses',
           children: [
+						{ element: <Categories main_category={true}  /> },
+						{ 
+							path : ':category_code', 
+							element: <Categories main_category={true} />,
+						},
+            { path: ':category_code/:sub_category', 
+							children : [
+								{ element: <Course /> },
+							]},
             { path: 'category', 
 							children: [
 								{ element: <Categories /> },
@@ -58,9 +67,12 @@ export default function Router() {
             { path: 'main_category', 
 							children : [
 								{ element: <Categories main_category={true}  /> },
-								{ path : ':category_code', element: <Categories main_category={true} />}
+								{ 
+									path : ':category_code', 
+									element: <Categories main_category={true} />,
+								}
 							]},
-            { path: 'sub_category/:category_code', 
+            { path: 'main_category/:category_code/:sub_category', 
 							children : [
 								{ element: <Course /> },
 							]},

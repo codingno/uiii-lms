@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams, useLocation } from 'react-router-dom';
 // material
 import {
   Card,
@@ -28,7 +28,8 @@ import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/course';
 
-import CreateUser from './user/CreateUser';
+// import CreateUser from './user/CreateUser';
+import BreadCrumb from '../components/Breadcrumb'
 //
 import { getCourseList } from '../store/actions/get/getCourses';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,10 +38,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'shortname', label: 'Short Name', alignRight: false },
-  { id: 'code', label: 'Course Code', alignRight: false },
-  { id: 'category', label: 'Category', alignRight: false },
-  { id: 'position', label: 'Position', alignRight: false },
+  // { id: 'shortname', label: 'Short Name', alignRight: false },
+  // { id: 'code', label: 'Course Code', alignRight: false },
+  // { id: 'category', label: 'Category', alignRight: false },
+  // { id: 'position', label: 'Position', alignRight: false },
+  { id: 'course_image', label: 'CourseImage', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: true },
   { id: '' }
 ];
 
@@ -76,7 +79,8 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Courses(props) {
-	const {category_code} = useParams()
+	const {category_code, sub_category} = useParams()
+  const { state } = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [page, setPage] = useState(0);
@@ -93,7 +97,7 @@ export default function Courses(props) {
 	async function getDataCategoryList(){
 			setLoading(true)
 			try {
-				await dispatch(getCourseList(null, {category_code}));
+				await dispatch(getCourseList(null, {category_code : sub_category}));
 				setLoading(false)
 				dispatch({type : 'refresh_done'})
 			} catch(error) {
@@ -107,10 +111,10 @@ export default function Courses(props) {
   }, [refresh]);
 
   useEffect(() => {
-		if (category_code) {
+		if (sub_category) {
 			dispatch({type : 'refresh_start'})
 		}
-  }, [category_code]);
+  }, [sub_category]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -168,9 +172,12 @@ export default function Courses(props) {
   return ( 
     <Page title="Courses | UIII LMS">
       <Container>
+				<Stack sx={{ marginBottom: '3em'}}>
+					<BreadCrumb />
+				</Stack>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Courses
+            Courses { state ? 'of ' + state.category_name : ''}
           </Typography>
           <Button
             variant="contained"
@@ -178,7 +185,7 @@ export default function Courses(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate('/dashboard/courses/create', {state:{category_code}})
+							navigate('/dashboard/courses/create', {state:{category_code, sub_category}})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
@@ -215,7 +222,7 @@ export default function Courses(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, shortname, code, category_code, position } = row;
+                      const { id, name, shortname, code, category_code, position, status, image_url } = row;
                       const isItemSelected = selected.indexOf(code) !== -1;
 
                       return (
@@ -241,10 +248,17 @@ export default function Courses(props) {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{shortname}</TableCell>
+                          {/* <TableCell align="left">{shortname}</TableCell>
                           <TableCell align="left">{code}</TableCell>
                           <TableCell align="left">{category_code}</TableCell>
-                          <TableCell align="left">{position || "None"}</TableCell>
+                          <TableCell align="left">{position || "None"}</TableCell> */}
+                          <TableCell align="left">
+														{
+															image_url.length > 0 &&
+															<img src={window.location.origin + '/' + image_url} width={100} />
+														}
+													</TableCell>
+                          <TableCell align="right">{status || "None"}</TableCell>
                           <TableCell align="right">
                             <CategoryMoreMenu code={code} />
                           </TableCell>

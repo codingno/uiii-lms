@@ -69,9 +69,11 @@ function CreateCategory(props) {
   const [description, setDescription] = useState("");
 	const [categoryStatus, setCategoryStatus] = useState(1)
 
-  const [subCategory, setSubCategory] = useState(0);
+  const [subCategory, setSubCategory] = useState(state.category_code ? 1 : 0);
   const [mainCategories, setMainCategories] = useState([]);
-  const [parent, setParent] = useState("");
+  const [mainCategoryName, setMainCategoryName] = useState("");
+  const [parent, setParent] = useState(state.category_code);
+  console.log(`🚀 ~ file: CreateCategory.jsx ~ line 75 ~ CreateCategory ~ parent`, parent)
   const [position, setPosition] = useState("");
 
 	const [isLoading, setLoading] = useState(false)
@@ -110,7 +112,11 @@ function CreateCategory(props) {
       try {
         const getCategoryData = await axios.get("/api/category/main_category");
         const { data } = getCategoryData.data;
-				const filterdData = data.filter(item => item.code != code)
+				const filterdData = data.filter(item => item.code !== code)
+        console.log(`🚀 ~ file: CreateCategory.jsx ~ line 115 ~ getRoles ~ filterdData`, filterdData)
+				const parentCategory = filterdData.filter(item => item.code === state.category_code)[0]
+        console.log(`🚀 ~ file: CreateCategory.jsx ~ line 118 ~ getRoles ~ parentCategory`, parentCategory)
+				setMainCategoryName(parentCategory.name)
         setMainCategories(filterdData);
       } catch (error) {
         if (error.response) {
@@ -180,13 +186,16 @@ function CreateCategory(props) {
     <Page title="Create User | UIII LMS">
       <Container>
         <Stack
-          direction="row"
-          alignItems="center"
+          // direction="row"
+          // alignItems="center"
           justifyContent="space-between"
           mb={5}
         >
           <Typography variant="h4" gutterBottom>
-            {props.edit ? "Edit" : "Create"} Category
+            {props.edit ? "Edit" : "Create"} {state.category_code ? 'Sub ' : ''} Category 
+          </Typography>
+          <Typography variant="h4" gutterBottom>
+						{mainCategoryName ? 'of ' + mainCategoryName : ''}
           </Typography>
         </Stack>
 
@@ -317,7 +326,7 @@ function CreateCategory(props) {
 							<input type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} />
 						</label> */}
             <FormContainer label="Position" value={position} setValue={setPosition} type="number" helper="Fill number or blank" />
-            <Stack
+            {/* <Stack
               direction="row"
               alignItems="center"
               ml={5}
@@ -380,7 +389,7 @@ function CreateCategory(props) {
               </Stack>
             )}
 							</> 
-						}
+						} */}
             <Stack
               direction="row"
               alignItems="center"

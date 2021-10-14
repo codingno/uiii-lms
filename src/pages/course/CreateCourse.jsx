@@ -136,7 +136,7 @@ function CreateCourse(props) {
       try {
         const getCategoryData = await axios.get("/api/category");
         const { data } = getCategoryData.data;
-				const categorySelected = data.filter(item => item.code === state.category_code)[0]
+				const categorySelected = data.filter(item => item.code === state.sub_category)[0]
 				setCourseCategory(categorySelected.id)
 				setCourseCategoryName(categorySelected.name)
 				setCategoryCode(categorySelected.code)
@@ -145,7 +145,7 @@ function CreateCourse(props) {
         if (error.response) {
           alert(error.response.data.message);
           // props.setCreateUser(false)
-      		navigate("/dashboard/courses/sub_category/"+state.category_code);
+      		navigate("/dashboard/courses/"+state.category_code+"/"+state.sub_category);
         }
       }
     }

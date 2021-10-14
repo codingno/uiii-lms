@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import { useEffect, useState, useRef } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams, useLocation } from 'react-router-dom';
 // material
 import {
   Card,
@@ -29,7 +29,8 @@ import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
 import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/category';
 
-import CreateUser from './user/CreateUser';
+// import CreateUser from './user/CreateUser';
+import BreadCrumb from '../components/Breadcrumb'
 //
 import { getCategoryList } from '../store/actions/get/getCategories';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,9 +40,10 @@ import axios from 'axios';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'code', label: 'Category Code', alignRight: false },
-  { id: 'position', label: 'Position', alignRight: false },
-  { id: 'parent', label: 'Parent', alignRight: false },
+  // { id: 'code', label: 'Category Code', alignRight: false },
+  // { id: 'position', label: 'Position', alignRight: false },
+  // { id: 'parent', label: 'Parent', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: true },
   { id: '' }
 ];
 
@@ -77,6 +79,9 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Categories(props) {
+  const location = useLocation()
+  const { state } = useLocation()
+	const [locationPath, setLocationPath] = useState(location.pathname)
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [page, setPage] = useState(0);
@@ -92,7 +97,7 @@ export default function Categories(props) {
 	const [isLoading, setLoading] = useState(false)
 
 	// const category_code = props.match ? props.match.params ? props.match.params.category_code : null : null;
-	const { category_code } = useParams()
+	const { category_code, sub_category } = useParams()
 
 	async function getDataCategoryList(){
 			setLoading(true)
@@ -101,7 +106,9 @@ export default function Categories(props) {
 				let url = '/api/category'
 				if(props.main_category)
 					url += '/main_category'
-				if(category_code)
+				if(sub_category)
+					url += `/${sub_category}`
+				else if(category_code)
 					url += `/${category_code}`
 				const getCategories = await axios.get(url)
 				setCategoryList(getCategories.data.data)
@@ -115,7 +122,7 @@ export default function Categories(props) {
 		// if (categoryList.length == 0 || category_code)
 		if(refresh)
 			getDataCategoryList()
-  }, [refresh]);
+  }, [refresh, locationPath]);
 
   useEffect(() => {
 		// if (categoryList.length == 0 || category_code)
@@ -181,12 +188,15 @@ export default function Categories(props) {
   return ( 
     <Page title="Categories | UIII LMS">
       <Container>
+				<Stack sx={{ marginBottom: '3em'}}>
+					<BreadCrumb />
+				</Stack>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            { !props.main_category ? 'Category Management' : !category_code ? 'Category' : 'Sub Category' }
+            { !props.main_category ? 'Category Management' : !category_code ? 'Category' : 'Sub Category ' + ( state ? 'of ' + state.category_name : '')}
           </Typography>
-					{
-						!props.main_category &&
+					{/* {
+						!props.main_category && */}
           <Button
             variant="contained"
             // component={RouterLink}
@@ -194,13 +204,13 @@ export default function Categories(props) {
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
 							dispatch({type : 'refresh_start'})
-							navigate('/dashboard/courses/category/create')
+							navigate('/dashboard/courses/category/create', { state: { category_code }})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New Category
+            New {!category_code ? 'Category' : 'Sub Category'}
           </Button>
-					}
+					{/* } */}
         </Stack>
 
         <Card>
@@ -232,7 +242,7 @@ export default function Categories(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, code, position, parent } = row;
+                      const { id, name, code, position, parent, status } = row;
                       const isItemSelected = selected.indexOf(code) !== -1;
 
                       return (
@@ -253,9 +263,9 @@ export default function Categories(props) {
                           <TableCell component="th" scope="row" padding="none"
 														onClick={() => {
 															if(!category_code)
-																navigate(`/dashboard/courses/main_category/${code}`)
+																navigate(`/dashboard/courses/${code}`, { state : { category_name : name}})
 															if(category_code)
-																navigate(`/dashboard/courses/sub_category/${code}`)
+																navigate(`/dashboard/courses/${category_code}/${code}`, { state : { category_name : name}})
 														}} sx={{ cursor : 'pointer'}}
 													>
                             <Stack direction="row" alignItems="center" spacing={2}>
@@ -265,9 +275,10 @@ export default function Categories(props) {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{code}</TableCell>
-                          <TableCell align="left">{position || "None"}</TableCell>
-                          <TableCell align="left">{parent || "None"}</TableCell>
+                          {/* <TableCell align="left">{code}</TableCell>
+                          <TableCell align="left">{parent || "None"}</TableCell> */}
+                          {/* <TableCell align="left">{position || "None"}</TableCell> */}
+                          <TableCell align="right">{status || "None"}</TableCell>
                           <TableCell align="right">
                             <CategoryMoreMenu code={code} />
                           </TableCell>
