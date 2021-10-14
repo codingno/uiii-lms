@@ -31,41 +31,51 @@ const sidebarConfig = [
     title: 'Courses',
     path: '/dashboard/courses',
     icon: getIcon(bookFill),
-    role: [8],
+    role: [1,4,6],
     children: [
       {
         title: 'Course Category',
-        path: '/dashboard/courses/category',
-        role: [8]
+        path: '/dashboard/courses/admin/category',
+        role: [1]
       },
       {
         title: 'Course',
-        path: '/dashboard/courses/main_category',
-        role: [8]
+        path: '/dashboard/courses/admin/main_category',
+        role: [1]
       },
-      // {
-      //   title: 'Course',
-      //   path: '/dashboard/courses/list',
-      //   role: [8]
-      // },
       {
         title: 'Enrollment',
-        path: '/dashboard/courses/enrollment',
-        role: [8,4]
-      }
+        path: '/dashboard/courses/admin/enrollment',
+        role: [1]
+      },
+      {
+        title: 'Course',
+        path: '/dashboard/courses/teacher/main_category',
+        role: [4]
+      },
+      {
+        title: 'Enrollment',
+        path: '/dashboard/courses/teacher/enrollment',
+        role: [4]
+      },
+      {
+        title: 'Course',
+        path: '/dashboard/courses/student',
+        role: [6]
+      },
     ]
   },
   {
     title: 'Activity',
     path: '/dashboard/activity',
     icon: getIcon(activityFill),
-    role: [8]
+    role: [1]
   },
   {
     title: 'Resources/materials',
     path: '/dashboard/resources',
     icon: getIcon(fileFill),
-    role: [8]
+    role: [1]
   },
   {
     title: 'Grades',
@@ -77,7 +87,7 @@ const sidebarConfig = [
     title: 'blog',
     path: '/dashboard/blog',
     icon: getIcon(fileTextFill),
-    role:[8]
+    role:[1]
   },
   {
     title: 'login',

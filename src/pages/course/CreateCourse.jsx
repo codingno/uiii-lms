@@ -119,7 +119,7 @@ function CreateCourse(props) {
 		} catch (error) {
 			if (error.response) {
 				alert(error.response.data.message);
-				navigate("/dashboard/courses/list");
+				navigate("/dashboard/courses/admin/list");
 			}
 		}
 	}
@@ -145,7 +145,7 @@ function CreateCourse(props) {
         if (error.response) {
           alert(error.response.data.message);
           // props.setCreateUser(false)
-      		navigate("/dashboard/courses/"+state.category_code+"/"+state.sub_category);
+      		navigate("/dashboard/courses/admin/"+state.category_code+"/"+state.sub_category);
         }
       }
     }
@@ -194,7 +194,7 @@ function CreateCourse(props) {
       await dispatch(getCategoryList());
       alert(`Course created successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/sub_category/"+categoryCode);
+      navigate("/dashboard/courses/admin/sub_category/"+categoryCode);
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);

@@ -37,7 +37,7 @@ export default function UserMoreMenu(props) {
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem sx={{ color: 'text.secondary' }} onClick={() => navigate('/dashboard/courses/category/edit', { state:{ code: props.code }}) }>
+        <MenuItem sx={{ color: 'text.secondary' }} onClick={() => navigate('/dashboard/courses/admin/category/edit', { state:{ code: props.code }}) }>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>

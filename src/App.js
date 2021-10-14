@@ -30,7 +30,16 @@ export default function App() {
 				if(getUserInfo.data)	{
 					localStorage.setItem('getUserInfo', JSON.stringify(getUserInfo.data.user));
 					dispatch({ type : 'getUserInfo', data : getUserInfo.data.user })
-					navigate('/')
+					if(path.indexOf('/dashboard/courses') === 0){
+						if(path.indexOf(getUserInfo.data.user.role) < 0){
+							let newPath = '/dashboard/courses/'+ getUserInfo.data.user.role
+							navigate(newPath)
+						}
+						else
+							navigate(path)
+					}
+					else
+						navigate(path)
 				}
 				else if(path.indexOf('/register') === 0) {
 					localStorage.removeItem("getUserInfo")

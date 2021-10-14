@@ -95,7 +95,7 @@ function CreateCategory(props) {
 		} catch (error) {
 			if (error.response) {
 				alert(error.response.data.message);
-				navigate("/dashboard/courses/category");
+				navigate("/dashboard/courses/admin/category");
 			}
 		}
 	}
@@ -122,7 +122,7 @@ function CreateCategory(props) {
         if (error.response) {
           alert(error.response.data.message);
           // props.setCreateUser(false)
-          navigate("/dashboard/courses/category");
+          navigate("/dashboard/courses/admin/category");
         }
       }
     }
@@ -148,7 +148,7 @@ function CreateCategory(props) {
       await dispatch(getCategoryList());
       alert(`Category created successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/category");
+      navigate("/dashboard/courses/admin/category");
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -169,7 +169,7 @@ function CreateCategory(props) {
       await dispatch(getCategoryList());
       alert(`User updated successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/category");
+      navigate("/dashboard/courses/admin/category");
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);

@@ -204,7 +204,7 @@ export default function Categories(props) {
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
 							dispatch({type : 'refresh_start'})
-							navigate('/dashboard/courses/category/create', { state: { category_code }})
+							navigate('/dashboard/courses/admin/category/create', { state: { category_code }})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
@@ -263,9 +263,9 @@ export default function Categories(props) {
                           <TableCell component="th" scope="row" padding="none"
 														onClick={() => {
 															if(!category_code)
-																navigate(`/dashboard/courses/${code}`, { state : { category_name : name}})
+																navigate(`/dashboard/courses/admin/${code}`, { state : { category_name : name}})
 															if(category_code)
-																navigate(`/dashboard/courses/${category_code}/${code}`, { state : { category_name : name}})
+																navigate(`/dashboard/courses/admin/${category_code}/${code}`, { state : { category_name : name}})
 														}} sx={{ cursor : 'pointer'}}
 													>
                             <Stack direction="row" alignItems="center" spacing={2}>

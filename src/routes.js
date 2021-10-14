@@ -48,23 +48,24 @@ export default function Router() {
         {
           path: 'courses',
           children: [
-						{ element: <Categories main_category={true}  /> },
+						{ path: 'admin',
+              element: <Categories main_category={true}  /> },
 						{ 
-							path : ':category_code', 
+							path : 'admin/:category_code', 
 							element: <Categories main_category={true} />,
 						},
-            { path: ':category_code/:sub_category', 
+            { path: 'admin/:category_code/:sub_category', 
 							children : [
 								{ element: <Course /> },
 							]},
-            { path: 'category', 
+            { path: 'admin/category', 
 							children: [
 								{ element: <Categories /> },
 								{ path: 'create', element: <CreateCategory /> },
 								{ path: 'edit', element: <CreateCategory edit={true} /> },
 							]
 					 	},
-            { path: 'main_category', 
+            { path: 'admin/main_category', 
 							children : [
 								{ element: <Categories main_category={true}  /> },
 								{ 
@@ -76,10 +77,12 @@ export default function Router() {
 							children : [
 								{ element: <Course /> },
 							]},
-            { path: 'list', element: <Course /> },
-            { path: 'create', element: <CreateCourse /> },
-            { path: 'edit', element: <CreateCourse edit={true} /> },
-            { path: 'enrollment', element: <Products /> }
+            { path: 'admin/list', element: <Course /> },
+            { path: 'admin/create', element: <CreateCourse /> },
+            { path: 'admin/edit', element: <CreateCourse edit={true} /> },
+            { path: 'student', element: <Products /> },
+            { path: 'teacher', element: <Products /> },
+            { path: 'enrollment', element: <Products /> },
           ]
         },
         { path: 'activity', element: <Products /> },

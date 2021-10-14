@@ -185,7 +185,7 @@ export default function Courses(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate('/dashboard/courses/create', {state:{category_code, sub_category}})
+							navigate('/dashboard/courses/admin/create', {state:{category_code, sub_category}})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >

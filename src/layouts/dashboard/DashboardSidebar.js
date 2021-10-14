@@ -1,62 +1,84 @@
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 // material
-import { styled } from '@mui/material/styles';
-import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
+import { styled } from "@mui/material/styles";
+import {
+  Box,
+  Link,
+  Button,
+  Drawer,
+  Typography,
+  Avatar,
+  Stack,
+} from "@mui/material";
 // components
-import Logo from '../../components/Logo';
-import Scrollbar from '../../components/Scrollbar';
-import NavSection from '../../components/NavSection';
-import { MHidden } from '../../components/@material-extend';
+import Logo from "../../components/Logo";
+import Scrollbar from "../../components/Scrollbar";
+import NavSection from "../../components/NavSection";
+import { MHidden } from "../../components/@material-extend";
 //
-import sidebarConfig from './SidebarConfig';
-import account from '../../_mocks_/account';
-import { useSelector } from 'react-redux';
+import sidebarConfig from "./SidebarConfig";
+import account from "../../_mocks_/account";
+import { useSelector } from "react-redux";
 
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
 
-const RootStyle = styled('div')(({ theme }) => ({
-  [theme.breakpoints.up('lg')]: {
+const RootStyle = styled("div")(({ theme }) => ({
+  [theme.breakpoints.up("lg")]: {
     flexShrink: 0,
-    width: DRAWER_WIDTH
-  }
+    width: DRAWER_WIDTH,
+  },
 }));
 
-const AccountStyle = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
+const AccountStyle = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
   padding: theme.spacing(2, 2.5),
   borderRadius: theme.shape.borderRadiusSm,
-  backgroundColor: theme.palette.grey[200]
+  backgroundColor: theme.palette.grey[200],
 }));
 
 // ----------------------------------------------------------------------
 
 DashboardSidebar.propTypes = {
   isOpenSidebar: PropTypes.bool,
-  onCloseSidebar: PropTypes.func
+  onCloseSidebar: PropTypes.func,
 };
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  const {user} = useSelector(state => state)
-  const User = user.data
-  const sidebarConfigRole = sidebarConfig.filter(data => {
-    if(data.children)
-      data.children.filter(child => {
-        if(child.role)
-          return child.role.indexOf(User ? User.role_id : 8) >= 0 || child.role.indexOf(8) >= 0
-        else 
-          return true     
-      })
-    if(data.role)
-      return data.role.indexOf(User ? User.role_id : 8) >= 0 || data.role.indexOf(8) >= 0
-    else 
-      return true
-})
+  const { user } = useSelector((state) => state);
+  const User = user.data;
+  const sidebarConfigRole = [];
+  sidebarConfig
+    .forEach((data) => {
+      if (
+        (data.role &&
+        (data.role.indexOf(User ? User.role_id : 8) >= 0 ||
+          data.role.indexOf(8) >= 0) ) || !data.role
+      ) {
+        let newData = {
+          title: data.title,
+          path: data.path, 
+          icon: data.icon
+        }
+        if (data.children){
+          newData.children = []
+          data.children.forEach((child) => {
+            if (
+              (child.role &&
+              (child.role.indexOf(User ? User.role_id : 8) >= 0 ||
+                child.role.indexOf(8) >= 0)) || !child.role
+            )
+              newData.children.push(child)     
+          });
+        }
+        sidebarConfigRole.push(newData)
+      }
+    });
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -67,12 +89,16 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const renderContent = (
     <Scrollbar
       sx={{
-        height: '100%',
-        '& .simplebar-content': { height: '100%', display: 'flex', flexDirection: 'column' }
+        height: "100%",
+        "& .simplebar-content": {
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        },
       }}
     >
       <Box sx={{ px: 2.5, py: 3 }}>
-        <Box component={RouterLink} to="/" sx={{ display: 'inline-flex' }}>
+        <Box component={RouterLink} to="/" sx={{ display: "inline-flex" }}>
           <Logo />
         </Box>
       </Box>
@@ -82,10 +108,10 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           <AccountStyle>
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+              <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
                 {User.username}
               </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {User.role}
               </Typography>
             </Box>
@@ -105,14 +131,14 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             p: 2.5,
             pt: 5,
             borderRadius: 2,
-            position: 'relative',
-            bgcolor: 'grey.200'
+            position: "relative",
+            bgcolor: "grey.200",
           }}
         >
           <Box
             component="img"
             src="/static/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50 }}
+            sx={{ width: 100, position: "absolute", top: -50 }}
           />
 
           {/* <Box sx={{ textAlign: 'center' }}>
@@ -144,7 +170,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           open={isOpenSidebar}
           onClose={onCloseSidebar}
           PaperProps={{
-            sx: { width: DRAWER_WIDTH }
+            sx: { width: DRAWER_WIDTH },
           }}
         >
           {renderContent}
@@ -158,8 +184,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           PaperProps={{
             sx: {
               width: DRAWER_WIDTH,
-              bgcolor: 'background.default'
-            }
+              bgcolor: "background.default",
+            },
           }}
         >
           {renderContent}
