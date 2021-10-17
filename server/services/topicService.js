@@ -41,7 +41,7 @@ module.exports = {
         console.log(`🚀 ~ file: topicService.js ~ line 40 ~ findByCourseCategory:function ~ course_id`, course_id)
         try {
             const condition = ` t.course_id = :course_id || c.code = :course_id`
-            const queryString = "SELECT t.* FROM topic t LEFT JOIN courses c ON c.id = t.course_id WHERE " + condition
+            const queryString = "SELECT t.*, ta.attachment, a.id activity_id, a.name activity_name FROM topic t LEFT JOIN courses c ON c.id = t.course_id LEFT JOIN topic_activity ta ON ta.topic_id = t.id LEFT JOIN activity a ON ta.activity_id = a.id WHERE " + condition + " GROUP BY t.id"
             const topic = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements: {course_id}})
             callback(null, topic)
         } catch (err) {

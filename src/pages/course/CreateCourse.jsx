@@ -171,7 +171,6 @@ function CreateCourse(props) {
   const createUser = async () => {
 		
     try {
-			console.log(courseFormat, numberOfTopics, startDate, endDate, nameOfTopics);
 			// const imageFile = await uploadImage()
 			const imageFile = null
       await axios.post("/api/course/create", {

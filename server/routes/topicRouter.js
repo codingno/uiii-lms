@@ -3,6 +3,7 @@ const express = require('express')
 const route = express.Router()
 const async = require('async')
 const topicService = require('../services/topicService')
+const moment = require('moment')
 // const e = require('express')
 const getTopicById = async (req, res) => {
 	const id = req.params.topic_id
@@ -12,9 +13,13 @@ const getTopicById = async (req, res) => {
 	})
 }
 const getAllTopicByCourseId = async (req, res) => {
-	console.log(req.query);
 	topicService.findByCourseCategory(req.params.course_id || req.query.course_id,function(err, result){
-		console.log({result}, req.query);
+		result.map(item => {
+			item.startDate = moment(item.startDate).format('MMMM Do YYYY, h:mm a')
+			item.endDate = moment(item.endDate).format('MMMM Do YYYY, h:mm a')
+			return item
+		})
+		console.log({result});
 		res.ok({err, data : result})
 	})
 }

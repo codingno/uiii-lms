@@ -49,7 +49,6 @@ export default function App() {
 				}
 				else if(path.indexOf('/resetPassword') === 0){
 					const token = path.slice(15)
-					console.log('kesini dong', path, path.indexOf('/resetPassword' === 0), token);
 					localStorage.removeItem("getUserInfo")
 					localStorage.clear()
 					dispatch({type : 'logout'})

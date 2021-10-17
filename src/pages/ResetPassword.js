@@ -41,7 +41,6 @@ export default function Login() {
 	const [isSend, setIsSend] = useState(false)
 	const [password, setPassword] = useState("")
 	const [confirmPassword, setConfirmPassword] = useState("")
-    console.log({token});
 	const resetPassword = async (e) => {
 		e.preventDefault()
     setIsSend(true)

@@ -40,7 +40,6 @@ export default function LabTabs() {
   },[courseUserList])
   
   React.useEffect(() => {
-      console.log('kenita', {topicCourse});
     async function getTopic(){
       await dispatch(getTopicCourse(null,{course_id}))
     }
@@ -48,7 +47,6 @@ export default function LabTabs() {
       return getTopic() 
   },[topicCourse])
 
-  console.log({course, topicCourse});
     // setCourse(courseUserList.load ? JSON.parse(courseUserList.data).filter(item => item.id == course_id)[0] : {})
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -75,7 +73,7 @@ export default function LabTabs() {
             </>
         )}</TabPanel>
         <TabPanel style={{padding:"0", marginTop: "-40px"}} value="2">
-            <CustomizedAccordions value="2"/>
+            <CustomizedAccordions topic={topicCourse.load ? JSON.parse(topicCourse.data) : []}/>
         </TabPanel>
       </TabContext>
     </Box>
