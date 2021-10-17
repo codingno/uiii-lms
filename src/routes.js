@@ -21,6 +21,8 @@ import CreateCategory from './pages/category/CreateCategory';
 
 import Course from './pages/Courses'
 import CreateCourse from './pages/course/CreateCourse'
+import Topics from './pages/Topics'
+import CreateTopic from './pages/topic/CreateTopic'
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +38,8 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" replace /> },
+        { element: <Navigate to="/dashboard/app" /> },
+        // { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
         { path: 'user',
 					children: [
@@ -56,8 +59,15 @@ export default function Router() {
 						},
             { path: 'admin/:category_code/:sub_category', 
 							children : [
-								{ element: <Course /> },
+								{ element: <Course />},
 							]},
+						{ path: 'admin/:category_code/:sub_category/:course_code',
+							children: [
+								{ element: <Topics/>},
+								{ path : 'create', element : <CreateTopic />},
+								{ path : 'edit', element : <CreateTopic edit={true} />},
+							]
+						},
             { path: 'admin/category', 
 							children: [
 								{ element: <Categories /> },

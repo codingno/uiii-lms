@@ -33,6 +33,7 @@ import BreadCrumb from '../components/Breadcrumb'
 //
 import { getCourseList } from '../store/actions/get/getCourses';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -42,8 +43,9 @@ const TABLE_HEAD = [
   // { id: 'code', label: 'Course Code', alignRight: false },
   // { id: 'category', label: 'Category', alignRight: false },
   // { id: 'position', label: 'Position', alignRight: false },
-  { id: 'course_image', label: 'CourseImage', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: true },
+  { id: 'startDate', label: 'Start Date', alignRight: false },
+  { id: 'endDate', label: 'End Date', alignRight: false },
+  // { id: 'status', label: 'Status', alignRight: true },
   { id: '' }
 ];
 
@@ -78,8 +80,8 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Courses(props) {
-	const {category_code, sub_category} = useParams()
+export default function Topics(props) {
+	const {category_code, sub_category, course_code} = useParams()
   const { state } = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -90,7 +92,7 @@ export default function Courses(props) {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const {courseList, refresh}= useSelector((state) => state);
-  const [courseList1, setCourseList] = useState([]);
+  const [topicList, setTopicList] = useState([]);
 
 	const [isLoading, setLoading] = useState(false)
 
@@ -104,6 +106,20 @@ export default function Courses(props) {
 
 			}
 	}
+
+	async function getTopicList() {
+		try {
+			const { data } = await axios.get('/api/topic/list/' + course_code)	
+			setTopicList(data.data)
+		} catch (error) {
+			alert(error)	
+		}
+	}
+
+  useEffect(() => {
+		getTopicList()
+  }, []);
+
   useEffect(() => {
 		if (refresh) {
   	  getDataCategoryList();
@@ -162,29 +178,22 @@ export default function Courses(props) {
     setFilterName(event.target.value);
   };
 
-	const gotoTopic = (code, name, id) => {
-		if(category_code && sub_category && code) {
-			console.log(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}`);
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}`, { state : { course_name : name, course_id : id }})
-		}
-	}
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - topicList.length) : 0;
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(courseList.data).length) : 0;
-
-  const filteredUsers = courseList.data ? applySortFilter(courseList.data.length > 0 ? JSON.parse(courseList.data) : [], getComparator(order, orderBy), filterName) : [];
+  const filteredUsers = topicList ? applySortFilter(topicList.length > 0 ? topicList : [], getComparator(order, orderBy), filterName) : [];
 
   const isUserNotFound = filteredUsers.length === 0;
 
   // return categoryList.data && ( 
   return ( 
-    <Page title="Courses | UIII LMS">
+    <Page title="Topics | UIII LMS">
       <Container>
 				<Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
 				</Stack>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Courses { state ? 'of ' + state.category_name : ''}
+            Topics { state ? 'of ' + state.course_name : ''}
           </Typography>
           <Button
             variant="contained"
@@ -192,11 +201,11 @@ export default function Courses(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate('/dashboard/courses/admin/create', {state:{category_code, sub_category}})
+							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/create`, {state:{category_code, sub_category, course_code }})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New Courses
+            New Topic
           </Button>
         </Stack>
 
@@ -220,7 +229,7 @@ export default function Courses(props) {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={courseList.length}
+                  rowCount={topicList.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -229,8 +238,8 @@ export default function Courses(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, shortname, code, category_code, position, status, image_url } = row;
-                      const isItemSelected = selected.indexOf(code) !== -1;
+                      const { id, name, startDate, endDate } = row;
+                      const isItemSelected = selected.indexOf(id) !== -1;
 
                       return (
                         <TableRow
@@ -244,13 +253,10 @@ export default function Courses(props) {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, code)}
+                              onChange={(event) => handleClick(event, id)}
                             />
                           </TableCell>
-                          <TableCell component="th" scope="row" padding="none"
-														onClick={() => gotoTopic(code, name, id)}
-														sx={{ cursor : 'pointer'}}													
-													>
+                          <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>
@@ -258,19 +264,19 @@ export default function Courses(props) {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          {/* <TableCell align="left">{shortname}</TableCell>
-                          <TableCell align="left">{code}</TableCell>
-                          <TableCell align="left">{category_code}</TableCell>
-                          <TableCell align="left">{position || "None"}</TableCell> */}
+                          <TableCell align="left">{ startDate && new Date(startDate).toDateString() + ", " + new Date(startDate).toLocaleTimeString()}</TableCell>
+                          <TableCell align="left">{ endDate && new Date(endDate).toDateString() + ", " + new Date(endDate).toLocaleTimeString()}</TableCell>
+                          {/* <TableCell align="left">{category_code}</TableCell>
+                          <TableCell align="left">{position || "None"}</TableCell>
                           <TableCell align="left">
 														{
 															image_url.length > 0 &&
 															<img src={window.location.origin + '/' + image_url} width={100} />
 														}
-													</TableCell>
-                          <TableCell align="right">{status || "None"}</TableCell>
+													</TableCell> */}
+                          {/* <TableCell align="right">{id || "None"}</TableCell> */}
                           <TableCell align="right">
-                            <CategoryMoreMenu code={code} />
+                            <CategoryMoreMenu code={id} />
                           </TableCell>
                         </TableRow>
                       );

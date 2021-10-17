@@ -33,33 +33,33 @@ const sidebarConfig = [
     icon: getIcon(bookFill),
     role: [1,4,6],
     children: [
+      // {
+      //   title: 'Course Category',
+      //   path: '/dashboard/courses/admin/category',
+      //   role: [1]
+      // },
       {
-        title: 'Course Category',
-        path: '/dashboard/courses/admin/category',
-        role: [1]
-      },
-      {
-        title: 'Course',
-        path: '/dashboard/courses/admin/main_category',
+        title: 'Course List',
+        path: '/dashboard/courses/admin',
         role: [1]
       },
       {
         title: 'Enrollment',
-        path: '/dashboard/courses/admin/enrollment',
+        path: '/dashboard/courses/enrollment',
         role: [1]
       },
       {
-        title: 'Course',
-        path: '/dashboard/courses/teacher/main_category',
+        title: 'Course List',
+        path: '/dashboard/courses/teacher',
         role: [4]
       },
       {
         title: 'Enrollment',
-        path: '/dashboard/courses/teacher/enrollment',
+        path: '/dashboard/courses/enrollment',
         role: [4]
       },
       {
-        title: 'Course',
+        title: 'Course List',
         path: '/dashboard/courses/student',
         role: [6]
       },

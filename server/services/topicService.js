@@ -28,19 +28,21 @@ module.exports = {
     },
     findById: async function(topic_id,callback){
         try {
-            const condition = ` id = ${topic_id}`
+            // const condition = ` id = ${topic_id}`
+            const condition = ` id = :topic_id`
             const queryString = "SELECT * FROM topic WHERE " + condition
-            const topic = await sequelize.query(queryString, {type: QueryTypes.SELECT})
+            const topic = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements: {topic_id}})
             callback(null, topic)
         } catch (err) {
             callback(err, null)
         }
     },
     findByCourseCategory: async function(course_id,callback){
+        console.log(`🚀 ~ file: topicService.js ~ line 40 ~ findByCourseCategory:function ~ course_id`, course_id)
         try {
-            const condition = ` course_category_id = ${course_id}`
-            const queryString = "SELECT * FROM topic WHERE " + condition
-            const topic = await sequelize.query(queryString, {type: QueryTypes.SELECT})
+            const condition = ` t.course_id = :course_id || c.code = :course_id`
+            const queryString = "SELECT t.* FROM topic t LEFT JOIN courses c ON c.id = t.course_id WHERE " + condition
+            const topic = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements: {course_id}})
             callback(null, topic)
         } catch (err) {
             callback(err, null)

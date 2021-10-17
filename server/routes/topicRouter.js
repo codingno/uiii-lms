@@ -12,7 +12,7 @@ const getTopicById = async (req, res) => {
 	})
 }
 const getAllTopicByCourseId = async (req, res) => {
-	topicService.findByCourseCategory(req.body.course_id,function(err, result){
+	topicService.findByCourseCategory(req.params.course_id,function(err, result){
 		res.ok({err, data : result})
 	})
 }
@@ -56,7 +56,7 @@ const updateTopic = async (req, res) => {
 	})
 }
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
-route.get('/list', getAllTopicByCourseId )
+route.get('/list/:course_id', getAllTopicByCourseId )
 route.get('/info/:topic_id', getTopicById )
 route.post('/create', isTeacher, createTopic )
 route.post('/update', isTeacher, updateTopic )
