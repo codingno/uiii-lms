@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
-//
-// import Login from './pages/Login';
+import CourseStudent from './pages/CourseStudent';
+import LabTabs from './pages/courseDetail';
 import Login from './pages/LoginLms';
 // import Register from './pages/Register';
 import Register from './pages/RegisterLms';
@@ -23,6 +23,7 @@ import Course from './pages/Courses'
 import CreateCourse from './pages/course/CreateCourse'
 import Topics from './pages/Topics'
 import CreateTopic from './pages/topic/CreateTopic'
+// import LabTabs from './pages/courseDetail';
 
 // ----------------------------------------------------------------------
 
@@ -90,7 +91,8 @@ export default function Router() {
             { path: 'admin/list', element: <Course /> },
             { path: 'admin/create', element: <CreateCourse /> },
             { path: 'admin/edit', element: <CreateCourse edit={true} /> },
-            { path: 'student', element: <Products /> },
+            { path: 'student', element: <CourseStudent /> },
+            { path: "student/:course_id/detail", element: <LabTabs />},
             { path: 'teacher', element: <Products /> },
             { path: 'enrollment', element: <Products /> },
           ]

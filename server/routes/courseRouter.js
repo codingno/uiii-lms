@@ -19,6 +19,15 @@ const getAllCourse = async (req, res) => {
 		res.ok({err, data : result})
 	})
 }
+const getCourseUser = async (req, res) => {
+	courseService.findByUserId(req.user.id, function(err, result){
+		if(err)
+			res.badRequest({err, data: null})
+		else
+		res.ok({err, data : result})
+	})
+}
+
 const createCourseCategory = async (req, res) => {
 	if(!req.body.course || !req.body.category){
 		res.json({err: 'must include parameter course and category!'})
@@ -158,6 +167,7 @@ const updateCourse = async (req, res) => {
 }
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
 route.get('/', getAllCourse )
+route.get('/user', getCourseUser )
 route.get('/info/:course_id', getCourseInfo )
 route.post('/create', isTeacher, createCourse )
 route.patch('/update', isTeacher, updateCourse )

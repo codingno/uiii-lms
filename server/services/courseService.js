@@ -28,6 +28,16 @@ module.exports = {
             callback(err, null)
         }
     },
+    findByUserId: async function(user_id, callback){
+        try {
+            let condition = user_id ? 'WhERE e.user_id = ' + user_id + ';': ';'
+            const queryString = "SELECT c.* FROM enrollment e LEFT JOIN courses c ON c.id = e.course_id " + condition      
+            const courses = await sequelize.query(queryString, {type: QueryTypes.SELECT})
+            callback(null, courses)
+        } catch (error) {
+            callback('system error', null)
+        }
+    },
     findById: async function(course_id, callback){
         try {
             let condition = isNaN(parseInt(course_id)) ? ` c.code = "${course_id}" ` : ` c.id = ${course_id}`

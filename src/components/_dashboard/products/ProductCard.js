@@ -8,6 +8,7 @@ import { fCurrency } from '../../../utils/formatNumber';
 //
 import Label from '../../Label';
 import ColorPreview from '../../ColorPreview';
+import { Description } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +27,7 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
+  const { id, name, description, image_url, status } = product;
 
   return (
     <Card>
@@ -43,21 +44,20 @@ export default function ShopProductCard({ product }) {
               textTransform: 'uppercase'
             }}
           >
-            {status}
           </Label>
         )}
-        <ProductImgStyle alt={name} src={cover} />
+        <ProductImgStyle alt={name} src={"/"+image_url} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
+        <Link to={id+"/detail"} color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
             {name}
           </Typography>
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
+          {/* <ColorPreview  colors={"blue"}/> */}
           <Typography variant="subtitle1">
             <Typography
               component="span"
@@ -67,10 +67,11 @@ export default function ShopProductCard({ product }) {
                 textDecoration: 'line-through'
               }}
             >
-              {priceSale && fCurrency(priceSale)}
+              {/* {description} */}
             </Typography>
             &nbsp;
-            {fCurrency(price)}
+              {description.length > 15 ? description.slice(0,15)+" ..." : description}
+            {/* {fCurrency(price)} */}
           </Typography>
         </Stack>
       </Stack>

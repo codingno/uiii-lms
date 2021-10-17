@@ -164,7 +164,6 @@ router.post('/resetPasswordToken', function(req, res){
 
 				</html>
 				`	
-			console.log({html});
 			var mailOptions = {
 				from: 'sendemailtest032@gmail.com',
 				to: data.email,
