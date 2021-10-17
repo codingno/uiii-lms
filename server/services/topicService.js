@@ -32,13 +32,14 @@ module.exports = {
             const condition = ` id = :topic_id`
             const queryString = "SELECT * FROM topic WHERE " + condition
             const topic = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements: {topic_id}})
-            callback(null, topic)
+						if(topic.length === 0)
+							return callback("No Courses found.", null)
+            callback(null, topic[0])
         } catch (err) {
             callback(err, null)
         }
     },
     findByCourseCategory: async function(course_id,callback){
-        console.log(`🚀 ~ file: topicService.js ~ line 40 ~ findByCourseCategory:function ~ course_id`, course_id)
         try {
             const condition = ` t.course_id = :course_id || c.code = :course_id`
             const queryString = "SELECT t.*, ta.attachment, a.id activity_id, a.name activity_name FROM topic t LEFT JOIN courses c ON c.id = t.course_id LEFT JOIN topic_activity ta ON ta.topic_id = t.id LEFT JOIN activity a ON ta.activity_id = a.id WHERE " + condition + " GROUP BY t.id"
@@ -60,7 +61,7 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE topic SET course_category_id=:course_category_id, name=:name, updatedAt=:updatedAt, updatedBy=:updatedBy WHERE id =:id"
+           const queryString = "UPDATE topic SET course_id=:course_id, name=:name, updatedAt=:updatedAt, updatedBy=:updatedBy, startDate=:startDate, endDate=:endDate WHERE id =:id"
            const topic_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (topic_updated){
                callback(null, topic_updated)

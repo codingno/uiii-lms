@@ -70,12 +70,13 @@ function FormParent(props) {
 
 function CreateCourse(props) {
   const { state } = useLocation();
-  const { course_code } = useParams();
+	const { category_code, sub_category, course_code } = useParams()
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // const [categoryID, setCategoryID] = useState(null);
   const [courseID, setCourseID] = useState(null);
+  const [topicID, setTopicID] = useState(null);
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [shortname, setShortName] = useState("");
@@ -126,9 +127,26 @@ function CreateCourse(props) {
 		}
 	}
 
+	async function getTopicInfo() {
+		setLoading(true)
+		try {
+			const topic = await axios.get("/api/topic/info/" + state.code)
+			const { data } = topic.data
+			setTopicID(data.id)
+			setName(data.name)
+			setStartDate(data.startDate)
+			setEndDate(data.endDate)
+		} catch(error) {
+			if (error.response) {
+				alert(error.response.data.message);
+				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}`, {state:{category_code, sub_category, course_code }})
+			}
+		}
+	}
+
   useEffect(() => {
     if (course_code) getUserInfo();
-    // if (props.edit) getUserInfo();
+    if (props.edit) getTopicInfo();
 
   }, []);
 
@@ -176,28 +194,17 @@ function CreateCourse(props) {
     try {
 			console.log(courseFormat, numberOfTopics, startDate, endDate, nameOfTopics);
 			// const imageFile = await uploadImage()
-			const imageFile = null
-      await axios.post("/api/course/create", {
-				code,
+      await axios.post("/api/topic/create", {
+				course_id: courseID,
 				name,
-				shortname,
-				description,
-				position,
-				category : courseCategory,
-				status : courseStatus,	
-				image_url : imageFile ? imageFile.data : null,
-				topics : {
-					courseFormat,
-					numberOfTopics,
-					nameOfTopics,
-					startDate,
-					endDate
-				}
+				startDate,
+				endDate
       });
       await dispatch(getCategoryList());
-      alert(`Course created successfully.`);
+      alert(`Topic created successfully.`);
       // props.setCreateUser(false)
       // navigate("/dashboard/courses/admin/sub_category/"+categoryCode);
+			gotoTopic(course_code, courseName, courseID)
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -207,21 +214,17 @@ function CreateCourse(props) {
 
   const updateUser = async () => {
     try {
-			const imageFile = await uploadImage()
-      await axios.patch("/api/course/update", {
-        id: courseID,
-				code,
+      await axios.patch("/api/topic/update", {
+				id: topicID,
+				course_id: courseID,
 				name,
-				shortname,
-				description,
-				position,
-				category : courseCategory,
-				status : courseStatus,	
-				image_url : imageFile ? imageFile.data : null
+				startDate,
+				endDate
       });
       await dispatch(getCategoryList());
-      alert(`Course updated successfully.`);
+      alert(`Topic updated successfully.`);
       // props.setCreateUser(false)
+			gotoTopic(course_code, courseName, courseID)
       // navigate("/dashboard/courses/sub_category/"+categoryCode);
     } catch (error) {
       if (error.response) {
@@ -229,6 +232,12 @@ function CreateCourse(props) {
       }
     }
   };
+
+	const gotoTopic = (code, name, id) => {
+		if(category_code && sub_category && code) {
+			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}`, { state : { course_name : name, course_id : id }})
+		}
+	}
 
   const mainCategoryList =
     mainCategories.length === 0
@@ -549,7 +558,7 @@ function CreateCourse(props) {
 												value={startDate}
 												onChange={setStartDate}
 												onError={alert}
-												disablePast
+												// disablePast
 												inputFormat="dd-MM-yyyy HH:mm"
 												renderInput={props => <TextField {...props}  /> }
 											/>
@@ -561,7 +570,7 @@ function CreateCourse(props) {
 												value={endDate}
 												onChange={setEndDate}
 												onError={alert}
-												disablePast
+												// disablePast
 												// format="yyyy/MM/dd HH:mm"
 												inputFormat="dd-MM-yyyy HH:mm"
 												renderInput={props => <TextField {...props}  /> }

@@ -164,7 +164,8 @@ export default function Courses(props) {
 
 	const gotoTopic = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}`, { state : { course_name : name, course_id : id }})
+			console.log(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/topic`);
+			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/topic`, { state : { course_name : name, course_id : id }})
 		}
 	}
 
@@ -247,8 +248,7 @@ export default function Courses(props) {
                             />
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none"
-														onClick={() => gotoTopic(code, name, id)}
-														sx={{ cursor : 'pointer'}}													
+														// sx={{ cursor : 'pointer'}}													
 													>
                             <Stack direction="row" alignItems="center" spacing={2}>
                               {/* <Avatar alt={name} src={avatarUrl} /> */}
@@ -261,6 +261,20 @@ export default function Courses(props) {
                           <TableCell align="left">{code}</TableCell>
                           <TableCell align="left">{category_code}</TableCell>
                           <TableCell align="left">{position || "None"}</TableCell> */}
+                          {/* <TableCell align="left">
+														<Button
+															onClick={() => gotoTopic(code, name, id)}
+														>
+															Manage Topic
+														</Button>
+													</TableCell>
+                          <TableCell align="left">
+														<Button
+															onClick={() => gotoTopic(code, name, id)}
+														>
+															Manage Enrollment
+														</Button>
+													</TableCell> */}
                           <TableCell align="left">
 														{
 															image_url.length > 0 &&
@@ -269,7 +283,11 @@ export default function Courses(props) {
 													</TableCell>
                           <TableCell align="right">{status || "None"}</TableCell>
                           <TableCell align="right">
-                            <CategoryMoreMenu code={code} />
+                            <CategoryMoreMenu 
+															code={code} 
+															gotoTopic={() => gotoTopic(code, name, id)} 
+															gotoEnrollment={() => alert(code, name, id)} 
+															/>
                           </TableCell>
                         </TableRow>
                       );

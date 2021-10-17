@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
@@ -11,6 +11,7 @@ import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/mat
 
 export default function UserMoreMenu(props) {
 	const navigate = useNavigate()
+	const { category_code, sub_category, course_code } = useParams()
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -37,7 +38,12 @@ export default function UserMoreMenu(props) {
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem sx={{ color: 'text.secondary' }} onClick={() => navigate('/dashboard/courses/admin/edit', { state:{ code: props.code }}) }>
+        <MenuItem sx={{ color: 'text.secondary' }} 
+				// onClick={() => navigate('/dashboard/courses/admin/edit', { state:{ code: props.code }}) }
+						onClick={() => {
+							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/edit`, {state:{ code : props.code }})
+						}}
+				>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>

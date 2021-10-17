@@ -3,8 +3,8 @@ const { QueryTypes } = require('sequelize')
 module.exports = {
     create: async function(data, callback){
         try {
-            const queryString = "INSERT INTO topic_activity (topic_id, activity, attachment, createdAt, createdBy, updatedAt, updatedBy) " +
-            "VALUES (:topic_id, :activity, :attachment, :createdAt, :createdBy, :updatedAt, :updatedBy);"
+            const queryString = "INSERT INTO topic_activity (topic_id, activity_id, attachment, createdAt, createdBy, updatedAt, updatedBy) " +
+            "VALUES (:topic_id, :activity_id, :attachment, :createdAt, :createdBy, :updatedAt, :updatedBy);"
             const topic_activity = await sequelize.query(queryString,{type: QueryTypes.INSERT, replacements: data})
             if(topic_activity){
                 callback(null, topic_activity)
@@ -39,7 +39,7 @@ module.exports = {
     findByTopic: async function(topic_id,callback){
         try {
             const condition = ` ta.topic_id = ${topic_id}`
-            const queryString = "SELECT ta.* FROM topic_activity ta LEFT JOIN actvity a ON ta.activity = a.id WHERE " + condition
+            const queryString = "SELECT ta.* FROM topic_activity ta LEFT JOIN activity a ON ta.activity_id = a.id WHERE " + condition
             const topic_activity = await sequelize.query(queryString, {type: QueryTypes.SELECT})
             callback(null, topic_activity)
         } catch (err) {

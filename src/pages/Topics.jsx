@@ -26,7 +26,7 @@ import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/course';
+import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/topic';
 
 // import CreateUser from './user/CreateUser';
 import BreadCrumb from '../components/Breadcrumb'
@@ -259,7 +259,15 @@ export default function Topics(props) {
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               {/* <Avatar alt={name} src={avatarUrl} /> */}
-                              <Typography variant="subtitle2" noWrap>
+                              <Typography variant="subtitle2" noWrap
+																onClick={() => {
+																	dispatch({type : 'refresh_start'})
+																	navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																}}
+																sx={{
+																	cursor : 'pointer'
+																}}
+															>
 																{name}
                               </Typography>
                             </Stack>

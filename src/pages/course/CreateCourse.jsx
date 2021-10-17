@@ -545,7 +545,7 @@ function CreateCourse(props) {
 												value={startDate}
 												onChange={setStartDate}
 												onError={alert}
-												disablePast
+												// disablePast
 												inputFormat="dd-MM-yyyy HH:mm"
 												renderInput={props => <TextField {...props}  /> }
 											/>
@@ -557,7 +557,7 @@ function CreateCourse(props) {
 												value={endDate}
 												onChange={setEndDate}
 												onError={alert}
-												disablePast
+												// disablePast
 												// format="yyyy/MM/dd HH:mm"
 												inputFormat="dd-MM-yyyy HH:mm"
 												renderInput={props => <TextField {...props}  /> }

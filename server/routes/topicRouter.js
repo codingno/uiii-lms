@@ -47,7 +47,7 @@ const createTopic = async (req, res) => {
 const updateTopic = async (req, res) => {
 	const topicInfo = {
 		id: req.body.id ? req.body.id : '',
-		course_category_id: req.body.course_category_id ? req.body.course_category_id : '',
+		course_id: req.body.course_id ? req.body.course_id : '',
 		name: req.body.name ? req.body.name : '',
 		updatedAt: new Date(),
 		updatedBy: req.user.id,
@@ -67,6 +67,6 @@ route.get('/list', getAllTopicByCourseId )
 route.get('/list/:course_id', getAllTopicByCourseId )
 route.get('/info/:topic_id', getTopicById )
 route.post('/create', isTeacher, createTopic )
-route.post('/update', isTeacher, updateTopic )
+route.patch('/update', isTeacher, updateTopic )
 
 module.exports = route

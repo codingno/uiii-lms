@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 // import Link from '@mui/material/Link';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import axios from 'axios';
@@ -15,6 +15,7 @@ function handleClick(event) {
 export default function BasicBreadcrumbs() {
 	const navigate = useNavigate()
 	const location = useLocation()
+	const { category_code, sub_category, course_code, topic_id } = useParams()
   const dispatch = useDispatch()
 	const [breadLink, setBreadLink] = useState([])
 	const { refresh } = useSelector(state => state)
@@ -22,19 +23,50 @@ export default function BasicBreadcrumbs() {
 	async function getCategoryData() {
 		const getCategoryData = await axios.get("/api/category");
 		const { data } = getCategoryData.data;
+		const category = data
+		let courseData = null
+		if(course_code) {
+			const getCourseData = await axios.get("/api/course/info/" + course_code)
+			const { data } = getCourseData.data
+			courseData = data
+		}
+
+		let topicData = null
+		if(topic_id) {
+			const { data } = await axios.get("/api/topic/info/" + topic_id)
+			topicData = data.data
+		}
 
 		let url = "/"
 		const makebreadLink = location.pathname.split('/')
 			.filter(item => item !== "")
 			.map(item => {
 				url += item + "/"
-				const category_name = data.filter(x => x.code === item)
+				const category_name = category.filter(x => x.code === item)
+				if(courseData) 
+					if(courseData.code === item) 
+					{
+						return (
+							<Typography color="text.primary" key={item}>
+												{courseData.name}
+											</Typography>
+						)
+					}
+
+				let nameLink = category_name.length > 0 ? category_name[0].name : item 
+
+				if(topicData) {
+					if(topicData.id === parseInt(item)) {
+						nameLink = topicData.name
+					}
+				}
+
 				return (
 					// <Link underline="hover" color="inherit" onClick={() => navigate(url)}>
 					<Link underline="hover" color="inherit" to={url} onClick={() => 
 						dispatch({ type : 'refresh_start'})
 					}>
-						{category_name.length > 0 ? category_name[0].name : item}
+						{nameLink}
 					</Link>
 				)
 			})
@@ -47,7 +79,7 @@ export default function BasicBreadcrumbs() {
 	}, [refresh])
   return (
     <div role="presentation" onClick={handleClick}>
-      <Breadcrumbs aria-label="breadcrumb">
+      <Breadcrumbs maxItems={3} aria-label="breadcrumb">
 				{breadLink}
         {/* <Link underline="hover" color="inherit" href="/">
           MUI

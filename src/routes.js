@@ -1,4 +1,4 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 // layouts
 import DashboardLayout from './layouts/dashboard';
@@ -23,11 +23,14 @@ import Course from './pages/Courses'
 import CreateCourse from './pages/course/CreateCourse'
 import Topics from './pages/Topics'
 import CreateTopic from './pages/topic/CreateTopic'
+import TopicActivity from './pages/TopicActivity'
+import CreateTopicActivity from './pages/topicActivity/CreateTopicActivity'
 // import LabTabs from './pages/courseDetail';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+	const { category_code, sub_category, course_code } = useParams()
 	const { user } = useSelector(state => state)
 
 	const isLogin = (Component) => {
@@ -63,10 +66,25 @@ export default function Router() {
 								{ element: <Course />},
 							]},
 						{ path: 'admin/:category_code/:sub_category/:course_code',
+        			element: <Navigate to={`admin/${category_code}/${sub_category}/${course_code}/topic`} />, 
+						},
+						{ path: 'admin/:category_code/:sub_category/:course_code/topic',
 							children: [
 								{ element: <Topics/>},
 								{ path : 'create', element : <CreateTopic />},
 								{ path : 'edit', element : <CreateTopic edit={true} />},
+								{ path : ':topic_id', 
+									children: [
+										{ element : <TopicActivity /> },
+										{ path : 'create', element : <CreateTopicActivity />},
+										{ path : 'edit', element : <CreateTopicActivity edit={true} />},
+									]
+								},
+							]
+						},
+						{ path: 'admin/:category_code/:sub_category/:course_code/Enrollment',
+							children: [
+								{ element: <Topics/>},
 							]
 						},
             { path: 'admin/category', 

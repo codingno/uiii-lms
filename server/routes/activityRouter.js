@@ -39,7 +39,7 @@ const getActivity = async (req, res) => {
 const createTopicActivity = async (req, res) => {
 	const topicActivityInfo = {
 		topic_id: req.body.topic_id ? req.body.topic_id : '',
-		activity: req.body.activity ? req.body.activity : '',
+		activity_id: req.body.activity_id ? req.body.activity_id : '',
 		attachment: req.body.attachment ? req.body.attachment : '',
 		createdAt: new Date(),
 		createdBy: req.user.id,
@@ -76,7 +76,7 @@ const updateTopicActivity = async (req, res) => {
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
 route.get('/', getAllActivity )
 route.get('/:id', getActivity )
-route.get('/course', getAllActivityByTopicId )
+route.get('/topic/:id', getAllActivityByTopicId )
 route.get('/course/:id', getTopicById )
 route.post('/create', isTeacher, createTopicActivity )
 route.post('/update', isTeacher, updateTopicActivity )
