@@ -24,6 +24,7 @@ export default function LabTabs() {
       setCourse(JSON.parse(courseUserList.data).filter(item => item.id == course_id)[0])
   React.useEffect(() => {
     async function getCourseUserList(){
+      topicCourse.load = false
       await dispatch(getCourseUser())    
     }
     if(!courseUserList.load)
@@ -33,6 +34,7 @@ export default function LabTabs() {
   }, [])
   React.useEffect(() => {
     async function getCourseData(){
+      topicCourse.load = false
       setCourse(JSON.parse(courseUserList.data).filter(item => item.id == course_id)[0])
     }
     if(courseUserList.load)
@@ -45,7 +47,7 @@ export default function LabTabs() {
     }
     if(!topicCourse.load)
       return getTopic() 
-  },[topicCourse])
+  },[topicCourse, courseUserList])
 
     // setCourse(courseUserList.load ? JSON.parse(courseUserList.data).filter(item => item.id == course_id)[0] : {})
   return (

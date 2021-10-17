@@ -6,6 +6,7 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import { DateRange } from '@mui/icons-material';
+import { Button, Stack } from '@mui/material';
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -64,6 +65,11 @@ export default function CustomizedAccordions(topic) {
             <b>End Date:</b>
             <br />
             <DateRange /> {item.endDate}
+            <br />
+            <Stack direction="row" spacing={2}>
+                <Button variant="contained" disabled={new Date() >= new Date(item.startDate) && new Date() <= new Date(item.endDate)}>Attend</Button>
+                {item.activity_id === 6 ? <Button variant="contained" href={item.attachment} target="_blank">Link</Button> : <></>}
+            </Stack>
           </Typography>
         </AccordionDetails>
       </Accordion>
