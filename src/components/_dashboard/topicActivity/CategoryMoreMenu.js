@@ -6,10 +6,12 @@ import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
+import { useDispatch } from "react-redux";
 
 // ----------------------------------------------------------------------
 
 export default function UserMoreMenu(props) {
+  const dispatch = useDispatch();
 	const navigate = useNavigate()
 	const { category_code, sub_category, course_code, topic_id } = useParams()
   const ref = useRef(null);
@@ -41,7 +43,8 @@ export default function UserMoreMenu(props) {
         <MenuItem sx={{ color: 'text.secondary' }} 
 				// onClick={() => navigate('/dashboard/courses/admin/edit', { state:{ code: props.code }}) }
 						onClick={() => {
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/edit`, {state:{ code : props.code }})
+							dispatch({ type : 'refresh_start'})
+							// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/edit`, {state:{ code : props.code }})
 							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}/edit`, {state:{ topic_activity_id : props.code }})
 						}}
 				>

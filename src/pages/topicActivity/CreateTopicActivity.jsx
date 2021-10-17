@@ -151,8 +151,7 @@ function CreateCourse(props) {
 	async function getTopicActivityInfo() {
 		setLoading(true)
 		try {
-		console.log("masuk sini");
-			const topic = await axios.get("/api/activity/info/" + state.topic_activity_id)
+			const topic = await axios.get("/api/activity/topic_activity/" + state.topic_activity_id)
 			const { data } = topic.data
       console.log(`🚀 ~ file: CreateTopicActivity.jsx ~ line 157 ~ getTopicActivityInfo ~ data`, data)
 			setTopicActivityID(data.id)
@@ -163,7 +162,7 @@ function CreateCourse(props) {
 		} catch(error) {
 			if (error.response) {
 				alert(error.response.data.message);
-				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}`, {state:{category_code, sub_category, course_code }})
+				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code }})
 			}
 		}
 	}
@@ -245,7 +244,7 @@ function CreateCourse(props) {
 				attachment : attachmentData,
       });
       await dispatch(getCategoryList());
-      alert(`Topic created successfully.`);
+      alert(`Topic activity created successfully.`);
       // props.setCreateUser(false)
       // navigate("/dashboard/courses/admin/sub_category/"+categoryCode);
 			dispatch({ type : 'refresh_start'})
@@ -259,18 +258,24 @@ function CreateCourse(props) {
 
   const updateUser = async () => {
     try {
-			const imageFile = await uploadImage()
-      await axios.patch("/api/topic/update", {
+			let attachmentData = attachment
+			if(activityType !== 6) {
+				const imageFile = await uploadImage()
+				attachmentData = imageFile.data
+			}
+      await axios.post("/api/activity/update", {
 				id : topicActivityID,
 				topic_id,
 				activity_id : activityType,
-				attachment : imageFile.data,
+				attachment : attachmentData,
       });
       await dispatch(getCategoryList());
-      alert(`Topic updated successfully.`);
+      alert(`Topic activity updated successfully.`);
       // props.setCreateUser(false)
-			gotoTopic(course_code, topicName, courseID)
+			// gotoTopic(course_code, topicName, courseID)
       // navigate("/dashboard/courses/sub_category/"+categoryCode);
+			dispatch({ type : 'refresh_start'})
+			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -633,9 +638,9 @@ function CreateCourse(props) {
 											</Button>
 											{
 												attachment &&
-												<span style={{ marginLeft : '20px'}}>
-													( {attachment} )
-												</span>
+												<p style={{ marginTop : '10px'}}>
+													( {attachment.split('/').pop()} )
+												</p>
 											}
 										</label>
 									</FormParent>

@@ -47,7 +47,6 @@ const createTopicActivity = async (req, res) => {
 		updatedBy: null,
     }
 	topicActivityService.create(topicActivityInfo, function(err, result){
-    console.log(`🚀 ~ file: courseRouter.js ~ line 41 ~ courseService.create ~ result1`, result, err)
 		if(err)
 			res.badRequest({message: err, data: null})
 		else {
@@ -59,7 +58,7 @@ const createTopicActivity = async (req, res) => {
 const updateTopicActivity = async (req, res) => {
 	const courseInfo = {
 		id: req.body.id ? req.body.id : '',
-		topic_id: req.body.course_category_id ? req.body.course_category_id : '',
+		topic_id: req.body.topic_id ? req.body.topic_id : '',
 		activity_id: req.body.activity_id ? req.body.activity_id : '',
 		attachment: req.body.attachment ? req.body.attachment : '',
 		updatedAt: new Date(),
@@ -77,7 +76,7 @@ const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/pol
 route.get('/', getAllActivity )
 route.get('/:id', getActivity )
 route.get('/topic/:id', getAllActivityByTopicId )
-route.get('/course/:id', getTopicById )
+route.get('/topic_activity/:id', getTopicById )
 route.post('/create', isTeacher, createTopicActivity )
 route.post('/update', isTeacher, updateTopicActivity )
 

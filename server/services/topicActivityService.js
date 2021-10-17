@@ -28,10 +28,12 @@ module.exports = {
     },
     findById: async function(topic_activity_id,callback){
         try {
-            const condition = ` ta.id = ${topic_activity_id}`
-            const queryString = "SELECT ta.*, a.name activity_name FROM topic_activity ta LEFT JOIN actvity a ON ta.activity = a.id WHERE " + condition
-            const topic_activity = await sequelize.query(queryString, {type: QueryTypes.SELECT})
-            callback(null, topic_activity)
+            const condition = ` ta.id = :topic_activity_id`
+            const queryString = "SELECT ta.*, a.name activity_name, a.id activity_id FROM topic_activity ta LEFT JOIN activity a ON ta.activity_id = a.id WHERE " + condition
+            const topic_activity = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements : {topic_activity_id}})
+						if(topic_activity.length === 0)
+							return callback("No Topic Activity found.", null)
+            callback(null, topic_activity[0])
         } catch (err) {
             callback(err, null)
         }
@@ -58,7 +60,7 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE topic_activity SET topic_id=:topic_id, activity=:activity, attachment=:attachment, updatedAt=:updatedAt, updatedBy=:updatedBy, startDate=:startDate, endDate=:endDate WHERE id =:id"
+           const queryString = "UPDATE topic_activity SET topic_id=:topic_id, activity_id=:activity_id, attachment=:attachment, updatedAt=:updatedAt, updatedBy=:updatedBy WHERE id =:id"
            const topic_activity_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (topic_activity_updated){
                callback(null, topic_activity_updated)

@@ -26,12 +26,14 @@ module.exports = {
             callback(err, null)
         }
     },
-    findById: async function(role_id,callback){
+    findById: async function(id,callback){
         try {
-            const condition = ` id IN ${role_id}`
+            const condition = ` id = :id`
             const queryString = "SELECT * FROM activity WHERE " + condition
-            const activity = await sequelize.query(queryString, {type: QueryTypes.SELECT})
-            callback(null, activity)
+            const activity = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements : {id}})
+						if(activity.length === 0)
+							return callback("No Activity found.", null)
+            callback(null, activity[0])
         } catch (err) {
             callback(err, null)
         }
