@@ -68,7 +68,13 @@ export default function CustomizedAccordions(topic) {
             <br />
             <Stack direction="row" spacing={2}>
                 <Button variant="contained" disabled={new Date() >= new Date(item.startDate) && new Date() <= new Date(item.endDate)}>Attend</Button>
-                {item.activity_id === 6 ? <Button variant="contained" href={item.attachment} target="_blank">Link</Button> : <></>}
+                {item.activity.length > 0 ?
+                item.activity.map(activity =>{
+                    return (
+                        <Button key={activity.id} variant="contained" href={activity.activity_id == 6 ? activity.attachment : '/' + activity.attachment} target="_blank">{activity.activity_name}</Button> 
+                    )
+                }) 
+                : <></>}
             </Stack>
           </Typography>
         </AccordionDetails>
