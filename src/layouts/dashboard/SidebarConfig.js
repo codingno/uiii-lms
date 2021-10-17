@@ -43,21 +43,21 @@ const sidebarConfig = [
         path: '/dashboard/courses/admin',
         role: [1]
       },
-      {
-        title: 'Enrollment',
-        path: '/dashboard/courses/enrollment',
-        role: [1]
-      },
+      // {
+      //   title: 'Enrollment',
+      //   path: '/dashboard/courses/enrollment',
+      //   role: [1]
+      // },
       {
         title: 'Course List',
         path: '/dashboard/courses/teacher',
         role: [4]
       },
-      {
-        title: 'Enrollment',
-        path: '/dashboard/courses/enrollment',
-        role: [4]
-      },
+      // {
+      //   title: 'Enrollment',
+      //   path: '/dashboard/courses/enrollment',
+      //   role: [4]
+      // },
       {
         title: 'Course List',
         path: '/dashboard/courses/student',
@@ -65,45 +65,45 @@ const sidebarConfig = [
       },
     ]
   },
-  {
-    title: 'Activity',
-    path: '/dashboard/activity',
-    icon: getIcon(activityFill),
-    role: [1]
-  },
-  {
-    title: 'Resources/materials',
-    path: '/dashboard/resources',
-    icon: getIcon(fileFill),
-    role: [1]
-  },
-  {
-    title: 'Grades',
-    path: '/dashboard/grades',
-    icon: getIcon(shoppingBagFill),
-    role: [1,4,7]
-  },
-  {
-    title: 'blog',
-    path: '/dashboard/blog',
-    icon: getIcon(fileTextFill),
-    role:[1]
-  },
-  {
-    title: 'login',
-    path: '/login',
-    icon: getIcon(lockFill)
-  },
-  {
-    title: 'register',
-    path: '/register',
-    icon: getIcon(personAddFill)
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    icon: getIcon(alertTriangleFill)
-  }
+  // {
+  //   title: 'Activity',
+  //   path: '/dashboard/activity',
+  //   icon: getIcon(activityFill),
+  //   role: [1]
+  // },
+  // {
+  //   title: 'Resources/materials',
+  //   path: '/dashboard/resources',
+  //   icon: getIcon(fileFill),
+  //   role: [1]
+  // },
+  // {
+  //   title: 'Grades',
+  //   path: '/dashboard/grades',
+  //   icon: getIcon(shoppingBagFill),
+  //   role: [1,4,7]
+  // },
+  // {
+  //   title: 'blog',
+  //   path: '/dashboard/blog',
+  //   icon: getIcon(fileTextFill),
+  //   role:[1]
+  // },
+  // {
+  //   title: 'login',
+  //   path: '/login',
+  //   icon: getIcon(lockFill)
+  // },
+  // {
+  //   title: 'register',
+  //   path: '/register',
+  //   icon: getIcon(personAddFill)
+  // },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: getIcon(alertTriangleFill)
+  // }
 ];
 
 export default sidebarConfig;

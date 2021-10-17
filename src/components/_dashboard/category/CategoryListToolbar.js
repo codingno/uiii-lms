@@ -15,6 +15,7 @@ import {
   InputAdornment
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { useParams } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +48,7 @@ UserListToolbar.propTypes = {
 };
 
 export default function UserListToolbar({ numSelected, filterName, onFilterName, refresh }) {
+	const { category_code } = useParams()
   return (
     <RootStyle
       sx={{
@@ -64,7 +66,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         <SearchStyle
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search Category..."
+          placeholder={`Search ${ category_code ? 'Sub ' : ''}Category...`}
           startAdornment={
             <InputAdornment position="start">
               <Box component={Icon} icon={searchFill} sx={{ color: 'text.disabled' }} />

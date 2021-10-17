@@ -20,7 +20,7 @@ const getAllEnrollment = async (req, res) => {
     })
 }
 const getAllEnrollmentByCourse = async (req, res) => {
-    enrollmentService.findByCourseId(req.param.course_id,function (err, result) {
+    enrollmentService.findByCourseId(req.params.course_id,function (err, result) {
         res.json({
             data : result
         })
@@ -52,20 +52,25 @@ const updateEnrollment = async (req, res) => {
     })
 }
 const deleteEnrollment = async (req, res) => {
-    const data = {
-        id: req.body.id
-    }
-    enrollmentService.delete(data, function (err, result) {
+		console.log(req.body);
+		if(!req.body.id)
+			return res.badRequest({ message : 'Missing Parameters'})
+    // const data = {
+    //     id: req.body.id
+    // }
+    enrollmentService.delete(req.body.id, function (err, result) {
         res.json({
             err,
             result
         })
     })
 }
+const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
+
 route.get('/', getAllEnrollment)
 route.get('/course/:course_id', getAllEnrollmentByCourse)
-route.post('/create', createEnrollment)
-route.patch('/update', updateEnrollment)
-route.delete('/delete', deleteEnrollment)
+route.post('/create', isTeacher, createEnrollment)
+route.patch('/update', isTeacher, updateEnrollment)
+route.post('/delete', isTeacher, deleteEnrollment)
 
 module.exports = route

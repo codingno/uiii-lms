@@ -24,7 +24,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { getCategoryList } from '../../store/actions/get/getCategories';
 
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 // import './create-user.css'
 
@@ -52,6 +52,7 @@ function FormContainer(props) {
 
 function CreateCategory(props) {
   const { state } = useLocation();
+  console.log(`🚀 ~ file: CreateCategory.jsx ~ line 55 ~ CreateCategory ~ state`, state)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const [userID, setUserID] = useState(null);
@@ -73,7 +74,6 @@ function CreateCategory(props) {
   const [mainCategories, setMainCategories] = useState([]);
   const [mainCategoryName, setMainCategoryName] = useState("");
   const [parent, setParent] = useState(state.category_code);
-  console.log(`🚀 ~ file: CreateCategory.jsx ~ line 75 ~ CreateCategory ~ parent`, parent)
   const [position, setPosition] = useState("");
 
 	const [isLoading, setLoading] = useState(false)
@@ -113,16 +113,14 @@ function CreateCategory(props) {
         const getCategoryData = await axios.get("/api/category/main_category");
         const { data } = getCategoryData.data;
 				const filterdData = data.filter(item => item.code !== code)
-        console.log(`🚀 ~ file: CreateCategory.jsx ~ line 115 ~ getRoles ~ filterdData`, filterdData)
 				const parentCategory = filterdData.filter(item => item.code === state.category_code)[0]
-        console.log(`🚀 ~ file: CreateCategory.jsx ~ line 118 ~ getRoles ~ parentCategory`, parentCategory)
 				setMainCategoryName(parentCategory.name)
         setMainCategories(filterdData);
       } catch (error) {
         if (error.response) {
           alert(error.response.data.message);
           // props.setCreateUser(false)
-          navigate("/dashboard/courses/admin/category");
+          navigate("/dashboard/courses/admin");
         }
       }
     }
@@ -146,9 +144,11 @@ function CreateCategory(props) {
 				status : categoryStatus,	
       });
       await dispatch(getCategoryList());
-      alert(`Category created successfully.`);
+      alert(`${state.category_code ? 'Sub ' : ''}Category created successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/admin/category");
+			dispatch({ type : 'refresh_start'})
+      // navigate("/dashboard/courses/admin");
+      navigate(`/dashboard/courses/admin${ state.category_code ? '/' + state.category_code : ''}`);
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -167,9 +167,10 @@ function CreateCategory(props) {
 				status : categoryStatus,	
       });
       await dispatch(getCategoryList());
-      alert(`User updated successfully.`);
+      alert(`${state.category_code ? 'Sub ' : ''}Category updated successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/admin/category");
+			dispatch({ type : 'refresh_start'})
+      navigate(`/dashboard/courses/admin${ state.category_code ? '/' + state.category_code : ''}`);
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -192,7 +193,7 @@ function CreateCategory(props) {
           mb={5}
         >
           <Typography variant="h4" gutterBottom>
-            {props.edit ? "Edit" : "Create"} {state.category_code ? 'Sub ' : ''} Category 
+            {props.edit ? "Edit" : "Create"} { state.category_code ? 'Sub ' : ''} Category 
           </Typography>
           <Typography variant="h4" gutterBottom>
 						{mainCategoryName ? 'of ' + mainCategoryName : ''}

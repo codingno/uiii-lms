@@ -12,6 +12,7 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 import MenuPopover from '../../components/MenuPopover';
 //
 import account from '../../_mocks_/account';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // ----------------------------------------------------------------------
 
@@ -84,7 +85,8 @@ export default function AccountPopover() {
           })
         }}
       >
-        <Avatar src='/static/mock-images/avatars/avatar_default.jpg' alt="photoURL" />
+        {/* <Avatar src='/static/mock-images/avatars/avatar_default.jpg' alt="photoURL" /> */}
+				<AccountCircleIcon fontSize="large" />
       </IconButton>
 
       <MenuPopover

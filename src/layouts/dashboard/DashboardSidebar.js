@@ -20,6 +20,7 @@ import { MHidden } from "../../components/@material-extend";
 //
 import sidebarConfig from "./SidebarConfig";
 import account from "../../_mocks_/account";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSelector } from "react-redux";
 
 // ----------------------------------------------------------------------
@@ -106,7 +107,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
+						<AccountCircleIcon fontSize="large" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
                 {User.username}
@@ -135,11 +137,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             bgcolor: "grey.200",
           }}
         >
-          <Box
+          {/* <Box
             component="img"
             src="/static/illustrations/illustration_avatar.png"
             sx={{ width: 100, position: "absolute", top: -50 }}
-          />
+          /> */}
 
           {/* <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">

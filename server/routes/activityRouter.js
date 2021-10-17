@@ -60,7 +60,7 @@ const updateTopicActivity = async (req, res) => {
 	const courseInfo = {
 		id: req.body.id ? req.body.id : '',
 		topic_id: req.body.course_category_id ? req.body.course_category_id : '',
-		activity: req.body.activity ? req.body.activity : '',
+		activity_id: req.body.activity_id ? req.body.activity_id : '',
 		attachment: req.body.attachment ? req.body.attachment : '',
 		updatedAt: new Date(),
 		updatedBy: req.user.id,

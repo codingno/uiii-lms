@@ -280,7 +280,7 @@ export default function Categories(props) {
                           {/* <TableCell align="left">{position || "None"}</TableCell> */}
                           <TableCell align="right">{status || "None"}</TableCell>
                           <TableCell align="right">
-                            <CategoryMoreMenu code={code} />
+                            <CategoryMoreMenu code={code} category_code={category_code} />
                           </TableCell>
                         </TableRow>
                       );

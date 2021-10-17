@@ -169,6 +169,13 @@ export default function Courses(props) {
 		}
 	}
 
+	const gotoEnrollment = (code, name, id) => {
+		if(category_code && sub_category && code) {
+			console.log(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/enrollment`);
+			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/enrollment`, { state : { course_name : name, course_id : id }})
+		}
+	}
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(courseList.data).length) : 0;
 
   const filteredUsers = courseList.data ? applySortFilter(courseList.data.length > 0 ? JSON.parse(courseList.data) : [], getComparator(order, orderBy), filterName) : [];
@@ -192,7 +199,7 @@ export default function Courses(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate('/dashboard/courses/admin/create', {state:{category_code, sub_category}})
+							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/create`, {state:{category_code, sub_category}})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
@@ -286,7 +293,7 @@ export default function Courses(props) {
                             <CategoryMoreMenu 
 															code={code} 
 															gotoTopic={() => gotoTopic(code, name, id)} 
-															gotoEnrollment={() => alert(code, name, id)} 
+															gotoEnrollment={() => gotoEnrollment(code, name, id)} 
 															/>
                           </TableCell>
                         </TableRow>

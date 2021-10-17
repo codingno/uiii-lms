@@ -20,25 +20,31 @@ import {
   TableContainer,
   TablePagination,
 	CircularProgress,
+	Select,
+	MenuItem,
+	Autocomplete,
+	TextField
 } from '@mui/material';
 // components
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/topicActivity';
+import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/enrollment';
 
 // import CreateUser from './user/CreateUser';
 import BreadCrumb from '../components/Breadcrumb'
 //
 import { getCourseList } from '../store/actions/get/getCourses';
+import { getUserList } from '../store/actions/get/getUser';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  // { id: 'name', label: 'Name', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'role', label: 'Role', alignRight: false },
   // { id: 'shortname', label: 'Short Name', alignRight: false },
   // { id: 'code', label: 'Course Code', alignRight: false },
   // { id: 'category', label: 'Category', alignRight: false },
@@ -46,9 +52,7 @@ const TABLE_HEAD = [
   // { id: 'startDate', label: 'Start Date', alignRight: false },
   // { id: 'endDate', label: 'End Date', alignRight: false },
   // { id: 'status', label: 'Status', alignRight: true },
-  { id: 'activity_id', label: 'Activity', alignRight: false },
-  { id: 'attachment', label: 'Attachment', alignRight: false },
-  { id: '' },
+  { id: '' }
 ];
 
 // ----------------------------------------------------------------------
@@ -82,8 +86,8 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function Topics(props) {
-	const {category_code, sub_category, course_code, topic_id} = useParams()
+export default function Enrollment(props) {
+	const {category_code, sub_category, course_code} = useParams()
   const { state } = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -95,11 +99,30 @@ export default function Topics(props) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const {courseList, refresh}= useSelector((state) => state);
   const [topicList, setTopicList] = useState([]);
-  const [topicName, setTopicName] = useState("");
 
-  const [activityList, setActivityList] = useState([]);
+  const {userList}= useSelector((state) => state);
+	const [courseData, setCourseData] = useState(null)
+
+	const [enroll, setEnroll] = useState("")
+	const [searchEnroll, setSearchEnroll] = useState("")
 
 	const [isLoading, setLoading] = useState(false)
+
+
+	async function getDataUserList(){
+			setLoading(true)
+			try {
+				await dispatch(getUserList());
+				setLoading(false)
+			} catch(error) {
+				
+			}
+	}
+
+  useEffect(() => {
+		if (!userList.load) 
+    	getDataUserList();
+  }, [userList]);
 
 	async function getDataCategoryList(){
 			setLoading(true)
@@ -112,44 +135,31 @@ export default function Topics(props) {
 			}
 	}
 
-	async function getTopicInfo() {
+	async function getTopicList() {
 		try {
-			const { data } = await axios.get('/api/topic/info/' + topic_id)
-			const topicInfo = data.data
-			setTopicName(topicInfo.name)
-		} catch (error) {
-			alert(error)	
-		}
-	}
-
-	async function getTopicActivityList() {
-		try {
-			const { data } = await axios.get('/api/activity/topic/' + topic_id)	
-      console.log(`🚀 ~ file: TopicActivity.jsx ~ line 124 ~ getTopicActivityList ~ data`, data)
+			const { data } = await axios.get('/api/enrollment/course/' + course_code)	
 			setTopicList(data.data)
+				dispatch({type : 'refresh_done'})
 		} catch (error) {
 			alert(error)	
 		}
 	}
 
-
-	async function getActivityList() {
+	async function getCourseData() {
 		try {
-			const { data } = await axios.get('/api/activity/')	
-			setActivityList(data.data)
-		} catch (error) {
+			const { data } = await axios.get('/api/course/info/' + course_code)
+			const course = data.data
+			setCourseData(course)
+				dispatch({type : 'refresh_done'})
+		} catch(error) {
 			alert(error)	
 		}
 	}
-
-  useEffect(() => {
-		getTopicActivityList()
-		getTopicInfo()
-		getActivityList()
-  }, []);
 
   useEffect(() => {
 		if (refresh) {
+			getTopicList()
+			getCourseData()
   	  getDataCategoryList();
 		}
   }, [refresh]);
@@ -212,28 +222,86 @@ export default function Topics(props) {
 
   const isUserNotFound = filteredUsers.length === 0;
 
+	// const users = userList.data.length === 0 ? '' : JSON.parse(userList.data).map(item => {
+	// 	return (
+	// 		<MenuItem value={item.id}>
+	// 			{item.firstname} {item.lastname}
+	// 		</MenuItem>
+	// 	)
+	// })
+	const users = userList.data.length === 0 ? '' : JSON.parse(userList.data).map(item => {
+		item.label = item.firstname + ' ' + item.lastname
+		return item
+	})
+
   // return categoryList.data && ( 
   return ( 
-    <Page title="Topic Activity | UIII LMS">
+    <Page title="Enrollment | UIII LMS">
       <Container>
 				<Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
 				</Stack>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Topic Activity { topicName.length > 0 ? 'of ' + topicName : ''}
+            Enrollment { state ? 'of ' + state.course_name : ''}
           </Typography>
+        </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={5}>
+					{/* {
+						users.length > 0 &&
+						<Select
+							sx={{
+								marginLeft : 'auto',
+								marginRight : '20px',
+							}}
+							displayEmpty
+							value={enroll}
+							onChange={(e) => setEnroll(e.target.value)}
+							inputProps={{ "aria-label": "Without label" }}
+						>
+							<MenuItem value={""}>
+								<em>None</em>
+							</MenuItem>
+							{users}
+						</Select>
+					} */}
+					<Autocomplete
+						value={enroll}
+						onChange={(event, newValue) => {
+							setEnroll(newValue);
+						}}
+						inputValue={searchEnroll}
+						onInputChange={(event, newInputValue) => {
+							setSearchEnroll(newInputValue);
+						}}
+						id="controllable-states-demo"
+						options={users}
+						sx={{ width: 300 }}
+						renderInput={(params) => <TextField {...params} label="Enroll user" />}
+					/>
           <Button
+						sx={{
+							marginLeft : '30px'
+						}}
             variant="contained"
             // component={RouterLink}
             // to="#"
 						// onClick={() => setCreateUser(true)}
-						onClick={() => {
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}/create`, {state:{category_code, sub_category, course_code }})
+						onClick={async () => {
+							// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/create`, {state:{category_code, sub_category, course_code }})
+							try {
+								await axios.post('/api/enrollment/create', {
+									course_id : courseData.id,
+									user_id : enroll.id,
+								})
+								dispatch({type : 'refresh_start'})
+							} catch(error) {
+								alert(error)
+							}
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New Topic Activity
+            Add user
           </Button>
         </Stack>
 
@@ -266,11 +334,7 @@ export default function Topics(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, activity_id, attachment } = row;
-											const activityData = activityList.filter(item => item.id === activity_id)
-											let activity_name = ""
-											if(activityData.length > 0)
-												activity_name = activityData[0].name
+                      const { id, name, role } = row;
                       const isItemSelected = selected.indexOf(id) !== -1;
 
                       return (
@@ -290,54 +354,25 @@ export default function Topics(props) {
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Typography variant="subtitle2" noWrap
-																// onClick={() => {
-																// 	dispatch({type : 'refresh_start'})
-																	// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
-																// }}
-															>
-																{activity_name}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              {/* <Typography variant="subtitle2" noWrap
-																onClick={() => {
-																	dispatch({type : 'refresh_start'})
-																	// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
-																}}
-															>
-																{attachment}
-                              </Typography> */}
-															<a href={activity_id === 6 ? attachment : `${window.location.origin}/${attachment}`} 
-															target="_blank"
-															style={{
-																textDecoration : 'none'
-															}} rel="noreferrer"
-															>
-																<Button
-            											variant="contained"
-																>
-																	Link
-																</Button>
-															</a>
-                            </Stack>
-                          </TableCell>
-                          {/* <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
+                              {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap
 																onClick={() => {
 																	dispatch({type : 'refresh_start'})
 																	navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
 																}}
+																sx={{
+																	cursor : 'pointer'
+																}}
 															>
 																{name}
                               </Typography>
                             </Stack>
-                          </TableCell> */}
-                          {/* <TableCell align="left">{ startDate && new Date(startDate).toDateString() + ", " + new Date(startDate).toLocaleTimeString()}</TableCell>
-                          <TableCell align="left">{ endDate && new Date(endDate).toDateString() + ", " + new Date(endDate).toLocaleTimeString()}</TableCell> */}
+                          </TableCell>
+                          <TableCell align="left">{role}</TableCell>
+                          {/* <TableCell align="left">{ startDate && new Date(startDate).toDateString() + ", " + new Date(startDate).toLocaleTimeString()}</TableCell> */}
+                          {/* <TableCell align="left">{ startDate}</TableCell>
+                          <TableCell align="left">{ endDate}</TableCell> */}
+                          {/* <TableCell align="left">{ endDate && new Date(endDate).toDateString() + ", " + new Date(endDate).toLocaleTimeString()}</TableCell> */}
                           {/* <TableCell align="left">{category_code}</TableCell>
                           <TableCell align="left">{position || "None"}</TableCell>
                           <TableCell align="left">

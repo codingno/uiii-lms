@@ -38,9 +38,10 @@ module.exports = {
     },
     findByCourseId: async function(course_id,callback){
         try {
-            const condition = ` course_id IN ${course_id}`
-            const queryString = "SELECT * FROM enrollment WHERE " + condition
-            const enrollment = await sequelize.query(queryString, {type: QueryTypes.SELECT})
+            // const condition = ` e.course_id = :course_id || c.code = :course_id `
+            const condition = isNaN(parseInt(course_id)) ? ` c.code = :course_id ` : ` c.id = :course_id`
+            const queryString = "SELECT e.*, concat(u.firstname, ' ', u.lastname) as name, r.name as role FROM enrollment e LEFT JOIN courses c ON c.id = e.course_id  LEFT JOIN users u ON u.id = e.user_id LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE " + condition
+            const enrollment = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements : {course_id}})
             callback(null, enrollment)
         } catch (err) {
             callback(err, null)

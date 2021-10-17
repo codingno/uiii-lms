@@ -25,6 +25,7 @@ import Topics from './pages/Topics'
 import CreateTopic from './pages/topic/CreateTopic'
 import TopicActivity from './pages/TopicActivity'
 import CreateTopicActivity from './pages/topicActivity/CreateTopicActivity'
+import Enrollment from './pages/Enrollment'
 // import LabTabs from './pages/courseDetail';
 
 // ----------------------------------------------------------------------
@@ -65,6 +66,8 @@ export default function Router() {
 							children : [
 								{ element: <Course />},
 							]},
+            { path: 'admin/:category_code/:sub_category/create', element: <CreateCourse /> },
+            { path: 'admin/:category_code/:sub_category/edit', element: <CreateCourse edit={true} /> },
 						{ path: 'admin/:category_code/:sub_category/:course_code',
         			element: <Navigate to={`admin/${category_code}/${sub_category}/${course_code}/topic`} />, 
 						},
@@ -82,9 +85,9 @@ export default function Router() {
 								},
 							]
 						},
-						{ path: 'admin/:category_code/:sub_category/:course_code/Enrollment',
+						{ path: 'admin/:category_code/:sub_category/:course_code/enrollment',
 							children: [
-								{ element: <Topics/>},
+								{ element: <Enrollment />},
 							]
 						},
             { path: 'admin/category', 

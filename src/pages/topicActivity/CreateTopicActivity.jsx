@@ -233,17 +233,22 @@ function CreateCourse(props) {
   const createUser = async () => {
 		
     try {
-			console.log(courseFormat, numberOfTopics, startDate, endDate, nameOfTopics);
-			const imageFile = await uploadImage()
+			let attachmentData = attachment
+			if(activityType !== 6) {
+				const imageFile = await uploadImage()
+				attachmentData = imageFile.data
+			}
+
       await axios.post("/api/activity/create", {
 				topic_id,
 				activity_id : activityType,
-				attachment : imageFile.data,
+				attachment : attachmentData,
       });
       await dispatch(getCategoryList());
       alert(`Topic created successfully.`);
       // props.setCreateUser(false)
       // navigate("/dashboard/courses/admin/sub_category/"+categoryCode);
+			dispatch({ type : 'refresh_start'})
 			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
     } catch (error) {
       if (error.response) {

@@ -27,7 +27,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { getCategoryList } from '../../store/actions/get/getCategories';
 
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 // import './create-user.css'
 
@@ -69,6 +69,7 @@ function FormParent(props) {
 }
 
 function CreateCourse(props) {
+	const { category_code, sub_category } = useParams()
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -86,11 +87,12 @@ function CreateCourse(props) {
   const [courseCategory, setCourseCategory] = useState("");
   const [courseFormat, setCourseFormat] = useState("single");
   const [courseCategoryName, setCourseCategoryName] = useState("");
-  const [categoryCode, setCategoryCode] = useState(state.category_code);
+  const [categoryCode, setCategoryCode] = useState(category_code);
   const [mainCategories, setMainCategories] = useState([]);
   const [position, setPosition] = useState("");
 
   const [activity, setActivity] = useState(1);
+  const [activityList, setActivityList] = useState([]);
 	const [startDate, setStartDate] = useState(new Date().setDate(new Date().getDate()));
 	const [endDate, setEndDate] = useState(new Date().setDate(new Date().getDate() + 1));
 
@@ -109,7 +111,7 @@ function CreateCourse(props) {
 			setCode(data.code);
 			setShortName(data.shortname);
 			setDescription(data.description);
-			setImageUrl(data.image_url);
+			setImageUrl(window.location.origin + "/" + data.image_url);
 			setCourseStatus(data.status);
 			setCourseCategory(parseInt(data.category));
 			setCourseCategoryName(data.category_name)
@@ -124,9 +126,22 @@ function CreateCourse(props) {
 		}
 	}
 
+	async function getActivityList() {
+		try {
+			const { data } = await axios.get("/api/activity")	
+			const getActivity = data.data
+			setActivityList(getActivity)
+		} catch (error) {
+			if (error.response) {
+				// alert(error.response.data.message);
+				// navigate("/dashboard/courses/admin/" + category_code + "/" + sub_category);
+			}
+		}
+	}
+
   useEffect(() => {
     if (props.edit) getUserInfo();
-
+		getActivityList()
   }, []);
 
   useEffect(() => {
@@ -136,7 +151,7 @@ function CreateCourse(props) {
       try {
         const getCategoryData = await axios.get("/api/category");
         const { data } = getCategoryData.data;
-				const categorySelected = data.filter(item => item.code === state.sub_category)[0]
+				const categorySelected = data.filter(item => item.code === sub_category)[0]
 				setCourseCategory(categorySelected.id)
 				setCourseCategoryName(categorySelected.name)
 				setCategoryCode(categorySelected.code)
@@ -145,7 +160,7 @@ function CreateCourse(props) {
         if (error.response) {
           alert(error.response.data.message);
           // props.setCreateUser(false)
-      		navigate("/dashboard/courses/admin/"+state.category_code+"/"+state.sub_category);
+      		navigate("/dashboard/courses/admin/"+category_code+"/"+sub_category);
         }
       }
     }
@@ -171,8 +186,8 @@ function CreateCourse(props) {
   const createUser = async () => {
 		
     try {
-			// const imageFile = await uploadImage()
-			const imageFile = null
+			const imageFile = await uploadImage()
+			// const imageFile = null
       await axios.post("/api/course/create", {
 				code,
 				name,
@@ -187,13 +202,15 @@ function CreateCourse(props) {
 					numberOfTopics,
 					nameOfTopics,
 					startDate,
-					endDate
+					endDate,
+					activity_id : activity
 				}
       });
       await dispatch(getCategoryList());
       alert(`Course created successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/admin/sub_category/"+categoryCode);
+			dispatch({ type : 'refresh_start'})
+      navigate(`/dashboard/courses/admin/${category_code}/`+sub_category);
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -218,13 +235,23 @@ function CreateCourse(props) {
       await dispatch(getCategoryList());
       alert(`Course updated successfully.`);
       // props.setCreateUser(false)
-      navigate("/dashboard/courses/sub_category/"+categoryCode);
+			dispatch({ type : 'refresh_start'})
+      navigate(`/dashboard/courses/admin/${category_code}/`+sub_category);
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
       }
     }
   };
+
+	const uploadFileHandle = e => {
+		console.log("masuk lah bos");
+		if(e.target.files[0]) {
+			console.log("masuk sini bos");
+		 setCourseImage(e.target.files[0])
+		 setImageUrl(URL.createObjectURL(e.target.files[0]))
+		}
+	}
 
   const mainCategoryList =
     mainCategories.length === 0
@@ -419,15 +446,16 @@ function CreateCourse(props) {
               </Stack>
             )} */}
 						{
-							 courseImage ?
-						<StackFormat>
-							<img style={{ width : '300px'}} src={courseImage && URL.createObjectURL(courseImage)} alt="course" />
-						</StackFormat>
-						:
-						image_url &&
-						<StackFormat>
-							<img style={{ width : '300px'}} src={'/' + image_url} alt="course" />
-						</StackFormat>
+						// 	 courseImage ?
+						// <StackFormat>
+						// 	<img style={{ width : '300px'}} src={courseImage && URL.createObjectURL(courseImage)} alt="course" />
+						// </StackFormat>
+						// :
+						// image_url &&
+						// <StackFormat>
+						// 	<img style={{ width : '300px'}} src={image_url} alt="course" />
+						// </StackFormat>
+						""
 						}
             <Stack
               direction="row"
@@ -441,16 +469,23 @@ function CreateCourse(props) {
               }}
             >
               <span style={{ width: "35%" }}>Course Image</span>
-              <FormControl component="fieldset">
-								<label htmlFor="contained-button-file">
-								<Input accept="image/*" id="contained-button-file" multiple type="file" 
-									sx={{ display : 'none'}}
-                  onChange={(e) => e.target.files[0] && setCourseImage(e.target.files[0])}
-								/>
-								<Button variant="contained" component="span">
-									Upload File
-								</Button>
-							</label>
+              <FormControl component="fieldset" sx={{ width: "65%"}}>
+								<div style={{ width : '100%', height : '100%', display: 'flex', flexDirection : 'row', alignItems: 'flex-end'}}>
+									<label htmlFor="contained-button-file">
+										<Input accept="image/*" id="contained-button-file" multiple type="file" 
+											sx={{ display : 'none'}}
+											// onChange={(e) => e.target.files[0] && setCourseImage(e.target.files[0])}
+											onChange={uploadFileHandle}
+										/>
+										<Button variant="contained" component="span">
+											Upload File
+										</Button>
+									</label>
+									{
+										image_url &&
+										<img style={{ height : '100px', display : 'inline-block', marginLeft: '20px'}} src={image_url} alt="course" />
+									}
+								</div>
               </FormControl>
             </Stack>
             <Stack
@@ -487,6 +522,10 @@ function CreateCourse(props) {
                 </RadioGroup>
               </FormControl>
             </Stack>
+
+						{
+							!props.edit &&
+							<>
               <Stack
                 direction="row"
                 alignItems="center"
@@ -517,7 +556,7 @@ function CreateCourse(props) {
                 </Select>
               </Stack>
 							{
-								courseFormat === 'single' &&
+								( courseFormat === 'single' && activityList.length > 0 ) &&
 								<>
 									<FormContainer label="Name of Topics" value={nameOfTopics} setValue={setNameOfTopics} type="text" helper="Fill text or blank"/>
 									<FormParent label="Type of activity" >
@@ -527,7 +566,16 @@ function CreateCourse(props) {
 											onChange={(e) => setActivity(e.target.value)}
 											inputProps={{ "aria-label": "Without label" }}
 										>
-											<MenuItem value={1}>
+											{
+												activityList.map(item => {
+													return (
+														<MenuItem value={item.id}>
+															{item.name}
+														</MenuItem>
+													)
+												})
+											}
+											{/* <MenuItem value={1}>
 												Assignment
 											</MenuItem>
 											<MenuItem value={2}>
@@ -535,7 +583,7 @@ function CreateCourse(props) {
 											</MenuItem>
 											<MenuItem value={3}>
 												Zoom Meeting
-											</MenuItem>
+											</MenuItem> */}
 										</Select>
 									</FormParent>
 									<FormParent label="Topic Start Date" >
@@ -570,7 +618,8 @@ function CreateCourse(props) {
 								courseFormat === 'weekly') &&
             		<FormContainer label="Number of sections" value={numberOfTopics} setValue={setNumberOfTopics} type="number" helper="Fill number" />
 							}
-
+							</>
+				}
             {/* <Stack direction="row" alignItems="center" ml={19} mt={2} mb={5} > */}
             <Stack
               direction="row"

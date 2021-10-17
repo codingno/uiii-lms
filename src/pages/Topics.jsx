@@ -201,7 +201,7 @@ export default function Topics(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/create`, {state:{category_code, sub_category, course_code }})
+							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/create`, {state:{category_code, sub_category, course_code }})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >

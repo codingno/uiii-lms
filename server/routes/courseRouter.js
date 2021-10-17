@@ -5,6 +5,7 @@ const async = require('async')
 const courseService = require('../services/courseService')
 const courseCategoryService = require('../services/courseCategoryService')
 const topicService= require('../services/topicService')
+const topicActivityService= require('../services/topicActivityService')
 const categoryService = require('../services/categoryService')
 // const e = require('express')
 const getCourseInfo = async (req, res) => {
@@ -91,7 +92,23 @@ const createCourse = async (req, res) => {
 				topicService.create(topicInfo, function(err, result){
 					if(err)
 						return cb({message: err})
-					return cb(null, course)	
+
+					const topicActivityInfo = {
+						topic_id: result[0],
+						activity_id: req.body.topics.activity_id ? req.body.topics.activity_id : '',
+						attachment: '',
+						createdAt: new Date(),
+						createdBy: req.user.id,
+						updatedAt: null,
+						updatedBy: null,
+						}
+					topicActivityService.create(topicActivityInfo, function(err, result){
+						if(err)
+							return cb({message: err})
+						else {
+							return cb(null, course)
+						}
+					})
 				})
 			} else {
 				const numberOfTopics = req.body.topics.numberOfTopics
