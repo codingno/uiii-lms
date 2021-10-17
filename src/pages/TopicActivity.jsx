@@ -26,7 +26,7 @@ import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/topic';
+import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/topicActivity';
 
 // import CreateUser from './user/CreateUser';
 import BreadCrumb from '../components/Breadcrumb'
@@ -38,15 +38,17 @@ import axios from 'axios';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
+  // { id: 'name', label: 'Name', alignRight: false },
   // { id: 'shortname', label: 'Short Name', alignRight: false },
   // { id: 'code', label: 'Course Code', alignRight: false },
   // { id: 'category', label: 'Category', alignRight: false },
   // { id: 'position', label: 'Position', alignRight: false },
-  { id: 'startDate', label: 'Start Date', alignRight: false },
-  { id: 'endDate', label: 'End Date', alignRight: false },
+  // { id: 'startDate', label: 'Start Date', alignRight: false },
+  // { id: 'endDate', label: 'End Date', alignRight: false },
   // { id: 'status', label: 'Status', alignRight: true },
-  { id: '' }
+  { id: 'activity_id', label: 'Activity', alignRight: false },
+  { id: 'attachment', label: 'Attachment', alignRight: false },
+  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -81,7 +83,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Topics(props) {
-	const {category_code, sub_category, course_code} = useParams()
+	const {category_code, sub_category, course_code, topic_id} = useParams()
   const { state } = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -93,6 +95,9 @@ export default function Topics(props) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const {courseList, refresh}= useSelector((state) => state);
   const [topicList, setTopicList] = useState([]);
+  const [topicName, setTopicName] = useState("");
+
+  const [activityList, setActivityList] = useState([]);
 
 	const [isLoading, setLoading] = useState(false)
 
@@ -107,17 +112,40 @@ export default function Topics(props) {
 			}
 	}
 
-	async function getTopicList() {
+	async function getTopicInfo() {
 		try {
-			const { data } = await axios.get('/api/topic/list/' + course_code)	
+			const { data } = await axios.get('/api/topic/info/' + topic_id)
+			const topicInfo = data.data
+			setTopicName(topicInfo.name)
+		} catch (error) {
+			alert(error)	
+		}
+	}
+
+	async function getTopicActivityList() {
+		try {
+			const { data } = await axios.get('/api/activity/topic/' + topic_id)	
+      console.log(`🚀 ~ file: TopicActivity.jsx ~ line 124 ~ getTopicActivityList ~ data`, data)
 			setTopicList(data.data)
 		} catch (error) {
 			alert(error)	
 		}
 	}
 
+
+	async function getActivityList() {
+		try {
+			const { data } = await axios.get('/api/activity/')	
+			setActivityList(data.data)
+		} catch (error) {
+			alert(error)	
+		}
+	}
+
   useEffect(() => {
-		getTopicList()
+		getTopicActivityList()
+		getTopicInfo()
+		getActivityList()
   }, []);
 
   useEffect(() => {
@@ -186,14 +214,14 @@ export default function Topics(props) {
 
   // return categoryList.data && ( 
   return ( 
-    <Page title="Topics | UIII LMS">
+    <Page title="Topic Activity | UIII LMS">
       <Container>
 				<Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
 				</Stack>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Topics { state ? 'of ' + state.course_name : ''}
+            Topic Activity { topicName.length > 0 ? 'of ' + topicName : ''}
           </Typography>
           <Button
             variant="contained"
@@ -201,11 +229,11 @@ export default function Topics(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/create`, {state:{category_code, sub_category, course_code }})
+							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}/create`, {state:{category_code, sub_category, course_code }})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New Topic
+            New Topic Activity
           </Button>
         </Stack>
 
@@ -238,7 +266,11 @@ export default function Topics(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, startDate, endDate } = row;
+                      const { id, activity_id, attachment } = row;
+											const activityData = activityList.filter(item => item.id === activity_id)
+											let activity_name = ""
+											if(activityData.length > 0)
+												activity_name = activityData[0].name
                       const isItemSelected = selected.indexOf(id) !== -1;
 
                       return (
@@ -258,24 +290,47 @@ export default function Topics(props) {
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              {/* <Avatar alt={name} src={avatarUrl} /> */}
+                              <Typography variant="subtitle2" noWrap
+																// onClick={() => {
+																// 	dispatch({type : 'refresh_start'})
+																	// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																// }}
+															>
+																{activity_name}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              {/* <Typography variant="subtitle2" noWrap
+																onClick={() => {
+																	dispatch({type : 'refresh_start'})
+																	// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																}}
+															>
+																{attachment}
+                              </Typography> */}
+															<a href={`${window.location.origin}/${attachment}`} target="_blank">
+																<Button>
+																	Link
+																</Button>
+															</a>
+                            </Stack>
+                          </TableCell>
+                          {/* <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
                               <Typography variant="subtitle2" noWrap
 																onClick={() => {
 																	dispatch({type : 'refresh_start'})
 																	navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
 																}}
-																sx={{
-																	cursor : 'pointer'
-																}}
 															>
 																{name}
                               </Typography>
                             </Stack>
-                          </TableCell>
-                          {/* <TableCell align="left">{ startDate && new Date(startDate).toDateString() + ", " + new Date(startDate).toLocaleTimeString()}</TableCell> */}
-                          <TableCell align="left">{ startDate}</TableCell>
-                          <TableCell align="left">{ endDate}</TableCell>
-                          {/* <TableCell align="left">{ endDate && new Date(endDate).toDateString() + ", " + new Date(endDate).toLocaleTimeString()}</TableCell> */}
+                          </TableCell> */}
+                          {/* <TableCell align="left">{ startDate && new Date(startDate).toDateString() + ", " + new Date(startDate).toLocaleTimeString()}</TableCell>
+                          <TableCell align="left">{ endDate && new Date(endDate).toDateString() + ", " + new Date(endDate).toLocaleTimeString()}</TableCell> */}
                           {/* <TableCell align="left">{category_code}</TableCell>
                           <TableCell align="left">{position || "None"}</TableCell>
                           <TableCell align="left">
