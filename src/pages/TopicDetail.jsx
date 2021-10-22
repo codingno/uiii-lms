@@ -7,6 +7,8 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import { DateRange } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
@@ -18,6 +20,7 @@ const Accordion = styled((props) => (
     display: 'none',
   },
 }));
+
 
 const AccordionSummary = styled((props) => (
   <MuiAccordionSummary
@@ -45,6 +48,16 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 export default function CustomizedAccordions(topic) {
   const [expanded, setExpanded] = React.useState('panel1');
+  const dispatch = useDispatch()
+  const handleAttend = async (data) => {
+    try {
+      await axios.post('/api/attend/create', data)
+      dispatch({type: 'reset_getTopicCourse'})
+      return alert("Success Attend")
+    } catch (error) {
+      return alert(error)
+    }
+  }
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -60,21 +73,45 @@ export default function CustomizedAccordions(topic) {
           <Typography>
             <b>Start Date:</b>
             <br />
-            <DateRange /> {item.startDate}
+            <DateRange /> {item.startDateString}
             <br />
             <b>End Date:</b>
             <br />
-            <DateRange /> {item.endDate}
+            <DateRange /> {item.endDateString}
             <br />
+            {item.attendAt ? (
+              <>
+              <b>Attend Date:</b>
+              <br />
+              <DateRange /> {item.attendAtString} {item.attendDescription ? (item.attendDescription) : null}
+              <br />
+              </>
+            ):<></>}
             <Stack direction="row" spacing={2}>
-                <Button variant="contained" disabled={new Date() >= new Date(item.startDate) && new Date() <= new Date(item.endDate)}>Attend</Button>
+                <Button key={item.id} variant="contained" 
+                  onClick={async () => {
+                    try {
+                      await axios.post('/api/attend/create', {topic_id: item.id, course_id: item.course_id})
+                      dispatch({type: 'reset_getTopicCourse'})
+                      return alert("Success Attend")
+                    } catch (error) {
+                      return alert(error)
+                    }
+                  }
+                } 
+                  disabled={(new Date() <= item.startDate || new Date() >= item.endDate) || item.attendAt}
+                >
+                    Attend
+                </Button>
+                <>
                 {item.activity.length > 0 ?
                 item.activity.map(activity =>{
                     return (
-                        <Button key={activity.id} variant="contained" href={activity.activity_id == 6 ? activity.attachment : '/' + activity.attachment} target="_blank">{activity.activity_name}</Button> 
+                        <Button key={activity.id} variant="contained" href={activity.activity_id === 6 ? activity.attachment : '/' + activity.attachment} target="_blank">{activity.activity_name}</Button> 
                     )
                 }) 
                 : <></>}
+                </>
             </Stack>
           </Typography>
         </AccordionDetails>

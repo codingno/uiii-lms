@@ -19,7 +19,6 @@ const upload = multer({ storage: storage })
 
 const uploadImage = 
   (req, res) => {
-		console.log(req.file);
     const file = req.file.path;
     if (!file) {
       res.status(400).send({

@@ -57,7 +57,6 @@ export default function App() {
 						if(validToken)
 							navigate(path)
 					} catch (error) {
-						console.log({error});
 						alert('Invalid Token')
 						navigate('/login')
 					}

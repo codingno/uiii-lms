@@ -164,14 +164,12 @@ export default function Courses(props) {
 
 	const gotoTopic = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			console.log(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/topic`);
 			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/topic`, { state : { course_name : name, course_id : id }})
 		}
 	}
 
 	const gotoEnrollment = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			console.log(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/enrollment`);
 			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/enrollment`, { state : { course_name : name, course_id : id }})
 		}
 	}

@@ -73,7 +73,6 @@ router.post('/resetPasswordToken', function(req, res){
 				data.resetPasswordExpired = expiredDate;
 	
 				userAuthService.update(data, function(err, updated) {
-					console.log({err, data, updated});
 					if(err)
 						return res.badRequest(err)
 					else
@@ -171,7 +170,6 @@ router.post('/resetPasswordToken', function(req, res){
 				html
 			};
 			transporter.sendMail(mailOptions, function(error, info){
-				console.log({error, info});
 				if (error) {
 				  res.badRequest({err: 'failed to send Email'})
 				} else {
@@ -183,7 +181,6 @@ router.post('/resetPasswordToken', function(req, res){
 })
 
 router.get('/checkResetToken/:token', function(req, res){
-	console.log('kesini lah', req.params.token);
 	userAuthService.findByPasswordToken(req.params.token, function(err, data){
 		if(err)
 			res.badRequest('invalid token')

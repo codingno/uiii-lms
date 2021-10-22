@@ -39,10 +39,10 @@ module.exports = {
             callback(err, null)
         }
     },
-    findByCourseCategory: async function(course_id,callback){
+    findByCourseCategory: async function(course_id, user_id,callback){
         try {
             const condition = ` t.course_id = :course_id || c.code = :course_id`
-            const queryString = "SELECT t.*, ta.attachment, a.id activity_id, a.name activity_name FROM topic t LEFT JOIN courses c ON c.id = t.course_id LEFT JOIN topic_activity ta ON ta.topic_id = t.id LEFT JOIN activity a ON ta.activity_id = a.id WHERE " + condition + " GROUP BY t.id"
+            const queryString = "SELECT t.*, ta.attachment, a.id activity_id, a.name activity_name, ca.attendAt, ca.description attendDescription FROM topic t LEFT JOIN course_attend ca ON t.id = ca.topic_id" + (user_id ? " AND ca.user_id = " + user_id : "") + " LEFT JOIN courses c ON c.id = t.course_id AND ca.status = 1 LEFT JOIN topic_activity ta ON ta.topic_id = t.id LEFT JOIN activity a ON ta.activity_id = a.id WHERE " + condition + " GROUP BY t.id"
             const topic = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements: {course_id}})
             callback(null, topic)
         } catch (err) {

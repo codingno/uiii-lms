@@ -14,14 +14,15 @@ const getTopicById = async (req, res) => {
 	})
 }
 const getAllTopicByCourseId = async (req, res) => {
-	topicService.findByCourseCategory(req.params.course_id || req.query.course_id,function(err, result){
+	topicService.findByCourseCategory(req.params.course_id || req.query.course_id, req.user.role === "student" ? req.user.id : null,function(err, result){
 		const dataResult = []
 		if(result.length > 0)
 		async.eachSeries(result, async.ensureAsync(function(item, next){
 			topicActivityService.findByTopic(item.id, function(err, activity){
 				item.activity = activity
-				item.startDate = moment(item.startDate).format('MMMM Do YYYY, h:mm a')
-				item.endDate = moment(item.endDate).format('MMMM Do YYYY, h:mm a')
+				item.startDateString = moment(item.startDate).utc().format('MMMM Do YYYY, h:mm a')
+				item.endDateString = moment(item.endDate).utc().format('MMMM Do YYYY, h:mm a')
+				item.attendAtString = item.attendAt ? moment(item.attendAt).utc().format('MMMM Do YYYY, h:mm a') : null
 				dataResult.push(item)
 				next()
 			})

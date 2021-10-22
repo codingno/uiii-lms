@@ -52,7 +52,6 @@ const updateEnrollment = async (req, res) => {
     })
 }
 const deleteEnrollment = async (req, res) => {
-		console.log(req.body);
 		if(!req.body.id)
 			return res.badRequest({ message : 'Missing Parameters'})
     // const data = {

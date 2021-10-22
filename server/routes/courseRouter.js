@@ -1,4 +1,3 @@
-const { Sequelize } = require('sequelize')
 const express = require('express')
 const route = express.Router()
 const async = require('async')
