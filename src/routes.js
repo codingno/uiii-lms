@@ -27,6 +27,7 @@ import TopicActivity from './pages/TopicActivity'
 import CreateTopicActivity from './pages/topicActivity/CreateTopicActivity'
 import Enrollment from './pages/Enrollment'
 import CalendarLayout from './pages/Calendar';
+import Grade from './pages/Grade'
 // import LabTabs from './pages/courseDetail';
 
 // ----------------------------------------------------------------------
@@ -103,6 +104,11 @@ export default function Router() {
 						{ path: 'admin/:category_code/:sub_category/:course_code/enrollment',
 							children: [
 								{ element: <Enrollment />},
+							]
+						},
+						{ path: 'admin/:category_code/:sub_category/:course_code/grade',
+							children: [
+								{ element: <Grade />},
 							]
 						},
             { path: 'admin/category', 

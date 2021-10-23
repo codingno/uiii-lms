@@ -76,15 +76,16 @@ module.exports = {
     },
     delete: async function (user_id, callback) {
         try {
-            const queryString = "DELETE FROM user_auth WHERE user_id = " + user_id
+            const queryString = "DELETE FROM user_auth WHERE user_id = :user_id"
             await sequelize.query(queryString, {
-                type: QueryTypes.DELETE
+                type: QueryTypes.DELETE,
+								replacements : {user_id}
             })
             callback(null, {
                 message: "successfully deleted data"
             })
         } catch (err) {
-            callback(err, null)
+            callback(res => res.internalServerError(err.message))
         }
     },
     update: async function (data, callback) {

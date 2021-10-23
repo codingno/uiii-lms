@@ -1,33 +1,23 @@
 import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 
-import { useDispatch } from 'react-redux';
-
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
 export default function UserMoreMenu(props) {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const { category_code, sub_category, course_code } = useParams()
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-
-	async function deleteUser(id) {
-		console.log({id});
-		try {
-			const { data } = await axios.delete('/api/user/delete/'+id)
-			dispatch({type : 'refresh_start'})
-		} catch (error) {
-			alert(error.response.data)	
-		}
-	}
 
   return (
     <>
@@ -46,7 +36,11 @@ export default function UserMoreMenu(props) {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}
-					onClick={() => deleteUser(props.id)}
+					onClick={async () => {
+						// alert(props.code)
+						await axios.delete('/api/grade/delete/' + props.code)
+						dispatch({type : 'refresh_start'})
+					}}
 				>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
@@ -54,7 +48,9 @@ export default function UserMoreMenu(props) {
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem sx={{ color: 'text.secondary' }} onClick={() => navigate('/dashboard/user/edit', { state:{ username: props.username }}) }>
+        <MenuItem sx={{ color: 'text.secondary' }} 
+						onClick={() => props.editGrade()}
+				>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>

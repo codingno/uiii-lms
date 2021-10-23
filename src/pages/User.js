@@ -236,7 +236,7 @@ export default function User(props) {
                           <TableCell align="left">{username}</TableCell>
                           <TableCell align="left">{role_name}</TableCell>
                           <TableCell align="right">
-                            <UserMoreMenu username={username} />
+                            <UserMoreMenu username={username} id={id} />
                           </TableCell>
                         </TableRow>
                       );

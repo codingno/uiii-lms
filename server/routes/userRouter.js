@@ -86,6 +86,14 @@ const updateUser = async (req, res) => {
 	})
 }
 
+function deleteUser(req, res) {
+	userService.delete(req.params.id, function (err, data) {
+		if(err)
+			return err(res)	
+		res.ok("User successfully deleted.")
+	})
+}
+
 const { isAdmin, isLogin, isNonEditTeacher } = require('../config/policies')
 
 route.get('/', isNonEditTeacher, getAllUser )
@@ -94,5 +102,6 @@ route.get('/roles', isNonEditTeacher, getAllRoles )
 route.put('/create', isAdmin, createUser )
 route.put('/createUserRole', isAdmin, createUserRole )
 route.patch('/update', isAdmin, updateUser )
+route.delete('/delete/:id', isAdmin, deleteUser )
 
 module.exports = route

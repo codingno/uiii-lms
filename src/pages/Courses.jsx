@@ -188,6 +188,12 @@ export default function Courses(props) {
 		}
 	}
 
+	const gotoGrade = (code, name, id) => {
+		if(category_code && sub_category && code) {
+			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/grade`, { state : { course_name : name, course_id : id }})
+		}
+	}
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(courseList.data).length) : 0;
 
   const filteredUsers = courseList.data ? applySortFilter(courseList.data.length > 0 ? JSON.parse(courseList.data) : [], getComparator(order, orderBy), filterName) : [];
@@ -306,6 +312,7 @@ export default function Courses(props) {
 															code={code} 
 															gotoTopic={() => gotoTopic(code, name, id)} 
 															gotoEnrollment={() => gotoEnrollment(code, name, id)} 
+															gotoGrade={() => gotoGrade(code, name, id)} 
 															/>
                           </TableCell>
                         </TableRow>

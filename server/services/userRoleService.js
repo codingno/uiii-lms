@@ -38,12 +38,12 @@ module.exports = {
     },
     delete: async function(id, callback){
         try {
-            const queryString = "DELETE FROM user_role WHERE id = " + id
-            await sequelize.query(queryString, {type: QueryTypes.DELETE})
+            const queryString = "DELETE FROM user_role WHERE user_id = :id"
+            await sequelize.query(queryString, {type: QueryTypes.DELETE, replacements : {id}})
             callback(null, {message: "successfully deleted data"})
         }
         catch(err) {
-            callback(err, null)
+            callback(res => res.internalServerError(err.message))
         }
     },
     update: async function(data, callback){
