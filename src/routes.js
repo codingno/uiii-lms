@@ -26,6 +26,7 @@ import CreateTopic from './pages/topic/CreateTopic'
 import TopicActivity from './pages/TopicActivity'
 import CreateTopicActivity from './pages/topicActivity/CreateTopicActivity'
 import Enrollment from './pages/Enrollment'
+import CalendarLayout from './pages/Calendar';
 // import LabTabs from './pages/courseDetail';
 
 // ----------------------------------------------------------------------
@@ -46,6 +47,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" /> },
         // { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
+        { path: 'calendar', element: <CalendarLayout /> },
         { path: 'user',
 					children: [
 						{ element: <User />,},

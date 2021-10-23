@@ -9,6 +9,7 @@ import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
 import fileFill from '@iconify/icons-eva/file-fill';
 import activityFill from '@iconify/icons-eva/activity-fill';
 import bookFill from '@iconify/icons-eva/book-fill';
+import calendarFill from '@iconify/icons-eva/calendar-fill'
 
 // ----------------------------------------------------------------------
 
@@ -20,6 +21,12 @@ const sidebarConfig = [
     path: '/dashboard/app',
     role:[8],
     icon: getIcon(pieChart2Fill)
+  },
+  {
+    title: 'Calendar',
+    path: '/dashboard/calendar',
+    role: [8],
+    icon: getIcon(calendarFill)
   },
   {
     title: 'User',

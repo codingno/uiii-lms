@@ -17,7 +17,7 @@ var BaseUrlClient = process.env.BASE_URL_CLIENT || 'localhost:3031'
   /* GET users listing. */
 router.post('/login', function(req, res, next) {
     if(!req.body.email || !req.body.password){
-		return res.badRequest({message: 'Parameter tidak lengkap'});
+		return res.badRequest({message: 'Incomplete Parameters'});
 	  }
 
 	  if(req.user) {
@@ -33,8 +33,8 @@ router.get('/logout', function(req, res, next) {
 });
 
 router.post('/register', function(req, res, next) {
-    if(!req.body.email || !req.body.password || !req.body.username){
-		return res.badRequest({message: 'Parameter tidak lengkap'});
+    if(!req.body.email || !req.body.password || !req.body.firstname){
+		return res.badRequest({message: 'Incomplete Parameters'});
 	  }
 
 	  if(req.user) {
