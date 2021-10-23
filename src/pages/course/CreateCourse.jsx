@@ -69,12 +69,13 @@ function FormParent(props) {
 }
 
 function CreateCourse(props) {
-	const { category_code, sub_category } = useParams()
+	const { category_code, sub_category, course_code } = useParams()
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // const [categoryID, setCategoryID] = useState(null);
+  const [courseData, setCourseData] = useState({});
   const [courseID, setCourseID] = useState(null);
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
@@ -104,8 +105,9 @@ function CreateCourse(props) {
 	async function getUserInfo() {
 		setLoading(true)
 		try {
-			const user = await axios.get("/api/course/info/" + state.code);
+			const user = await axios.get("/api/course/info/" + course_code);
 			const { data } = user.data;
+			setCourseData(data)
 			setCourseID(data.id);
 			setName(data.name);
 			setCode(data.code);
@@ -120,7 +122,7 @@ function CreateCourse(props) {
 			setLoading(false)
 		} catch (error) {
 			if (error.response) {
-				alert(error.response.data.message);
+				alert(error.response.data);
 				navigate("/dashboard/courses/admin/list");
 			}
 		}
@@ -133,14 +135,14 @@ function CreateCourse(props) {
 			setActivityList(getActivity)
 		} catch (error) {
 			if (error.response) {
-				// alert(error.response.data.message);
+				// alert(error.response.data);
 				// navigate("/dashboard/courses/admin/" + category_code + "/" + sub_category);
 			}
 		}
 	}
 
   useEffect(() => {
-    if (props.edit) getUserInfo();
+    if (course_code) getUserInfo();
 		getActivityList()
   }, []);
 
@@ -158,7 +160,7 @@ function CreateCourse(props) {
         setMainCategories(data);
       } catch (error) {
         if (error.response) {
-          alert(error.response.data.message);
+          alert(error.response.data);
           // props.setCreateUser(false)
       		navigate("/dashboard/courses/admin/"+category_code+"/"+sub_category);
         }
@@ -213,14 +215,17 @@ function CreateCourse(props) {
       navigate(`/dashboard/courses/admin/${category_code}/`+sub_category);
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        alert(error.response.data);
       }
     }
   };
 
   const updateUser = async () => {
     try {
-			const imageFile = await uploadImage()
+			const currentImage = image_url.split(window.location.origin + "/")[1]
+			let imageFile = {}
+			if(currentImage !== courseData.image_url)
+				imageFile = await uploadImage()
       await axios.patch("/api/course/update", {
         id: courseID,
 				code,
@@ -230,24 +235,21 @@ function CreateCourse(props) {
 				position,
 				category : courseCategory,
 				status : courseStatus,	
-				image_url : imageFile ? imageFile.data : null
+				image_url : imageFile.data || courseData.image_url
       });
       await dispatch(getCategoryList());
       alert(`Course updated successfully.`);
-      // props.setCreateUser(false)
 			dispatch({ type : 'refresh_start'})
       navigate(`/dashboard/courses/admin/${category_code}/`+sub_category);
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        alert(error.response.data);
       }
     }
   };
 
 	const uploadFileHandle = e => {
-		console.log("masuk lah bos");
 		if(e.target.files[0]) {
-			console.log("masuk sini bos");
 		 setCourseImage(e.target.files[0])
 		 setImageUrl(URL.createObjectURL(e.target.files[0]))
 		}

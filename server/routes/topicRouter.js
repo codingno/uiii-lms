@@ -74,11 +74,39 @@ const updateTopic = async (req, res) => {
 
 	})
 }
+
+async function deleteTopic(req, res) {
+	topicService.delete(req.params.id, function (err, result) {
+		if(err)
+			return err(res)	
+		return res.ok(result)
+	})	
+}
+
+async function deleteTopicActivity(req, res) {
+	topicService.deleteActivity(req.params.id, function (err, result) {
+		if(err)
+			return err(res)	
+		return res.ok(result)
+	})	
+}
+
+async function getAllTopicByCourseCode(req, res) {
+	topicService.findByCourseCode(req.params.course_code, function (err, data) {
+		if(err)
+			return err(res)	
+		return res.ok({data})
+	})	
+}
+
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
 route.get('/list', getAllTopicByCourseId )
 route.get('/list/:course_id', getAllTopicByCourseId )
+route.get('/list/manage/:course_code', getAllTopicByCourseCode )
 route.get('/info/:topic_id', getTopicById )
 route.post('/create', isTeacher, createTopic )
 route.patch('/update', isTeacher, updateTopic )
+route.delete('/delete/:id', isTeacher, deleteTopic )
+route.delete('/activity/delete/:id', isTeacher, deleteTopicActivity )
 
 module.exports = route

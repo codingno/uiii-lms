@@ -121,7 +121,7 @@ function CreateCourse(props) {
 			setLoading(false)
 		} catch (error) {
 			if (error.response) {
-				alert(error.response.data.message);
+				alert(error.response.data);
 				navigate("/dashboard/courses/admin/list");
 			}
 		}
@@ -138,7 +138,7 @@ function CreateCourse(props) {
 			setEndDate(data.endDate)
 		} catch(error) {
 			if (error.response) {
-				alert(error.response.data.message);
+				alert(error.response.data);
 				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}`, {state:{category_code, sub_category, course_code }})
 			}
 		}
@@ -164,7 +164,7 @@ function CreateCourse(props) {
         setMainCategories(data);
       } catch (error) {
         if (error.response) {
-          alert(error.response.data.message);
+          alert(error.response.data);
           // props.setCreateUser(false)
       		// navigate("/dashboard/courses/admin/"+state.category_code+"/"+state.sub_category);
         }
@@ -206,7 +206,7 @@ function CreateCourse(props) {
 			gotoTopic(course_code, courseName, courseID)
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        alert(error.response.data);
       }
     }
   };
@@ -227,14 +227,14 @@ function CreateCourse(props) {
       // navigate("/dashboard/courses/sub_category/"+categoryCode);
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        alert(error.response.data);
       }
     }
   };
 
 	const gotoTopic = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}`, { state : { course_name : name, course_id : id }})
+			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/topic`, { state : { course_name : name, course_id : id }})
 		}
 	}
 

@@ -7,6 +7,7 @@ import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 import { useDispatch } from "react-redux";
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -16,6 +17,20 @@ export default function UserMoreMenu(props) {
 	const { category_code, sub_category, course_code, topic_id } = useParams()
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+
+	const [disableDeleteButton, setDisableDeleteButton] = useState(false)
+
+	async function deleteCategory(category_code) {
+		setDisableDeleteButton(true)
+		try {
+			const { data } = await axios.delete('/api/topic/activity/delete/' + category_code)	
+			alert(data.message)
+		} catch (error) {
+			alert(error.response.data)	
+		}
+		dispatch({ type : 'refresh_start'})
+		setDisableDeleteButton(false)
+	}
 
   return (
     <>
@@ -33,7 +48,9 @@ export default function UserMoreMenu(props) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem sx={{ color: 'text.secondary' }}
+					onClick={() => deleteCategory(props.code)} disabled={disableDeleteButton}
+				>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>

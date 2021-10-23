@@ -125,7 +125,6 @@ export default function Topics(props) {
 	async function getTopicActivityList() {
 		try {
 			const { data } = await axios.get('/api/activity/topic/' + topic_id)	
-      console.log(`🚀 ~ file: TopicActivity.jsx ~ line 124 ~ getTopicActivityList ~ data`, data)
 			setTopicList(data.data)
 		} catch (error) {
 			alert(error)	
@@ -143,14 +142,11 @@ export default function Topics(props) {
 	}
 
   useEffect(() => {
-		getTopicActivityList()
-		getTopicInfo()
-		getActivityList()
-  }, []);
-
-  useEffect(() => {
 		if (refresh) {
   	  getDataCategoryList();
+			getTopicActivityList()
+			getTopicInfo()
+			getActivityList()
 		}
   }, [refresh]);
 
@@ -216,9 +212,9 @@ export default function Topics(props) {
   return ( 
     <Page title="Topic Activity | UIII LMS">
       <Container>
-				<Stack sx={{ marginBottom: '3em'}}>
+				{/* <Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
-				</Stack>
+				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Topic Activity { topicName.length > 0 ? 'of ' + topicName : ''}

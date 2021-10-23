@@ -12,11 +12,13 @@ import AccountPopover from './AccountPopover';
 import LanguagePopover from './LanguagePopover';
 import NotificationsPopover from './NotificationsPopover';
 
+import BreadCrumb from '../../components/Breadcrumb'
+
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
-const APPBAR_MOBILE = 64;
-const APPBAR_DESKTOP = 92;
+const APPBAR_MOBILE = 54;
+const APPBAR_DESKTOP = 72;
 
 const RootStyle = styled(AppBar)(({ theme }) => ({
   boxShadow: 'none',
@@ -61,6 +63,10 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           <AccountPopover />
         </Stack>
       </ToolbarStyle>
+				{/* <Stack sx={{ marginBottom: '3em'}}> */}
+				<Stack sx={{ marginLeft: '3em', marginBottom: '0.5em'}}>
+					<BreadCrumb />
+				</Stack>
     </RootStyle>
   );
 }

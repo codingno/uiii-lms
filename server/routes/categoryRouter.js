@@ -41,10 +41,12 @@ const createCategory = async (req, res) => {
         status: req.body.status ? req.body.status : 1
     }
     categoryService.create(data, function (err, result) {
-        res.json({
-            err,
-            data : result
-        })
+			if(err)
+				return err(res)
+			return res.json({
+					err,
+					data : result
+			})
     })
 }
 const updateCategory = async (req, res) => {
@@ -66,26 +68,27 @@ const updateCategory = async (req, res) => {
 }
 const deleteCategory = async (req, res) => {
     const data = {
-        id: req.body.id
+        code: req.params.category_code
     }
-    categoryService.delete(data, function (err, result) {
-        res.json({
-            err,
-            result
-        })
+    categoryService.delete(res, data, function (err, result) {
+        // res.json({
+        //     err,
+        //     result
+        // })
     })
 }
 const isMainCategory = (req, res, next) => {
 	req.main_categories = true
 	return next()
 }
+const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
 route.get('/', getAllCategory)
 // route.get('/:category_code/sub_category', getAllCategory)
 route.get('/main_category', isMainCategory, getAllCategory)
 route.get('/main_category/:category_code', isMainCategory, getAllCategory)
 route.get('/info/:category_id', getCategory)
-route.post('/create', createCategory)
+route.post('/create', isAdmin, createCategory)
 route.patch('/update', updateCategory)
-route.delete('/delete', deleteCategory)
+route.delete('/delete/:category_code', isAdmin, deleteCategory)
 
 module.exports = route

@@ -51,12 +51,26 @@ module.exports = {
     },
     delete: async function(id, callback){
         try {
-            const queryString = "DELETE FROM topic WHERE id = " + id
-            await sequelize.query(queryString, {type: QueryTypes.DELETE})
+            const checkActivity = "select * from topic_activity where topic_id = :id"
+            const activityData = await sequelize.query(checkActivity, {type: QueryTypes.SELECT, replacements : {id}})
+						if(activityData.length > 0)
+							return callback(res => res.badRequest("Topic still have topic activity."))
+            const queryString = "DELETE FROM topic WHERE id = :id"
+            await sequelize.query(queryString, {type: QueryTypes.DELETE, replacements : {id}})
             callback(null, {message: "successfully deleted data"})
         }
         catch(err) {
-            callback(err, null)
+            callback(res => res.internalServerError(err.message))
+        }
+    },
+    deleteActivity: async function(id, callback){
+        try {
+            const queryString = "DELETE FROM topic_activity WHERE id = :id"
+            await sequelize.query(queryString, {type: QueryTypes.DELETE, replacements : {id}})
+            callback(null, {message: "successfully deleted data"})
+        }
+        catch(err) {
+            callback(res => res.internalServerError(err.message))
         }
     },
     update: async function(data, callback){
@@ -71,5 +85,15 @@ module.exports = {
         } catch (err) {
                 callback(err, null)
         }
-    }
+    },
+		findByCourseCode : async function (course_code, callback) {
+			try {
+				const condition = ' WHERE t.course_id = :course_code || c.code = :course_code '
+				const queryString = `SELECT t.* FROM topic t LEFT JOIN courses c ON c.id = t.course_id ${condition};`
+				const getTopic= await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements: {course_code}})
+				callback(null, getTopic)
+			} catch (error) {
+				callback(res => res.internalServerError(error.message))	
+			}	
+		}
 }

@@ -125,7 +125,7 @@ function CreateCourse(props) {
 			setLoading(false)
 		} catch (error) {
 			if (error.response) {
-				alert(error.response.data.message);
+				alert(error.response.data);
 				navigate("/dashboard/courses/admin/list");
 			}
 		}
@@ -142,7 +142,7 @@ function CreateCourse(props) {
 			setEndDate(data.endDate)
 		} catch(error) {
 			if (error.response) {
-				alert(error.response.data.message);
+				alert(error.response.data);
 				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}`, {state:{category_code, sub_category, course_code }})
 			}
 		}
@@ -161,7 +161,7 @@ function CreateCourse(props) {
 			// setEndDate(data.endDate)
 		} catch(error) {
 			if (error.response) {
-				alert(error.response.data.message);
+				alert(error.response.data);
 				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code }})
 			}
 		}
@@ -173,7 +173,7 @@ function CreateCourse(props) {
 			setActivityList(data.data)
 		} catch(error) {
 			if (error.response) {
-				alert(error.response.data.message);
+				alert(error.response.data);
 				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code, topic_id }})
 			}
 		}
@@ -201,7 +201,7 @@ function CreateCourse(props) {
         setMainCategories(data);
       } catch (error) {
         if (error.response) {
-          alert(error.response.data.message);
+          alert(error.response.data);
           // props.setCreateUser(false)
       		// navigate("/dashboard/courses/admin/"+state.category_code+"/"+state.sub_category);
         }
@@ -251,7 +251,7 @@ function CreateCourse(props) {
 			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        alert(error.response.data);
       }
     }
   };
@@ -278,7 +278,7 @@ function CreateCourse(props) {
 			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        alert(error.response.data);
       }
     }
   };

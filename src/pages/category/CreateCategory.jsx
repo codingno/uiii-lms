@@ -51,8 +51,11 @@ function FormContainer(props) {
 }
 
 function CreateCategory(props) {
-  const { state } = useLocation();
-  console.log(`🚀 ~ file: CreateCategory.jsx ~ line 55 ~ CreateCategory ~ state`, state)
+	const { category_code, sub_category } = useParams()
+  const { pathname, state } = useLocation();
+	const lastPathName = pathname.split('/').pop()
+	const page = lastPathName === 'edit' ? sub_category ? 'edit_sub' : 'edit_parent' : category_code ? 'create_sub' : 'create_parent'
+  console.log(`🚀 ~ file: CreateCategory.jsx ~ line 57 ~ CreateCategory ~ lastPathName`, lastPathName)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const [userID, setUserID] = useState(null);
@@ -70,10 +73,10 @@ function CreateCategory(props) {
   const [description, setDescription] = useState("");
 	const [categoryStatus, setCategoryStatus] = useState(1)
 
-  const [subCategory, setSubCategory] = useState(state.category_code ? 1 : 0);
+  const [subCategory, setSubCategory] = useState(category_code ? 1 : 0);
   const [mainCategories, setMainCategories] = useState([]);
   const [mainCategoryName, setMainCategoryName] = useState("");
-  const [parent, setParent] = useState(state.category_code);
+  const [parent, setParent] = useState(category_code);
   const [position, setPosition] = useState("");
 
 	const [isLoading, setLoading] = useState(false)
@@ -81,7 +84,8 @@ function CreateCategory(props) {
 	async function getUserInfo() {
 		setLoading(true)
 		try {
-			const user = await axios.get("/api/category/info/" + state.code);
+			const code = page === 'edit_sub' ? sub_category : category_code
+			const user = await axios.get("/api/category/info/" + code);
 			const { data } = user.data;
 			setCategoryID(data.id);
 			setName(data.name);
@@ -94,14 +98,15 @@ function CreateCategory(props) {
 			setLoading(false)
 		} catch (error) {
 			if (error.response) {
-				alert(error.response.data.message);
+				alert(error.response.data);
 				navigate("/dashboard/courses/admin/category");
 			}
 		}
 	}
 
   useEffect(() => {
-    if (props.edit) getUserInfo();
+    if (lastPathName === 'edit') 
+			getUserInfo()
 
   }, []);
 
@@ -113,12 +118,12 @@ function CreateCategory(props) {
         const getCategoryData = await axios.get("/api/category/main_category");
         const { data } = getCategoryData.data;
 				const filterdData = data.filter(item => item.code !== code)
-				const parentCategory = filterdData.filter(item => item.code === state.category_code)[0]
+				const parentCategory = filterdData.filter(item => item.code === category_code)[0]
 				setMainCategoryName(parentCategory.name)
         setMainCategories(filterdData);
       } catch (error) {
         if (error.response) {
-          alert(error.response.data.message);
+          alert(error.response.data);
           // props.setCreateUser(false)
           navigate("/dashboard/courses/admin");
         }
@@ -144,15 +149,13 @@ function CreateCategory(props) {
 				status : categoryStatus,	
       });
       await dispatch(getCategoryList());
-      alert(`${state.category_code ? 'Sub ' : ''}Category created successfully.`);
+      alert(`${category_code ? 'Sub ' : ''}Category created successfully.`);
       // props.setCreateUser(false)
 			dispatch({ type : 'refresh_start'})
       // navigate("/dashboard/courses/admin");
-      navigate(`/dashboard/courses/admin${ state.category_code ? '/' + state.category_code : ''}`);
+      navigate(`/dashboard/courses/admin${ category_code ? '/' + category_code : ''}`);
     } catch (error) {
-      if (error.response) {
-        alert(error.response.data.message);
-      }
+      alert(error.response.data);
     }
   };
 
@@ -167,13 +170,13 @@ function CreateCategory(props) {
 				status : categoryStatus,	
       });
       await dispatch(getCategoryList());
-      alert(`${state.category_code ? 'Sub ' : ''}Category updated successfully.`);
+      alert(`${category_code ? 'Sub ' : ''}Category updated successfully.`);
       // props.setCreateUser(false)
 			dispatch({ type : 'refresh_start'})
-      navigate(`/dashboard/courses/admin${ state.category_code ? '/' + state.category_code : ''}`);
+      navigate(`/dashboard/courses/admin${ category_code ? '/' + category_code : ''}`);
     } catch (error) {
       if (error.response) {
-        alert(error.response.data.message);
+        alert(error.response.data);
       }
     }
   };
@@ -193,7 +196,8 @@ function CreateCategory(props) {
           mb={5}
         >
           <Typography variant="h4" gutterBottom>
-            {props.edit ? "Edit" : "Create"} { state.category_code ? 'Sub ' : ''} Category 
+            {/* {sub_category ? "Edit" : "Create"} { category_code ? 'Program Study ' : 'Category '}   */}
+						{lastPathName === 'edit' ? "Edit" : "Create"} {page.split('_')[1] === 'sub' ? 'Program Study ' : 'Category '}
           </Typography>
           <Typography variant="h4" gutterBottom>
 						{mainCategoryName ? 'of ' + mainCategoryName : ''}
@@ -338,7 +342,7 @@ function CreateCategory(props) {
                 justifyContent: "flex-start",
               }}
             >
-              <span style={{ width: "35%" }}>Sub Category?</span>
+              <span style={{ width: "35%" }}>Program Study?</span>
               <FormControl component="fieldset">
                 <RadioGroup
                   row
@@ -443,10 +447,10 @@ function CreateCategory(props) {
                 variant="contained"
                 // component={RouterLink}
                 // to="#"
-                onClick={props.edit ? updateUser : createUser}
+                onClick={lastPathName === 'edit' ? updateUser : createUser}
                 // startIcon={<Icon icon={plusFill} />}
               >
-                {props.edit ? "Update" : "Create"}
+                {lastPathName === 'edit' ? "Update" : "Create"}
               </Button>
             </Stack>
             {/* </form> */}

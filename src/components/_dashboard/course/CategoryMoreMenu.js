@@ -2,6 +2,8 @@ import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
@@ -10,10 +12,25 @@ import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/mat
 // ----------------------------------------------------------------------
 
 export default function UserMoreMenu(props) {
-	const { category_code, sub_category } = useParams()
+	const dispatch = useDispatch()
 	const navigate = useNavigate()
   const ref = useRef(null);
+	const { category_code, sub_category } = useParams()
   const [isOpen, setIsOpen] = useState(false);
+
+	const [disableDeleteButton, setDisableDeleteButton] = useState(false)
+
+	async function deleteCategory(code) {
+		setDisableDeleteButton(true)
+		try {
+			const { data } = await axios.delete('/api/course/delete/' + code)	
+			alert(data.message)
+		} catch (error) {
+			alert(error.response.data)	
+		}
+		dispatch({ type : 'refresh_start'})
+		setDisableDeleteButton(false)
+	}
 
   return (
     <>
@@ -31,7 +48,9 @@ export default function UserMoreMenu(props) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem sx={{ color: 'text.secondary' }} 
+					onClick={() => deleteCategory(props.code)} disabled={disableDeleteButton}
+					>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>
@@ -41,7 +60,7 @@ export default function UserMoreMenu(props) {
         <MenuItem sx={{ color: 'text.secondary' }} 
 				onClick={() => 
 					// navigate('/dashboard/courses/admin/edit', { state:{ code: props.code }}) 
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/edit`, {state:{category_code, sub_category, code : props.code}})
+							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${props.code}/edit`, {state:{category_code, sub_category, code : props.code}})
 				}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />

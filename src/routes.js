@@ -59,15 +59,28 @@ export default function Router() {
 						{ path: 'admin',
               element: <Categories main_category={true}  /> },
 						{ 
+							path : 'admin/create', 
+							element: <CreateCategory />,
+						},
+						{ 
 							path : 'admin/:category_code', 
 							element: <Categories main_category={true} />,
+						},
+						{ 
+							path : 'admin/:category_code/edit', 
+							element: <CreateCategory />,
+						},
+						{ 
+							path : 'admin/:category_code/create', 
+							element: <CreateCategory />,
 						},
             { path: 'admin/:category_code/:sub_category', 
 							children : [
 								{ element: <Course />},
 							]},
+            { path: 'admin/:category_code/:sub_category/edit', element: <CreateCategory /> },
             { path: 'admin/:category_code/:sub_category/create', element: <CreateCourse /> },
-            { path: 'admin/:category_code/:sub_category/edit', element: <CreateCourse edit={true} /> },
+            { path: 'admin/:category_code/:sub_category/:course_code/edit', element: <CreateCourse edit={true} /> },
 						{ path: 'admin/:category_code/:sub_category/:course_code',
         			element: <Navigate to={`admin/${category_code}/${sub_category}/${course_code}/topic`} />, 
 						},
@@ -93,7 +106,7 @@ export default function Router() {
             { path: 'admin/category', 
 							children: [
 								{ element: <Categories /> },
-								{ path: 'create', element: <CreateCategory /> },
+								// { path: 'create', element: <CreateCategory /> },
 								{ path: 'edit', element: <CreateCategory edit={true} /> },
 							]
 					 	},

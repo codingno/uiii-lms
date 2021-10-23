@@ -94,6 +94,7 @@ export default function Categories(props) {
   const {refresh}= useSelector((state) => state);
   const [categoryList, setCategoryList] = useState([]);
 
+	const [parentName, setParentName] = useState("")
 	const [isLoading, setLoading] = useState(false)
 
 	// const category_code = props.match ? props.match.params ? props.match.params.category_code : null : null;
@@ -115,8 +116,16 @@ export default function Categories(props) {
 				setLoading(false)
 				dispatch({type : 'refresh_done'})
 			} catch(error) {
-
+				alert(error.response.data)
 			}
+	}
+	async function getParentCategory() {
+		try {
+			let { data } = await axios.get('/api/category/info/'+category_code)	
+			setParentName(data.data.name)
+		} catch (error) {
+			alert(error.response.data)
+		}
 	}
   useEffect(() => {
 		// if (categoryList.length == 0 || category_code)
@@ -125,7 +134,12 @@ export default function Categories(props) {
   }, [refresh, locationPath]);
 
   useEffect(() => {
-		// if (categoryList.length == 0 || category_code)
+			dispatch({ type : 'refresh_start'})
+			if(category_code)
+				getParentCategory()
+  }, []);
+
+  useEffect(() => {
 		if(category_code)
 			dispatch({ type : 'refresh_start'})
   }, [category_code]);
@@ -188,12 +202,13 @@ export default function Categories(props) {
   return ( 
     <Page title="Categories | UIII LMS">
       <Container>
-				<Stack sx={{ marginBottom: '3em'}}>
+				{/* <Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
-				</Stack>
+				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            { !props.main_category ? 'Category Management' : !category_code ? 'Category' : 'Sub Category ' + ( state ? 'of ' + state.category_name : '')}
+            {/* { !props.main_category ? 'Category Management' : !category_code ? 'Category' : 'Program Study ' + ( state ? 'of ' + state.category_name : '')} */}
+						{ !category_code ? 'Category Management' : 'Program Study of ' + parentName }
           </Typography>
 					{/* {
 						!props.main_category && */}
@@ -204,11 +219,14 @@ export default function Categories(props) {
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
 							dispatch({type : 'refresh_start'})
-							navigate('/dashboard/courses/admin/category/create', { state: { category_code }})
+							if(category_code)
+								navigate(`/dashboard/courses/admin/${category_code}/create`, { state: { category_code }})
+							else 
+								navigate('/dashboard/courses/admin/create')
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New {!category_code ? 'Category' : 'Sub Category'}
+            New {!category_code ? 'Category' : 'Program Study'}
           </Button>
 					{/* } */}
         </Stack>

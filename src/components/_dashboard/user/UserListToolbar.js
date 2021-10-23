@@ -81,8 +81,8 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         </Tooltip>
       ) : (
 				<div>
-          <IconButton>
-						<RefreshIcon onClick={refresh} sx={{ marginLeft : 0}} />
+          <IconButton onClick={refresh} >
+						<RefreshIcon sx={{ marginLeft : 0}} />
           </IconButton>
         <Tooltip title="Filter list">
           <IconButton>

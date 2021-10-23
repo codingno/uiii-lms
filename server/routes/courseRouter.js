@@ -181,6 +181,15 @@ const updateCourse = async (req, res) => {
 
 	})
 }
+
+async function deleteCourse(req, res) {
+	courseCategoryService.delete(req.params.code, function (err, result) {
+		if(err)
+			return err(res)	
+		return res.ok(result)
+	})
+}
+
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
 route.get('/', getAllCourse )
 route.get('/user', getCourseUser )
@@ -188,5 +197,6 @@ route.get('/info/:course_id', getCourseInfo )
 route.post('/create', isTeacher, createCourse )
 route.patch('/update', isTeacher, updateCourse )
 route.post('/createCourseCategory', createCourseCategory )
+route.delete('/delete/:code', isTeacher, deleteCourse)
 
 module.exports = route

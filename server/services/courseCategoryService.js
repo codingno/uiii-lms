@@ -36,14 +36,25 @@ module.exports = {
             callback(err, null)
         }
     },
-    delete: async function(id, callback){
+    delete: async function(code, callback){
         try {
-            const queryString = "DELETE FROM course_categories WHERE id = " + id
-            await sequelize.query(queryString, {type: QueryTypes.DELETE})
+            const getCourseInfo = "select * FROM courses WHERE code = :code "
+            const dataCourse = await sequelize.query(getCourseInfo, {type: QueryTypes.SELECT, replacements : {code}})
+						if(dataCourse.length === 0)
+							return callback(res => res.badRequest("Course Not Found."))
+						const data = dataCourse[0]
+            const getTopic = "select * FROM topic WHERE course_id = :id "
+            const dataTopic = await sequelize.query(getTopic, {type: QueryTypes.SELECT, replacements : data })
+						if(dataTopic.length > 0)
+							return callback(res => res.badRequest("Course still have topics."))
+            const deleteCourseCategory = "DELETE FROM course_categories WHERE course = :id "
+            await sequelize.query(deleteCourseCategory, {type: QueryTypes.DELETE, replacements : data })
+            const queryString = "DELETE FROM courses WHERE code = :code "
+            await sequelize.query(queryString, {type: QueryTypes.DELETE, replacements : data })
             callback(null, {message: "successfully deleted data"})
         }
         catch(err) {
-            callback(err, null)
+            callback(res => res.internalServerError(err.message))
         }
     },
     update: async function(data, callback){

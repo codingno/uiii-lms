@@ -68,7 +68,7 @@ function CreateUser(props) {
 			setLoading(false)
 		} catch (error) {
 			if(error.response) {
-				alert(error.response.data.message)
+				alert(error.response.data)
 				navigate('/dashboard/user')
 			}
 		}
@@ -90,7 +90,7 @@ function CreateUser(props) {
 				setRoles(getRolesData.data.data)
 			} catch (error) {
 				if(error.response) {
-					alert(error.response.data.message)
+					alert(error.response.data)
 					// props.setCreateUser(false)
 					navigate('/dashboard/user')
 				}
@@ -108,7 +108,7 @@ function CreateUser(props) {
 					navigate('/dashboard/user')
 		} catch(error) {
 			if(error.response) {
-				alert(error.response.data.message)
+				alert(error.response.data)
 			}
 		}
 	}
@@ -122,7 +122,7 @@ function CreateUser(props) {
 					navigate('/dashboard/user')
 		} catch(error) {
 			if(error.response) {
-				alert(error.response.data.message)
+				alert(error.response.data)
 			}
 		}
 	}

@@ -238,9 +238,9 @@ export default function Enrollment(props) {
   return ( 
     <Page title="Enrollment | UIII LMS">
       <Container>
-				<Stack sx={{ marginBottom: '3em'}}>
+				{/* <Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
-				</Stack>
+				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={5}>
           <Typography variant="h4" gutterBottom>
             Enrollment { state ? 'of ' + state.course_name : ''}

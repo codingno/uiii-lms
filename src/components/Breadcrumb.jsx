@@ -61,6 +61,9 @@ export default function BasicBreadcrumbs() {
 					}
 				}
 
+				if(item === 'create' || item === 'edit')
+					return ""
+
 				return (
 					// <Link underline="hover" color="inherit" onClick={() => navigate(url)}>
 					<Link underline="hover" color="inherit" to={url} onClick={() => 
@@ -72,6 +75,9 @@ export default function BasicBreadcrumbs() {
 			})
 		setBreadLink(makebreadLink)
 	}
+	useEffect(() => {
+			getCategoryData()	
+	}, [])
 
 	useEffect(() => {
 		if(refresh)

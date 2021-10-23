@@ -109,20 +109,19 @@ export default function Topics(props) {
 
 	async function getTopicList() {
 		try {
-			const { data } = await axios.get('/api/topic/list/' + course_code)	
+			dispatch({type : 'refresh_start'})
+			const { data } = await axios.get('/api/topic/list/manage/' + course_code)	
 			setTopicList(data.data)
+			dispatch({type : 'refresh_done'})
 		} catch (error) {
 			alert(error)	
 		}
 	}
-
-  useEffect(() => {
-		getTopicList()
-  }, []);
-
+	
   useEffect(() => {
 		if (refresh) {
   	  getDataCategoryList();
+			getTopicList()
 		}
   }, [refresh]);
 
@@ -188,9 +187,9 @@ export default function Topics(props) {
   return ( 
     <Page title="Topics | UIII LMS">
       <Container>
-				<Stack sx={{ marginBottom: '3em'}}>
+				{/* <Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
-				</Stack>
+				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Topics { state ? 'of ' + state.course_name : ''}

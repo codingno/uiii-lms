@@ -33,6 +33,7 @@ import BreadCrumb from '../components/Breadcrumb'
 //
 import { getCourseList } from '../store/actions/get/getCourses';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
@@ -92,6 +93,8 @@ export default function Courses(props) {
   const {courseList, refresh}= useSelector((state) => state);
   const [courseList1, setCourseList] = useState([]);
 
+	const [subCategory, setSubCategory] = useState({})
+
 	const [isLoading, setLoading] = useState(false)
 
 	async function getDataCategoryList(){
@@ -104,9 +107,20 @@ export default function Courses(props) {
 
 			}
 	}
+
+	async function getSubCategoryName() {
+		try {
+			const { data } = await axios.get('/api/category/info/'+sub_category)
+			setSubCategory(data.data)
+		} catch (error) {
+			alert(error)	
+		}
+	}
+
   useEffect(() => {
 		if (refresh) {
   	  getDataCategoryList();
+			getSubCategoryName()
 		}
   }, [refresh]);
 
@@ -184,12 +198,12 @@ export default function Courses(props) {
   return ( 
     <Page title="Courses | UIII LMS">
       <Container>
-				<Stack sx={{ marginBottom: '3em'}}>
+				{/* <Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
-				</Stack>
+				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Courses { state ? 'of ' + state.category_name : ''}
+            Courses { subCategory.name ? 'of ' + subCategory.name : ''}
           </Typography>
           <Button
             variant="contained"
