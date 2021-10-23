@@ -37,9 +37,16 @@ export default function UserMoreMenu(props) {
       >
         <MenuItem sx={{ color: 'text.secondary' }}
 					onClick={async () => {
-						// alert(props.code)
-						await axios.delete('/api/grade/delete/' + props.code)
-						dispatch({type : 'refresh_start'})
+						// alert("Are you sure to delete " + props.row.name + " grade?")
+						if(window.confirm("Are you sure to delete " + props.row.name + " grade?")) {
+							try {
+								await axios.delete('/api/grade/delete/' + props.code)
+								alert("grade successfully deleted.")
+								dispatch({type : 'refresh_start'})
+							} catch (error) {
+								alert(error.response.data)	
+							}
+						}
 					}}
 				>
           <ListItemIcon>
