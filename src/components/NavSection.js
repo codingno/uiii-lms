@@ -28,7 +28,8 @@ disableGutters {...props} />})(
     textTransform: 'capitalize',
     paddingLeft: theme.spacing(5),
     paddingRight: theme.spacing(2.5),
-    color: theme.palette.text.secondary,
+    // color: theme.palette.text.secondary,
+    color: 'white',
     '&:before': {
       top: 0,
       right: 0,
@@ -39,8 +40,12 @@ disableGutters {...props} />})(
       position: 'absolute',
       borderTopLeftRadius: 4,
       borderBottomLeftRadius: 4,
-      backgroundColor: theme.palette.primary.main
-    }
+      // backgroundColor: theme.palette.primary.main
+      backgroundColor: '#E3A130',
+    },
+		'&.active' : {
+			color : '#E3A130',
+		},
   })
 );
 
@@ -70,7 +75,8 @@ function NavItem({ item, active }) {
   };
 
   const activeRootStyle = {
-    color: 'primary.main',
+    // color: 'primary.main',
+    color: '#E3A130',
     fontWeight: 'fontWeightMedium',
     bgcolor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
     '&:before': { display: 'block' }

@@ -95,6 +95,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           height: "100%",
           display: "flex",
           flexDirection: "column",
+					backgroundColor: '#003B5C',
         },
       }}
     >
@@ -105,9 +106,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
-        <Link underline="none" component={RouterLink} to="#">
+        {/* <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
+            <Avatar src={account.photoURL} alt="photoURL" />
 						<AccountCircleIcon fontSize="large" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
@@ -118,14 +119,24 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
               </Typography>
             </Box>
           </AccountStyle>
-        </Link>
+        </Link> */}
       </Box>
 
       <NavSection navConfig={sidebarConfigRole} />
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
+			<Box sx={{ px: 2.5, pb : 3 }}>
+				<Typography variant="p" sx={{ color : '#fff', fontSize : 13 }}>
+					&copy; {new Date().getFullYear()}
+				</Typography>
+				<br />
+				<Typography variant="p" sx={{ color : '#fff', fontSize : 12 }}>
+					Universitas Islam International Indonesia
+				</Typography>
+			</Box>
+
+      {/* <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
         <Stack
           alignItems="center"
           spacing={3}
@@ -137,31 +148,31 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             bgcolor: "grey.200",
           }}
         >
-          {/* <Box
+          <Box
             component="img"
             src="/static/illustrations/illustration_avatar.png"
             sx={{ width: 100, position: "absolute", top: -50 }}
-          /> */}
+          />
 
-          {/* <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">
               Get more?
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               From only $69
             </Typography>
-          </Box> */}
+          </Box>
 
-          {/* <Button
+          <Button
             fullWidth
             href="https://material-ui.com/store/items/minimal-dashboard/"
             target="_blank"
             variant="contained"
           >
             Upgrade to Pro
-          </Button> */}
+          </Button>
         </Stack>
-      </Box>
+      </Box> */}
     </Scrollbar>
   );
 

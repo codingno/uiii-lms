@@ -84,11 +84,11 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
           <IconButton>
 						<RefreshIcon onClick={refresh} sx={{ marginLeft : 0}} />
           </IconButton>
-        <Tooltip title="Filter list">
+        {/* <Tooltip title="Filter list">
           <IconButton>
             <Icon icon={roundFilterList} />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
 				</div>
       )}
 			{/* { numSelected == 0 && <RefreshIcon onClick={refresh} sx={{ marginLeft : 0}} />} */}

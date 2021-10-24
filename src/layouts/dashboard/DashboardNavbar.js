@@ -14,6 +14,9 @@ import NotificationsPopover from './NotificationsPopover';
 
 import BreadCrumb from '../../components/Breadcrumb'
 
+import { useState } from 'react'
+import { useLocation } from 'react-router-dom';
+
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -45,6 +48,14 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
+	const location = useLocation()
+	const path = location.pathname.split('/').pop()
+	const nonBreadCrumbs = [
+		'app',
+		'user',
+		'calendar',
+	]
+	const isBreadCrumbs = nonBreadCrumbs.indexOf(path) < 0
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -54,7 +65,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           </IconButton>
         </MHidden>
 
-        <Searchbar />
+        {/* <Searchbar /> */}
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
@@ -65,7 +76,10 @@ export default function DashboardNavbar({ onOpenSidebar }) {
       </ToolbarStyle>
 				{/* <Stack sx={{ marginBottom: '3em'}}> */}
 				<Stack sx={{ marginLeft: '3em', marginBottom: '0.5em'}}>
-					<BreadCrumb />
+					{
+						isBreadCrumbs &&
+						<BreadCrumb />
+					}
 				</Stack>
     </RootStyle>
   );

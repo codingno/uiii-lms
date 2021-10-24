@@ -22,16 +22,16 @@ const MENU_OPTIONS = [
     icon: homeFill,
     linkTo: '/'
   },
-  {
-    label: 'Profile',
-    icon: personFill,
-    linkTo: '#'
-  },
-  {
-    label: 'Settings',
-    icon: settings2Fill,
-    linkTo: '#'
-  }
+  // {
+  //   label: 'Profile',
+  //   icon: personFill,
+  //   linkTo: '#'
+  // },
+  // {
+  //   label: 'Settings',
+  //   icon: settings2Fill,
+  //   linkTo: '#'
+  // }
 ];
 
 // ----------------------------------------------------------------------
@@ -65,6 +65,9 @@ export default function AccountPopover() {
 
   return (
     <>
+			<Typography variant="subtitle1" sx={{ color : (theme) => alpha(theme.palette.grey[900], 0.72)}} >
+				{user.data.firstname + ' ' + user.data.lastname}
+			</Typography>
       <IconButton
         ref={anchorRef}
         onClick={handleOpen}
