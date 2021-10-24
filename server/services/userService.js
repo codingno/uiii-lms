@@ -25,6 +25,9 @@ module.exports = {
     			// await this.findByUserId(data.username, function (err, newUser) {
 					// 		user_id = newUser.id
 					// })
+          if (!data.email)
+            return callback(null, user)
+
           const getNewUserQuery = "SELECT id FROM users WHERE username = :username;"
           const newUser = await sequelize.query(getNewUserQuery, {
             type: QueryTypes.SELECT,
@@ -33,6 +36,7 @@ module.exports = {
 					const user_id = newUser[0].id
           const userAuthQuery = "INSERT INTO user_auth (user_id, username, email) " +
             "VALUES (:user_id, :username, :email);"
+          
           const user_auth = await sequelize.query(userAuthQuery, {
             type: QueryTypes.INSERT,
             replacements: { ...data, user_id }
@@ -58,15 +62,18 @@ module.exports = {
   findByUserId: async function (user_id, callback) {
     try {
       // const condition = `AND u.id = :user_id`
-      const queryString = "SELECT u.*, ur.role_id, r.name role_name, ua.email FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON ur.role_id = r.id WHERE (u.id=:user_id OR u.username=:username)"
+      const queryString = "SELECT u.*, ur.role_id, r.name role_name, ua.email FROM users u LEFT JOIN user_role ur ON ur.user_id = u.id LEFT JOIN user_auth ua ON ua.user_id = u.id LEFT JOIN roles r ON ur.role_id = r.id WHERE (u.id=:user_id OR u.username=:username OR ua.email=:email)"
       const user = await sequelize.query(queryString, {
         type: QueryTypes.SELECT,
         replacements: {
           user_id: user_id,
-          username: user_id
+          username: user_id,
+          email: user_id
         }
       })
-      if (user.length > 0) {
+      if (user_id == '')
+        callback(null, null)
+      else if (user.length > 0) {
         const result = {
           id: user[0].id,
           firstname: user[0].firstname,
@@ -85,7 +92,10 @@ module.exports = {
       } else
         callback(null, null)
     } catch (err) {
-      callback(err, null)
+      if(!user_id || user_id == '')
+        callback(null, null)
+      else
+        callback(err, null)
     }
   },
   delete: async function (user_id, callback) {

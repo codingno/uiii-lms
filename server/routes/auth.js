@@ -33,7 +33,7 @@ router.get('/logout', function(req, res, next) {
 });
 
 router.post('/register', function(req, res, next) {
-    if(!req.body.email || !req.body.password || !req.body.firstname){
+    if(!req.body.email || !req.body.password || !req.body.firstName){
 		return res.badRequest({message: 'Incomplete Parameters'});
 	  }
 

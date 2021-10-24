@@ -8,14 +8,17 @@ import { useNavigate } from 'react-router-dom';
 // material
 import { Stack, TextField, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch()
 
-  const RegisterSchema = Yup.object().shape({
+  const RegisterSchema = Yup.object().shape({  
     firstName: Yup.string()
       .min(2, 'Too Short!')
       .max(50, 'Too Long!')
@@ -33,8 +36,17 @@ export default function RegisterForm() {
       password: ''
     },
     validationSchema: RegisterSchema,
-    onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+    onSubmit: async () => {
+      try {
+        await axios.post('/api/register', formik.values)
+        alert('Register Successed')
+        navigate('/login')
+      } catch(err) {
+        if(err.response.data.message === "Your email is already registered")
+          errors.email = err.response.data.message
+        else
+          alert(err.response.data.message)
+      }
     }
   });
 
