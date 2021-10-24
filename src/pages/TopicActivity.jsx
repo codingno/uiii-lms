@@ -238,7 +238,7 @@ export default function Topics(props) {
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
-						refresh={getDataCategoryList}
+						refresh={() => dispatch({type : 'refresh_start'})}
           />
 
           <Scrollbar>

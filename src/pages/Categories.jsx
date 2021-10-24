@@ -124,20 +124,17 @@ export default function Categories(props) {
 			let { data } = await axios.get('/api/category/info/'+category_code)	
 			setParentName(data.data.name)
 		} catch (error) {
-			alert(error.response.data)
+			alert(error)
 		}
 	}
   useEffect(() => {
 		// if (categoryList.length == 0 || category_code)
-		if(refresh)
+		if(refresh) {
 			getDataCategoryList()
-  }, [refresh, locationPath]);
-
-  useEffect(() => {
-			dispatch({ type : 'refresh_start'})
 			if(category_code)
 				getParentCategory()
-  }, []);
+		}
+  }, [refresh, locationPath]);
 
   useEffect(() => {
 		if(category_code)
@@ -236,7 +233,7 @@ export default function Categories(props) {
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
-						refresh={getDataCategoryList}
+						refresh={() => dispatch({type : 'refresh_start'})}
           />
 
           <Scrollbar>

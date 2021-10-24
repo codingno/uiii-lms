@@ -51,7 +51,7 @@ const createCourseAttend = async (req, res) => {
 					course_id: req.body.course_id,
 					topic_id: req.body.topic_id,
 					attendAt: new Date(),
-					status: 1,
+					status: 2,
 					description: hours > 0 || minutes > 0 ? 'Late ' + (hours > 0 ? hours + ' hours ' : '') + (minutes > 0 ? minutes + ' minutes' : '') : null
 				}
 				courseAttendService.create(data, function(err, result){
@@ -98,12 +98,48 @@ const updateCourse = async (req, res) => {
 
 	})
 }
+
+function getCourseAttendByTopic(req, res) {
+	if(!req.params.course_code)
+		return res.badRequest('Course ID parameter missing.')
+	if(!req.params.topic_id)
+		return res.badRequest('Topic ID parameter missing.')
+	
+	const param = {
+		course_code : req.params.course_code,
+		topic_id : req.params.topic_id,
+	}
+	courseAttendService.getCourseAttendByTopic(param, function (err, data) {
+		if(err)
+			return err(res)	
+		return res.ok(data)
+	})
+}
+
+function updateCourseAttend(req, res) {
+	if(!req.body.user_id)
+		return res.badRequest('User ID parameter missing.')
+	if(!req.body.course_id)
+		return res.badRequest('Course ID parameter missing.')
+	if(!req.body.topic_id)
+		return res.badRequest('Topic ID parameter missing.')
+	if(!req.body.status)
+		return res.badRequest('Status parameter missing.')
+	
+	courseAttendService.updateCourseAttend(req.body, function (err, data) {
+		if(err)
+			return err(res)	
+		return res.ok({data})
+	})	
+}
+
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
 route.get('/', getAllCourse )
 route.get('/user', getCourseUser )
 route.get('/info/:course_id', getCourseInfo )
+route.get('/info/:course_code/topic/:topic_id', getCourseAttendByTopic )
 route.post('/create',isLogin, createCourseAttend )
-route.patch('/update', isTeacher, updateCourse )
+route.patch('/update', isTeacher, updateCourseAttend )
 // route.post('/createCourseCategory', createCourseCategory )
 
 module.exports = route

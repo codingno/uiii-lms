@@ -28,6 +28,7 @@ import CreateTopicActivity from './pages/topicActivity/CreateTopicActivity'
 import Enrollment from './pages/Enrollment'
 import CalendarLayout from './pages/Calendar';
 import Grade from './pages/Grade'
+import Attendance from './pages/Attendance'
 // import LabTabs from './pages/courseDetail';
 
 // ----------------------------------------------------------------------
@@ -95,6 +96,7 @@ export default function Router() {
 								{ path : ':topic_id', 
 									children: [
 										{ element : <TopicActivity /> },
+										{ path : 'attend', element : <Attendance />},
 										{ path : 'create', element : <CreateTopicActivity />},
 										{ path : 'edit', element : <CreateTopicActivity edit={true} />},
 									]

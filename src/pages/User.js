@@ -83,7 +83,7 @@ export default function User(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const {userList}= useSelector((state) => state);
+  const {userList, refresh}= useSelector((state) => state);
 
 	const [isLoading, setLoading] = useState(false)
 
@@ -91,6 +91,7 @@ export default function User(props) {
 			setLoading(true)
 			try {
 				await dispatch(getUserList());
+				dispatch({ type : 'refresh_done'})
 				setLoading(false)
 			} catch(error) {
 				
@@ -100,7 +101,9 @@ export default function User(props) {
   useEffect(() => {
 		if (!userList.load) 
     	getDataUserList();
-  }, [userList]);
+		if (refresh) 
+    	getDataUserList();
+  }, [userList, refresh]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -182,7 +185,7 @@ export default function User(props) {
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
-						refresh={getDataUserList}
+						refresh={() => dispatch({type : 'refresh_start'})}
           />
 
           <Scrollbar>

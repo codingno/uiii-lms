@@ -47,6 +47,36 @@ module.exports = {
             callback(err, null)
         }
     },
+		getCourseAttendByTopic: async function (data, callback) {
+			try {
+				const queryString = `
+				SELECT 
+						e.id AS enroll_id,
+						e.course_id AS enroll_course_id,
+						e.user_id AS enroll_user_id,
+						CONCAT(u.firstname, ' ', u.lastname) AS name,
+						ca.*
+				FROM
+						enrollment e
+								LEFT JOIN
+						courses c ON c.id = e.course_id
+								LEFT JOIN
+						users u ON u.id = e.user_id
+								LEFT JOIN
+						user_role ur ON ur.user_id = e.user_id
+								LEFT JOIN
+						course_attend ca ON ca.user_id = e.user_id
+								AND ca.topic_id = :topic_id
+				WHERE
+						c.code = :course_code AND ur.role_id = 6
+				;
+				`
+				const enrollment = await sequelize.query(queryString, {type: QueryTypes.SELECT, replacements : data})
+				return callback(null, enrollment)
+			} catch (error) {
+				return callback(res => res.internalServerError(error.message))	
+			}	
+		},
     delete: async function(id, callback){
         try {
             const queryString = "DELETE FROM enrollment WHERE id = " + id
@@ -69,5 +99,24 @@ module.exports = {
         } catch (err) {
                 callback(err, null)
         }
-    }
+    },
+		updateCourseAttend : async function (data, callback) {
+        try {
+					const queryCreate = "INSERT INTO course_attend (course_id, user_id, topic_id, status, description) " +
+            "VALUES (:course_id, :user_id, :topic_id, :status, :description);"
+          const queryUpdate = "UPDATE course_attend SET course_id=:course_id, user_id=:user_id, topic_id=:topic_id, status=:status, description =:description WHERE id =:id"
+
+					let query = queryCreate;
+					if(data.id)
+						query = queryUpdate
+          const courseAttendUpdated = await sequelize.query(query, {type: QueryTypes.UPDATE, replacements: data})
+          if (courseAttendUpdated){
+            callback(null, courseAttendUpdated)
+          }
+          else
+            callback(res => res.internalServerError('update role failed'), null)
+        } catch (err) {
+            return callback(res => res.internalServerError(err.message))
+        }
+		}
 }

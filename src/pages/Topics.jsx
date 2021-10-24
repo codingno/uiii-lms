@@ -93,6 +93,8 @@ export default function Topics(props) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const {courseList, refresh}= useSelector((state) => state);
   const [topicList, setTopicList] = useState([]);
+  const [courseData, setCourseData] = useState(null);
+  console.log(`🚀 ~ file: Topics.jsx ~ line 97 ~ Topics ~ courseData`, courseData)
 
 	const [isLoading, setLoading] = useState(false)
 
@@ -112,6 +114,8 @@ export default function Topics(props) {
 			dispatch({type : 'refresh_start'})
 			const { data } = await axios.get('/api/topic/list/manage/' + course_code)	
 			setTopicList(data.data)
+			const courseGet = await axios.get('/api/course/info/' + course_code)	
+			setCourseData(courseGet.data.data)
 			dispatch({type : 'refresh_done'})
 		} catch (error) {
 			alert(error)	
@@ -177,6 +181,10 @@ export default function Topics(props) {
     setFilterName(event.target.value);
   };
 
+	function gotoAttendance(id) {
+		navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}/attend`)
+	}
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - topicList.length) : 0;
 
   const filteredUsers = topicList ? applySortFilter(topicList.length > 0 ? topicList : [], getComparator(order, orderBy), filterName) : [];
@@ -192,7 +200,7 @@ export default function Topics(props) {
 				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Topics { state ? 'of ' + state.course_name : ''}
+            Topics { courseData ? 'of ' + courseData.name : ''}
           </Typography>
           <Button
             variant="contained"
@@ -213,7 +221,7 @@ export default function Topics(props) {
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
-						refresh={getDataCategoryList}
+						refresh={() => dispatch({type : 'refresh_start'})}
           />
 
           <Scrollbar>
@@ -285,7 +293,7 @@ export default function Topics(props) {
 													</TableCell> */}
                           {/* <TableCell align="right">{id || "None"}</TableCell> */}
                           <TableCell align="right">
-                            <CategoryMoreMenu code={id} />
+                            <CategoryMoreMenu code={id} gotoAttendance={() => gotoAttendance(id)} />
                           </TableCell>
                         </TableRow>
                       );
@@ -313,7 +321,7 @@ export default function Topics(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={courseList.data ? JSON.parse(courseList.data).length : 0}
+            count={topicList.length > 0 ? topicList.length : 0}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

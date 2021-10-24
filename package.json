@@ -60,6 +60,7 @@
     "prettier": "^2.4.1"
   },
   "dependencies": {
+    "@atlaskit/breadcrumbs": "^11.3.4",
     "@date-io/date-fns": "1.x",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",

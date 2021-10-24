@@ -33,7 +33,7 @@ import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/grade';
+import { CategoryListHead, CategoryListToolbar, CategoryMoreMenu } from '../components/_dashboard/attendance';
 
 // import CreateUser from './user/CreateUser';
 import BreadCrumb from '../components/Breadcrumb'
@@ -47,14 +47,14 @@ import axios from 'axios';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'grade', label: 'Grade', alignRight: false },
-  // { id: 'shortname', label: 'Short Name', alignRight: false },
+  { id: 'attendAt', label: 'Attended At', alignRight: false },
+  { id: 'description', label: 'Description', alignRight: false },
   // { id: 'code', label: 'Course Code', alignRight: false },
   // { id: 'category', label: 'Category', alignRight: false },
   // { id: 'position', label: 'Position', alignRight: false },
   // { id: 'startDate', label: 'Start Date', alignRight: false },
   // { id: 'endDate', label: 'End Date', alignRight: false },
-  // { id: 'status', label: 'Status', alignRight: true },
+  { id: 'status', label: 'Status', alignRight: true },
   { id: '' }
 ];
 
@@ -90,7 +90,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Enrollment(props) {
-	const {category_code, sub_category, course_code} = useParams()
+	const {category_code, sub_category, course_code, topic_id } = useParams()
   const { state } = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -152,7 +152,7 @@ export default function Enrollment(props) {
 
 	async function getCourseGrade() {
 		try {
-			const { data } = await axios.get('/api/grade/course/' + course_code)	
+			const { data } = await axios.get('/api/attend/info/' + course_code + '/topic/' + topic_id)	
 			const addLabel = data.map(item => { item.label = item.name; return item; })
 			setCourseGrade(addLabel)
 			const enroll = await axios.get('/api/enrollment/course/' + course_code)	
@@ -169,7 +169,7 @@ export default function Enrollment(props) {
 
 	async function getCourseData() {
 		try {
-			const { data } = await axios.get('/api/course/info/' + course_code)
+			const { data } = await axios.get('/api/topic/info/' + topic_id)
 			const course = data.data
 			setCourseData(course)
 				dispatch({type : 'refresh_done'})
@@ -282,6 +282,25 @@ export default function Enrollment(props) {
 		setOpenModal(true)	
 	}
 
+	async function changeStudentAttend(status, id, user_id, course_id, description) {
+		if(window.confirm('Sure to change the attend?')) {
+			try {
+				const body = {
+					id,
+					user_id,
+					course_id,
+					topic_id,
+					description,
+					status,
+				}
+				const updatedData = await axios.patch('/api/attend/update', body)
+				dispatch({type : 'refresh_start'})
+			} catch (error) {
+				alert(error.response.data)	
+			}
+		}
+	}
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - courseGrade.length) : 0;
 
   const filteredUsers = courseGrade ? applySortFilter(courseGrade.length > 0 ? courseGrade : [], getComparator(order, orderBy), filterName) : [];
@@ -305,10 +324,20 @@ export default function Enrollment(props) {
 		item.label = item.name
 		return item
 	})
+
+	const attendStatus = ['','Alpha', 'Attend', 'Late', 'Attend & Active']
+	const attendStatusList = attendStatus
+	.map((item, index) => <MenuItem value={index}>{item}</MenuItem>)
+
+	let valueDescription = {}
   // return categoryList.data && ( 
   return ( 
-    <Page title="Grade | UIII LMS">
-      <Container>
+    <Page title="Attendance | UIII LMS">
+      <Container
+				sx={{
+					mt : 2,
+				}}
+			>
 				<Modal
 					open={openModal}
 					onClose={() => setOpenModal(false)}
@@ -373,7 +402,7 @@ export default function Enrollment(props) {
 				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Grade { courseData ? 'of ' + courseData.name : ''}
+            Attendance { courseData ? 'of ' + courseData.name : ''}
           </Typography>
         </Stack>
 				{
@@ -434,8 +463,9 @@ export default function Enrollment(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, grade } = row;
+                      const { id, name, attendAt, description, status, enroll_user_id, enroll_course_id } = row;
                       const isItemSelected = selected.indexOf(id) !== -1;
+											valueDescription[enroll_user_id] = description
 
                       return (
                         <TableRow
@@ -468,7 +498,25 @@ export default function Enrollment(props) {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{grade}</TableCell>
+                          <TableCell align="left">{attendAt && new Date(attendAt).toLocaleString()}</TableCell>
+                          <TableCell align="left">
+														{/* {
+															description ||
+															
+														} */}
+														<FormControl>
+															<OutlinedInput defaultValue={valueDescription[enroll_user_id]} onChange={e => valueDescription[enroll_user_id] = e.target.value} />
+														</FormControl>
+													</TableCell>
+                          <TableCell align="right">
+														<Select
+															value={(status && attendStatus.indexOf(status)) || 1}
+															onChange={e => changeStudentAttend(e.target.value, id, enroll_user_id, enroll_course_id, valueDescription[enroll_user_id])}
+															inputProps={{ 'aria-label': 'Without label' }}
+														>
+															{attendStatusList}
+														</Select>
+													</TableCell>
                           {/* <TableCell align="left">{ startDate && new Date(startDate).toDateString() + ", " + new Date(startDate).toLocaleTimeString()}</TableCell> */}
                           {/* <TableCell align="left">{ startDate}</TableCell>
                           <TableCell align="left">{ endDate}</TableCell> */}
@@ -483,7 +531,7 @@ export default function Enrollment(props) {
 													</TableCell> */}
                           {/* <TableCell align="right">{id || "None"}</TableCell> */}
                           <TableCell align="right">
-                            <CategoryMoreMenu code={id} editGrade={() => editGrade(row, grade)} />
+                            <CategoryMoreMenu code={id} editGrade={() => changeStudentAttend(status, id, enroll_user_id, enroll_course_id, valueDescription[enroll_user_id])} />
                           </TableCell>
                         </TableRow>
                       );

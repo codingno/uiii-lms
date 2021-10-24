@@ -37,6 +37,13 @@ export default function BasicBreadcrumbs() {
 			topicData = data.data
 		}
 
+		let nonLink = [
+			'dashboard',
+			'courses',
+			'create',
+			'edit',
+		]
+
 		let url = "/"
 		const makebreadLink = location.pathname.split('/')
 			.filter(item => item !== "")
@@ -61,8 +68,13 @@ export default function BasicBreadcrumbs() {
 					}
 				}
 
-				if(item === 'create' || item === 'edit')
+				if(nonLink.indexOf(item) >= 0)
+				// if(item === 'create' || item === 'edit')
 					return ""
+				if(item === 'admin')
+					nameLink = 'Courses'
+				if(item === 'topic')
+					nameLink = 'Topic'
 
 				return (
 					// <Link underline="hover" color="inherit" onClick={() => navigate(url)}>
