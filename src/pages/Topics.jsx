@@ -280,8 +280,8 @@ export default function Topics(props) {
                             </Stack>
                           </TableCell>
                           {/* <TableCell align="left">{ startDate && new Date(startDate).toDateString() + ", " + new Date(startDate).toLocaleTimeString()}</TableCell> */}
-                          <TableCell align="left">{ startDate}</TableCell>
-                          <TableCell align="left">{ endDate}</TableCell>
+                          <TableCell align="left">{new Date(startDate).toLocaleString()}</TableCell>
+                          <TableCell align="left">{new Date(endDate).toLocaleString()}</TableCell>
                           {/* <TableCell align="left">{ endDate && new Date(endDate).toDateString() + ", " + new Date(endDate).toLocaleTimeString()}</TableCell> */}
                           {/* <TableCell align="left">{category_code}</TableCell>
                           <TableCell align="left">{position || "None"}</TableCell>
