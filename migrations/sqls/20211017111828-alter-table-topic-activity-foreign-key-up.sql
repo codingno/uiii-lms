@@ -1,5 +1,5 @@
 /* Replace with your SQL commands */
-ALTER TABLE `u1556075_ulms`.`topic_activity` 
+ALTER TABLE `topic_activity` 
 CHANGE COLUMN `activity` `activity_id` INT(11) NULL DEFAULT NULL 
 ;
 ALTER TABLE `u1556075_ulms`.`topic_activity` 

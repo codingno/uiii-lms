@@ -1,5 +1,5 @@
 /* Replace with your SQL commands */
-CREATE TABLE `u1556075_ulms`.`course_attend` (
+CREATE TABLE `course_attend` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `course_Id` INT NOT NULL,
