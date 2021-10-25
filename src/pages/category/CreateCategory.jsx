@@ -21,7 +21,7 @@ import {
 	CircularProgress,
 } from "@mui/material";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCategoryList } from '../../store/actions/get/getCategories';
 
 import { useNavigate, useLocation, useParams } from "react-router-dom";
@@ -80,6 +80,7 @@ function CreateCategory(props) {
   const [position, setPosition] = useState("");
 
 	const [isLoading, setLoading] = useState(false)
+  const {user} = useSelector(state => state)
 
 	async function getUserInfo() {
 		setLoading(true)
@@ -99,7 +100,7 @@ function CreateCategory(props) {
 		} catch (error) {
 			if (error.response) {
 				alert(error.response.data);
-				navigate("/dashboard/courses/admin/category");
+				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/category`);
 			}
 		}
 	}

@@ -8,26 +8,6 @@ const topicActivityService= require('../services/topicActivityService')
 const courseAttendService = require('../services/courseAttendService')
 const moment = require('moment')
 // const e = require('express')
-const getCourseInfo = async (req, res) => {
-	const id = req.params.course_id
-
-    courseService.findById(id, function(err, result){
-		res.json({err, data : result})
-	})
-}
-const getAllCourse = async (req, res) => {
-	courseService.findAll(req, function(err, result){
-		res.ok({err, data : result})
-	})
-}
-const getCourseUser = async (req, res) => {
-	courseService.findByUserId(req.user.id, function(err, result){
-		if(err)
-			res.badRequest({err, data: null})
-		else
-		res.ok({err, data : result})
-	})
-}
 
 const createCourseAttend = async (req, res) => {
 	if(!req.body.course_id || !req.body.topic_id){
@@ -134,9 +114,6 @@ function updateCourseAttend(req, res) {
 }
 
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
-route.get('/', getAllCourse )
-route.get('/user', getCourseUser )
-route.get('/info/:course_id', getCourseInfo )
 route.get('/info/:course_code/topic/:topic_id', getCourseAttendByTopic )
 route.post('/create',isLogin, createCourseAttend )
 route.patch('/update', isTeacher, updateCourseAttend )

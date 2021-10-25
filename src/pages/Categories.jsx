@@ -81,6 +81,7 @@ function applySortFilter(array, comparator, query) {
 export default function Categories(props) {
   const location = useLocation()
   const { state } = useLocation()
+	const { user } = useSelector(state => state)
 	const [locationPath, setLocationPath] = useState(location.pathname)
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -99,6 +100,7 @@ export default function Categories(props) {
 
 	// const category_code = props.match ? props.match.params ? props.match.params.category_code : null : null;
 	const { category_code, sub_category } = useParams()
+  console.log({user});
 
 	async function getDataCategoryList(){
 			setLoading(true)
@@ -209,7 +211,7 @@ export default function Categories(props) {
           </Typography>
 					{/* {
 						!props.main_category && */}
-          <Button
+          {user.data.role_id == 1 && (<Button
             variant="contained"
             // component={RouterLink}
             // to="#"
@@ -217,14 +219,14 @@ export default function Categories(props) {
 						onClick={() => {
 							dispatch({type : 'refresh_start'})
 							if(category_code)
-								navigate(`/dashboard/courses/admin/${category_code}/create`, { state: { category_code }})
+								navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/create`, { state: { category_code }})
 							else 
-								navigate('/dashboard/courses/admin/create')
+								navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/create`)
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
             New {!category_code ? 'Category' : 'Program Study'}
-          </Button>
+          </Button>)}
 					{/* } */}
         </Stack>
 
@@ -278,9 +280,9 @@ export default function Categories(props) {
                           <TableCell component="th" scope="row" padding="none"
 														onClick={() => {
 															if(!category_code)
-																navigate(`/dashboard/courses/admin/${code}`, { state : { category_name : name}})
+																navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${code}`, { state : { category_name : name}})
 															if(category_code)
-																navigate(`/dashboard/courses/admin/${category_code}/${code}`, { state : { category_name : name}})
+																navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${code}`, { state : { category_name : name}})
 														}} sx={{ cursor : 'pointer'}}
 													>
                             <Stack direction="row" alignItems="center" spacing={2}>
@@ -294,9 +296,9 @@ export default function Categories(props) {
                           <TableCell align="left">{parent || "None"}</TableCell> */}
                           {/* <TableCell align="left">{position || "None"}</TableCell> */}
                           <TableCell align="right">{status || "None"}</TableCell>
-                          <TableCell align="right">
+                          {user.data.role_id == 1 &&(<TableCell align="right">
                             <CategoryMoreMenu code={code} category_code={category_code} />
-                          </TableCell>
+                          </TableCell>)}
                         </TableRow>
                       );
                     })}

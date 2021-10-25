@@ -90,7 +90,7 @@ export default function Courses(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const {courseList, refresh}= useSelector((state) => state);
+  const {courseList, refresh, user}= useSelector((state) => state);
   const [courseList1, setCourseList] = useState([]);
 
 	const [subCategory, setSubCategory] = useState({})
@@ -178,19 +178,19 @@ export default function Courses(props) {
 
 	const gotoTopic = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/topic`, { state : { course_name : name, course_id : id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${code}/topic`, { state : { course_name : name, course_id : id }})
 		}
 	}
 
 	const gotoEnrollment = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/enrollment`, { state : { course_name : name, course_id : id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${code}/enrollment`, { state : { course_name : name, course_id : id }})
 		}
 	}
 
 	const gotoGrade = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}/grade`, { state : { course_name : name, course_id : id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${code}/grade`, { state : { course_name : name, course_id : id }})
 		}
 	}
 
@@ -217,7 +217,7 @@ export default function Courses(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/create`, {state:{category_code, sub_category}})
+							navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/create`, {state:{category_code, sub_category}})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >

@@ -137,8 +137,47 @@ export default function Router() {
             { path: 'admin/edit', element: <CreateCourse edit={true} /> },
             { path: 'student', element: <CourseStudent /> },
             { path: "student/:course_id/detail", element: <LabTabs />},
-            { path: 'teacher', element: <Products /> },
-            { path: 'enrollment', element: <Products /> },
+						{ path: 'teacher',
+              element: <Categories main_category={true}  /> },
+						{ 
+							path : 'teacher/:category_code', 
+							element: <Categories main_category={true} />,
+						},
+            { path: 'teacher/:category_code/:sub_category', 
+							children : [
+								{ element: <Course />},
+							]},
+            { path: 'teacher/:category_code/:sub_category/create', element: <CreateCourse /> },
+            { path: 'teacher/:category_code/:sub_category/:course_code/edit', element: <CreateCourse edit={true} /> },
+						{ path: 'teacher/:category_code/:sub_category/:course_code',
+        			element: <Navigate to={`teacher/${category_code}/${sub_category}/${course_code}/topic`} />, 
+						},
+						{ path: 'teacher/:category_code/:sub_category/:course_code/topic',
+							children: [
+								{ element: <Topics/>},
+								{ path : 'create', element : <CreateTopic />},
+								{ path : 'edit', element : <CreateTopic edit={true} />},
+								{ path : ':topic_id', 
+									children: [
+										{ element : <TopicActivity /> },
+										{ path : 'attend', element : <Attendance />},
+										{ path : 'create', element : <CreateTopicActivity />},
+										{ path : 'edit', element : <CreateTopicActivity edit={true} />},
+									]
+								},
+							]
+						},
+						{ path: 'teacher/:category_code/:sub_category/:course_code/enrollment',
+							children: [
+								{ element: <Enrollment />},
+							]
+						},
+						{ path: 'teacher/:category_code/:sub_category/:course_code/grade',
+							children: [
+								{ element: <Grade />},
+							]
+						},
+            // { path: 'enrollment', element: <Products /> },
           ]
         },
         { path: 'activity', element: <Products /> },

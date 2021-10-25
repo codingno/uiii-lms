@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import DatePicker from '@mui/lab/DatePicker';
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCategoryList } from '../../store/actions/get/getCategories';
 
 import { useNavigate, useLocation, useParams } from "react-router-dom";
@@ -73,6 +73,7 @@ function CreateCourse(props) {
 	const { category_code, sub_category, course_code, topic_id } = useParams()
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const {user} = useSelector(state => state)
 
   // const [categoryID, setCategoryID] = useState(null);
   const [courseID, setCourseID] = useState(null);
@@ -126,7 +127,7 @@ function CreateCourse(props) {
 		} catch (error) {
 			if (error.response) {
 				alert(error.response.data);
-				navigate("/dashboard/courses/admin/list");
+				navigate("/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/list");
 			}
 		}
 	}
@@ -143,7 +144,7 @@ function CreateCourse(props) {
 		} catch(error) {
 			if (error.response) {
 				alert(error.response.data);
-				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}`, {state:{category_code, sub_category, course_code }})
+				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}`, {state:{category_code, sub_category, course_code }})
 			}
 		}
 	}
@@ -162,7 +163,7 @@ function CreateCourse(props) {
 		} catch(error) {
 			if (error.response) {
 				alert(error.response.data);
-				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code }})
+				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code }})
 			}
 		}
 	}
@@ -174,7 +175,7 @@ function CreateCourse(props) {
 		} catch(error) {
 			if (error.response) {
 				alert(error.response.data);
-				navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code, topic_id }})
+				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code, topic_id }})
 			}
 		}
 	}
@@ -203,7 +204,7 @@ function CreateCourse(props) {
         if (error.response) {
           alert(error.response.data);
           // props.setCreateUser(false)
-      		// navigate("/dashboard/courses/admin/"+state.category_code+"/"+state.sub_category);
+      		// navigate("/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/"+state.category_code+"/"+state.sub_category);
         }
       }
     }
@@ -246,9 +247,9 @@ function CreateCourse(props) {
       await dispatch(getCategoryList());
       alert(`Topic activity created successfully.`);
       // props.setCreateUser(false)
-      // navigate("/dashboard/courses/admin/sub_category/"+categoryCode);
+      // navigate("/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/sub_category/"+categoryCode);
 			dispatch({ type : 'refresh_start'})
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
     } catch (error) {
       if (error.response) {
         alert(error.response.data);
@@ -275,7 +276,7 @@ function CreateCourse(props) {
 			// gotoTopic(course_code, topicName, courseID)
       // navigate("/dashboard/courses/sub_category/"+categoryCode);
 			dispatch({ type : 'refresh_start'})
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
     } catch (error) {
       if (error.response) {
         alert(error.response.data);
@@ -285,7 +286,7 @@ function CreateCourse(props) {
 
 	const gotoTopic = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${code}`, { state : { course_name : name, course_id : id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${code}`, { state : { course_name : name, course_id : id }})
 		}
 	}
 

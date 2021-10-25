@@ -32,7 +32,7 @@ export default function App() {
 					dispatch({ type : 'getUserInfo', data : getUserInfo.data.user })
 					if(path.indexOf('/dashboard/courses') === 0){
 						if(path.indexOf(getUserInfo.data.user.role) < 0){
-							let newPath = '/dashboard/courses/'+ getUserInfo.data.user.role
+							let newPath = '/dashboard/courses/'+ (getUserInfo.data.user.role_id == 3 ? 'teacher' : getUserInfo.data.user.role)
 							navigate(newPath)
 						}
 						else

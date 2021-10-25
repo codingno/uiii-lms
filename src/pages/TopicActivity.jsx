@@ -93,7 +93,7 @@ export default function Topics(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const {courseList, refresh}= useSelector((state) => state);
+  const {courseList, refresh, user}= useSelector((state) => state);
   const [topicList, setTopicList] = useState([]);
   const [topicName, setTopicName] = useState("");
 
@@ -225,7 +225,7 @@ export default function Topics(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}/create`, {state:{category_code, sub_category, course_code }})
+							navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}/create`, {state:{category_code, sub_category, course_code }})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
@@ -289,7 +289,7 @@ export default function Topics(props) {
                               <Typography variant="subtitle2" noWrap
 																// onClick={() => {
 																// 	dispatch({type : 'refresh_start'})
-																	// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																	// navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
 																// }}
 															>
 																{activity_name}
@@ -301,7 +301,7 @@ export default function Topics(props) {
                               {/* <Typography variant="subtitle2" noWrap
 																onClick={() => {
 																	dispatch({type : 'refresh_start'})
-																	// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																	// navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
 																}}
 															>
 																{attachment}
@@ -325,7 +325,7 @@ export default function Topics(props) {
                               <Typography variant="subtitle2" noWrap
 																onClick={() => {
 																	dispatch({type : 'refresh_start'})
-																	navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																	navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
 																}}
 															>
 																{name}

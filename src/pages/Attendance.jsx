@@ -103,7 +103,7 @@ export default function Enrollment(props) {
   const {courseList, refresh}= useSelector((state) => state);
   const [topicList, setTopicList] = useState([]);
 
-  const {userList}= useSelector((state) => state);
+  const {userList, user}= useSelector((state) => state);
 	const [courseData, setCourseData] = useState(null)
 
 	const [enroll, setEnroll] = useState(null)
@@ -488,7 +488,7 @@ export default function Enrollment(props) {
                               <Typography variant="subtitle2" noWrap
 																onClick={() => {
 																	dispatch({type : 'refresh_start'})
-																	navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																	navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
 																}}
 																sx={{
 																	cursor : 'pointer'

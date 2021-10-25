@@ -100,7 +100,7 @@ export default function Enrollment(props) {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const {courseList, refresh}= useSelector((state) => state);
+  const {courseList, refresh, user}= useSelector((state) => state);
   const [topicList, setTopicList] = useState([]);
 
   const {userList}= useSelector((state) => state);
@@ -458,7 +458,7 @@ export default function Enrollment(props) {
                               <Typography variant="subtitle2" noWrap
 																onClick={() => {
 																	dispatch({type : 'refresh_start'})
-																	navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																	navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
 																}}
 																sx={{
 																	cursor : 'pointer'

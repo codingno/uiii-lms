@@ -38,7 +38,7 @@ const sidebarConfig = [
     title: 'Courses',
     path: '/dashboard/courses',
     icon: getIcon(bookFill),
-    role: [1,4,6],
+    role: [1,3,6],
     children: [
       // {
       //   title: 'Course Category',
@@ -58,7 +58,7 @@ const sidebarConfig = [
       {
         title: 'Course List',
         path: '/dashboard/courses/teacher',
-        role: [4]
+        role: [3,4]
       },
       // {
       //   title: 'Enrollment',

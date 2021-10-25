@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import DatePicker from '@mui/lab/DatePicker';
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCategoryList } from '../../store/actions/get/getCategories';
 
 import { useNavigate, useLocation, useParams } from "react-router-dom";
@@ -99,6 +99,7 @@ function CreateCourse(props) {
 
   const [numberOfTopics, setNumberOfTopics] = useState(4);
   const [nameOfTopics, setNameOfTopics] = useState("");
+  const {user} = useSelector(state => state)
 
 	const [isLoading, setLoading] = useState(false)
 
@@ -123,7 +124,7 @@ function CreateCourse(props) {
 		} catch (error) {
 			if (error.response) {
 				alert(error.response.data);
-				navigate("/dashboard/courses/admin/list");
+				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/list`);
 			}
 		}
 	}
@@ -136,7 +137,7 @@ function CreateCourse(props) {
 		} catch (error) {
 			if (error.response) {
 				// alert(error.response.data);
-				// navigate("/dashboard/courses/admin/" + category_code + "/" + sub_category);
+				// navigate("/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/" + category_code + "/" + sub_category);
 			}
 		}
 	}
@@ -162,7 +163,7 @@ function CreateCourse(props) {
         if (error.response) {
           alert(error.response.data);
           // props.setCreateUser(false)
-      		navigate("/dashboard/courses/admin/"+category_code+"/"+sub_category);
+      		navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/`+category_code+"/"+sub_category);
         }
       }
     }
@@ -212,7 +213,7 @@ function CreateCourse(props) {
       alert(`Course created successfully.`);
       // props.setCreateUser(false)
 			dispatch({ type : 'refresh_start'})
-      navigate(`/dashboard/courses/admin/${category_code}/`+sub_category);
+      navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/`+sub_category);
     } catch (error) {
       if (error.response) {
         alert(error.response.data);
@@ -240,7 +241,7 @@ function CreateCourse(props) {
       await dispatch(getCategoryList());
       alert(`Course updated successfully.`);
 			dispatch({ type : 'refresh_start'})
-      navigate(`/dashboard/courses/admin/${category_code}/`+sub_category);
+      navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/`+sub_category);
     } catch (error) {
       if (error.response) {
         alert(error.response.data);

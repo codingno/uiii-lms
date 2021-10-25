@@ -49,15 +49,25 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function CustomizedAccordions(topic) {
   const [expanded, setExpanded] = React.useState('panel1');
   const dispatch = useDispatch()
-  const handleAttend = async (data) => {
-    try {
-      await axios.post('/api/attend/create', data)
-      dispatch({type: 'reset_getTopicCourse'})
-      return alert("Success Attend")
-    } catch (error) {
-      return alert(error)
-    }
-  }
+  
+	// const uploadImage = async () => {
+	// 	if(courseImage === "")
+	// 		return null
+	// 	const folderList = JSON.parse(JSON.stringify(activityList)).map(item => { item.name = item.name === 'Quiz' ? 'quizzess' : item.name.toLowerCase() + 's'; return item})
+	// 	const folderTarget = folderList.filter(item => item.id === activityType)[0].name
+	// 	const formData = new FormData();
+
+	// 	formData.append('attachment', courseImage);
+	// 	formData.append('folder', folderTarget);
+	// 	formData.append('folderTarget', folderTarget);
+	// 	try {
+  //     const file = await axios.post("/api/file/upload", 
+	// 			formData)
+	// 		return file
+	// 	} catch (error) {
+	// 		alert(error)	
+	// 	}
+	// }
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
