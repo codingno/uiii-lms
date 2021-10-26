@@ -18,7 +18,7 @@ const getAllTopicByCourseId = async (req, res) => {
 		const dataResult = []
 		if(result.length > 0)
 		async.eachSeries(result, async.ensureAsync(function(item, next){
-			topicActivityService.findByTopic(item.id, function(err, activity){
+			topicActivityService.findByTopic(item.id, req.user.role == 'student' ? req.user.id : null, function(err, activity){
 				item.activity = activity
 				item.startDateString = moment(item.startDate).utc().format('MMMM Do YYYY, h:mm a')
 				item.endDateString = moment(item.endDate).utc().format('MMMM Do YYYY, h:mm a')

@@ -154,7 +154,6 @@ function CreateCourse(props) {
 		try {
 			const topic = await axios.get("/api/activity/topic_activity/" + state.topic_activity_id)
 			const { data } = topic.data
-      console.log(`🚀 ~ file: CreateTopicActivity.jsx ~ line 157 ~ getTopicActivityInfo ~ data`, data)
 			setTopicActivityID(data.id)
 			setActivityType(data.activity_id)
 			setAttachment(data.attachment)

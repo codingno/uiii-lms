@@ -60,7 +60,7 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE topic_activity_student SET topic_activity_id=:topic_activity_id, attachment=:attachment, createdAt = NOW() WHERE id =:id"
+           const queryString = "UPDATE topic_activity_student SET attachment=:attachment, createdAt = NOW() WHERE topic_activity_id=:topic_activity_id AND user_id=:user_id"
            const topic_activity_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (topic_activity_updated){
                callback(null, topic_activity_updated)

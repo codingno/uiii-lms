@@ -94,7 +94,6 @@ export default function Topics(props) {
   const {courseList, refresh, user}= useSelector((state) => state);
   const [topicList, setTopicList] = useState([]);
   const [courseData, setCourseData] = useState(null);
-  console.log(`🚀 ~ file: Topics.jsx ~ line 97 ~ Topics ~ courseData`, courseData)
 
 	const [isLoading, setLoading] = useState(false)
 

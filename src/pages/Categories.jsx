@@ -100,7 +100,6 @@ export default function Categories(props) {
 
 	// const category_code = props.match ? props.match.params ? props.match.params.category_code : null : null;
 	const { category_code, sub_category } = useParams()
-  console.log({user});
 
 	async function getDataCategoryList(){
 			setLoading(true)

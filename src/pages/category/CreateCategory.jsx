@@ -55,7 +55,6 @@ function CreateCategory(props) {
   const { pathname, state } = useLocation();
 	const lastPathName = pathname.split('/').pop()
 	const page = lastPathName === 'edit' ? sub_category ? 'edit_sub' : 'edit_parent' : category_code ? 'create_sub' : 'create_parent'
-  console.log(`🚀 ~ file: CreateCategory.jsx ~ line 57 ~ CreateCategory ~ lastPathName`, lastPathName)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const [userID, setUserID] = useState(null);

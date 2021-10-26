@@ -20,7 +20,6 @@ export default function UserMoreMenu(props) {
   const [isOpen, setIsOpen] = useState(false);
 
 	async function deleteUser(id) {
-		console.log({id});
 		try {
 			const { data } = await axios.delete('/api/user/delete/'+id)
 			dispatch({type : 'refresh_start'})

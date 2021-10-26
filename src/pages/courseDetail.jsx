@@ -7,7 +7,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCourseUser } from '../store/actions/get/getCourseUser';
-import { ImageListItem } from '@mui/material';
+import { CircularProgress, ImageListItem } from '@mui/material';
 import CustomizedAccordions from './TopicDetail';
 import { getTopicCourse } from '../store/actions/get/getTopicCourse';
 export default function LabTabs() {
@@ -75,7 +75,13 @@ export default function LabTabs() {
             </>
         )}</TabPanel>
         <TabPanel style={{padding:"0", marginTop: "-40px"}} value="2">
+						{
+              !topicCourse.load ?
+            <div style={{ margin: 'auto', marginTop: '15px', display: 'flex', justifyContent: 'center'}}>
+							<CircularProgress /> 
+						</div> :
             <CustomizedAccordions topic={topicCourse.load ? JSON.parse(topicCourse.data) : []}/>
+            }
         </TabPanel>
       </TabContext>
     </Box>

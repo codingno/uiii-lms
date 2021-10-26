@@ -13,7 +13,7 @@ const getTopicById = async (req, res) => {
 	})
 }
 const getAllActivityByTopicId = async (req, res) => {
-	topicActivityService.findByTopic(req.params.id,function(err, result){
+	topicActivityService.findByTopic(req.params.id, null, function(err, result){
 		res.ok({err, data : result})
 	})
 }

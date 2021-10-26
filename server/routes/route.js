@@ -13,6 +13,7 @@ const activityRouter = require('./activityRouter')
 const categoryRouter = require('./categoryRouter')
 const enrollmentRoute = require('./enrollmentRoute')
 const gradeRoute = require('./gradeRouter')
+const topicActivityStudentRouter = require('./topicActivityStudentRouter')
 
 route.use('/image', imageRouter)
 route.use('/file', fileRouter)
@@ -25,4 +26,5 @@ route.use('/activity', activityRouter)
 route.use('/topic', topicRouter)
 route.use('/enrollment', enrollmentRoute)
 route.use('/grade', gradeRoute)
+route.use('/activityStudent', topicActivityStudentRouter)
 module.exports = route

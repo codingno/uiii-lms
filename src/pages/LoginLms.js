@@ -120,7 +120,6 @@ export default function Login() {
 		setDisableReset(true)
 		try {
 		const resetPass = await axios.post('/api/resetPasswordToken', {email})
-			console.log({resetPass});
 			// e.preventDefault()
 			alert("send forgot password")
 			navigate('/')

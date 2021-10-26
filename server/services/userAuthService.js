@@ -42,9 +42,6 @@ module.exports = {
         }
     },
     findByPasswordToken: async function (token, callback) {
-        console.log({
-            token
-        });
         try {
             const condition = `resetPasswordToken = '${token}' AND resetPasswordExpired >= NOW()`
             const queryString = "SELECT * FROM user_auth WHERE " + condition
@@ -56,9 +53,6 @@ module.exports = {
             else
                 callback('invalid token', user_auths)
         } catch (err) {
-            console.log({
-                err
-            });
             callback(err, null)
         }
     },
