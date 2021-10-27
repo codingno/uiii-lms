@@ -187,9 +187,61 @@ export default function CustomizedAccordions(topic) {
                 {item.activity.findIndex(activity => {
                   return activity.activity_id === 3
                 }) >= 0 && (
-                  <Button variant="contained" >Upload Quiz</Button>
+                  <>
+									<label htmlFor="contained-button-file">
+										<Input id="contained-button-file" multiple type="file" 
+											sx={{ display : 'none'}}
+											// onChange={(e) => e.target.files[0] && setCourseImage(e.target.files[0])}
+											onChange={async (e) => {
+                        try {
+                          let file = null
+                          if(e.target.files[0]) {
+                            file = e.target.files[0]	
+                            setAttachment(file.name)
+                            // setAttachImage(file)
+                          }
+                          const imageFile = await uploadImage('Quiz_student', file)
+                          let attachmentData = imageFile.data
+                          const index = item.activity.findIndex(activity => {
+                            return activity.activity_id === 3
+                          })
+                          if(item.activity[index].attachment_user === ""){
+                            await axios.post("/api/activityStudent/create", {
+                              topic_activity_id: item.activity[index].id,
+                              attachment : attachmentData,
+                            });
+                            // setAttachImage(attachmentData)
+                            dispatch({type:'reset_getTopicCourse'})                   
+                          }
+                          else {
+                            await axios.post("/api/activityStudent/update", {
+                              topic_activity_id: item.activity[index].id,
+                              attachment : attachmentData,
+                            });                    
+                            setAttachImage(attachmentData)                   
+                            dispatch({type:'reset_getTopicCourse'})                   
+                          }
+                        } catch (error) {
+                          
+                        }
+                      }}
+										/>
+										<Button variant="contained" component="span">
+											Upload Quiz
+										</Button>
+									</label>
+                  {
+                      item.activity[item.activity.findIndex(activity => {
+                        return activity.activity_id === 3
+                      })].attachment_user &&
+                      <Button key={item.id} variant="contained" href={'/'+item.activity[item.activity.findIndex(activity => {
+                        return activity.activity_id === 1
+                      })].attachment_user} target="_blank">Show My Quiz</Button> 
+                  }
+                  {
+                  }
+                  </>
                 )}
-
             </Stack>
           </Typography>
         </AccordionDetails>
