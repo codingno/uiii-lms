@@ -42,7 +42,7 @@ function CreateUser(props) {
 	const { state } = useLocation();
   const navigate = useNavigate()
 	const dispatch = useDispatch()
-	const [userID, setUserID] = useState(null)
+	const [userID, setUserID] = useState("")
 	const [firstname, setFirstname] = useState("")
 	const [lastname, setLastname] = useState("")
 	const [username, setUsername] = useState("")
@@ -56,7 +56,7 @@ function CreateUser(props) {
 	async function getUserInfo() {
 		setLoading(true)
 		try {
-			const user = await axios.get('/api/user/info/'+state.username)	
+			const user = await axios.get('/api/user/info/'+ (state.username || state.id))	
 			const { data } = user.data
 			setUserID(data.id)
 			setFirstname(data.firstname)
