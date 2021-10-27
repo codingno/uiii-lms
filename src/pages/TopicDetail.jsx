@@ -109,7 +109,7 @@ export default function CustomizedAccordions(topic) {
                     }
                   }
                 } 
-                  disabled={(new Date() <= item.startDate || new Date() >= item.endDate) || item.attendAt}
+                  disabled={new Date() <= new Date(item.startDate) || new Date() >= new Date(item.endDate) || item.attendAt}
                 >
                     Attend
                 </Button>

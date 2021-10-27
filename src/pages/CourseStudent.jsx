@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 // material
-import { Container, Stack, Typography } from '@mui/material';
+import { CircularProgress, Container, Stack, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
 import {
@@ -50,8 +50,7 @@ export default function CourseStudent() {
     if(!courseUserList.load)
       return getCourseUserList()
   }, [courseUserList])
-  
-  return courseUserList.load && (
+  return (
     <Page title="Dashboard: Products | UIII LMS">
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
@@ -76,8 +75,14 @@ export default function CourseStudent() {
             <ProductSort />
           </Stack>
         </Stack> */}
-
-        <ProductList products={JSON.parse(courseUserList.data)} />
+        {!courseUserList.load ? 
+            <div style={{ margin: 'auto', marginTop: '15px', display: 'flex', justifyContent: 'center'}}>
+							<CircularProgress /> 
+						</div> : 
+            courseUserList.data.length > 2 ?
+            <ProductList products={JSON.parse(courseUserList.data)} /> :
+            <div style={{width: '100%', alignContent: 'center'}}>Course Not Found</div>
+        }
         {/* <ProductCartWidget /> */}
       </Container>
     </Page>

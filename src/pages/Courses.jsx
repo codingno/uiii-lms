@@ -91,12 +91,15 @@ export default function Courses(props) {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const {courseList, refresh, user}= useSelector((state) => state);
-  const [courseList1, setCourseList] = useState([]);
+  // const [courseList1, setCourseList] = useState([]);
 
 	const [subCategory, setSubCategory] = useState({})
 
 	const [isLoading, setLoading] = useState(false)
-
+  const courses = courseList.data.length > 2 ? JSON.parse(courseList.data).filter(data => {
+    return (user.role_id == 1 || data.user_enrollment.split(',').indexOf(user.data.id.toString()) >= 0 || data.createdBy == user.id)
+    
+  }) : []
 	async function getDataCategoryList(){
 			setLoading(true)
 			try {
@@ -138,7 +141,7 @@ export default function Courses(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = JSON.parse(courseList.data).map((n) => n.code);
+      const newSelecteds = courses.map((n) => n.code);
       setSelected(newSelecteds);
       return;
     }
@@ -194,12 +197,10 @@ export default function Courses(props) {
 		}
 	}
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - JSON.parse(courseList.data).length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - courses.length) : 0;
 
-  const filteredUsers = courseList.data ? applySortFilter(courseList.data.length > 0 ? JSON.parse(courseList.data) : [], getComparator(order, orderBy), filterName) : [];
-
+  const filteredUsers = courseList.data ? applySortFilter(courseList.data.length > 0 ? courses : [], getComparator(order, orderBy), filterName) : [];
   const isUserNotFound = filteredUsers.length === 0;
-
   // return categoryList.data && ( 
   return ( 
     <Page title="Courses | UIII LMS">
@@ -245,7 +246,7 @@ export default function Courses(props) {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={courseList.length}
+                  rowCount={courses.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -254,9 +255,9 @@ export default function Courses(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, shortname, code, category_code, position, status, image_url } = row;
+                      const { id, name, shortname, code, category_code, position, status, image_url, user_enrollment, createdBy } = row;
                       const isItemSelected = selected.indexOf(code) !== -1;
-
+                      // if(user.role_id == 1 || user_enrollment.split(',').indexOf(user.id) >= 0 || createdBy == user.id)
                       return (
                         <TableRow
                           hover
@@ -307,14 +308,14 @@ export default function Courses(props) {
 														}
 													</TableCell>
                           <TableCell align="right">{status || "None"}</TableCell>
-                          <TableCell align="right">
+                          {<TableCell align="right">
                             <CategoryMoreMenu 
 															code={code} 
 															gotoTopic={() => gotoTopic(code, name, id)} 
 															gotoEnrollment={() => gotoEnrollment(code, name, id)} 
 															gotoGrade={() => gotoGrade(code, name, id)} 
 															/>
-                          </TableCell>
+                          </TableCell>}
                         </TableRow>
                       );
                     })}
@@ -341,7 +342,7 @@ export default function Courses(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={courseList.data ? JSON.parse(courseList.data).length : 0}
+            count={courseList.data ? courses.length : 0}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
