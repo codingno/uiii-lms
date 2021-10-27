@@ -125,7 +125,12 @@ module.exports = {
   update: async function (data, callback) {
     try {
       const queryString = "UPDATE users SET firstname=:firstname, lastname=:lastname, username =:username, code =:code WHERE id =:id"
-      const user_auth_updated = await sequelize.query(queryString, {
+      const user = await sequelize.query(queryString, {
+        type: sequelize.UPDATE,
+        replacements: data
+      })
+      const queryAuth = "UPDATE user_auth SET username =:username, email =:email WHERE user_id =:id"
+      const user_auth_updated = await sequelize.query(queryAuth, {
         type: sequelize.UPDATE,
         replacements: data
       })

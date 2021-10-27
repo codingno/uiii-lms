@@ -68,6 +68,7 @@ const updateUser = async (req, res) => {
 		username: req.body.username ? req.body.username : '',
 		firstname: req.body.firstname ? req.body.firstname : '',
 		lastname: req.body.lastname ? req.body.lastname : '',
+		email: req.body.email ? req.body.email : '',
 		code: req.body.code ? req.body.code : '',
 	}
 	userService.update(userInfo, function(err1, data1){
