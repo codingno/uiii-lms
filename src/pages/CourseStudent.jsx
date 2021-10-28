@@ -13,10 +13,13 @@ import {
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { getCourseUser } from '../store/actions/get/getCourseUser';
+import { useLocation } from 'react-router';
 export default function CourseStudent() {
+  const location = useLocation()
 	const dispatch = useDispatch()
   const [openFilter, setOpenFilter] = useState(false);
-  const { courseUserList } = useSelector(state => state)
+  const { courseUserList, refresh } = useSelector(state => state)
+	const [isLoading, setLoading] = useState(false)
   const formik = useFormik({
     initialValues: {
       gender: '',
@@ -30,6 +33,13 @@ export default function CourseStudent() {
     }
   });
   const { resetForm, handleSubmit } = formik;
+  
+  async function getCourseUserList(){
+		setLoading(true)
+    await dispatch(getCourseUser())    
+		setLoading(false)
+		dispatch({type : 'refresh_done'})
+  }
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -44,12 +54,9 @@ export default function CourseStudent() {
     resetForm();
   };
   useEffect(() => {
-    async function getCourseUserList(){
-      await dispatch(getCourseUser())    
-    }
-    if(!courseUserList.load)
+    if(refresh)
       return getCourseUserList()
-  }, [courseUserList])
+  }, [refresh, location])
   return (
     <Page title="Dashboard: Products | UIII LMS">
       <Container>
@@ -75,7 +82,7 @@ export default function CourseStudent() {
             <ProductSort />
           </Stack>
         </Stack> */}
-        {!courseUserList.load ? 
+        {isLoading ? 
             <div style={{ margin: 'auto', marginTop: '15px', display: 'flex', justifyContent: 'center'}}>
 							<CircularProgress /> 
 						</div> : 
