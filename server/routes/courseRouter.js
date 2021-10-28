@@ -111,9 +111,9 @@ const createCourse = async (req, res) => {
 				})
 			} else {
 				const numberOfTopics = req.body.topics.numberOfTopics
-				const arrayTopics = []
+				let arrayTopics = []
 				for (let i = 1; i <= numberOfTopics; i++) {
-					arrayTopics[i] = i
+					arrayTopics.push(i)
 				}
 				async.eachSeries(arrayTopics, async.ensureAsync(function createEachTopic(topicNumber, nextTopic) {
 					const topicInfo = {
