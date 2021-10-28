@@ -324,7 +324,7 @@ export default function Categories(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={categoryList.data ? JSON.parse(categoryList.data).length : 0}
+            count={categoryList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

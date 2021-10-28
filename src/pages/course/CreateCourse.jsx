@@ -561,7 +561,7 @@ function CreateCourse(props) {
 							{
 								( courseFormat === 'single' && activityList.length > 0 ) &&
 								<>
-									<FormContainer label="Name of Topics" value={nameOfTopics} setValue={setNameOfTopics} type="text" helper="Fill text or blank"/>
+									<FormContainer label="Name of Session" value={nameOfTopics} setValue={setNameOfTopics} type="text" helper="Fill text or blank"/>
 									<FormParent label="Type of activity" >
 										<Select
 											displayEmpty
@@ -589,7 +589,7 @@ function CreateCourse(props) {
 											</MenuItem> */}
 										</Select>
 									</FormParent>
-									<FormParent label="Topic Start Date" >
+									<FormParent label="Session Start Date" >
 											<DatePicker 
 												ampm={false}
 												// label="With keyboard"
@@ -601,7 +601,7 @@ function CreateCourse(props) {
 												renderInput={props => <TextField {...props}  /> }
 											/>
 									</FormParent>
-									<FormParent label="Topic End Date" >
+									<FormParent label="Session End Date" >
 											<DatePicker 
 												ampm={false}
 												// label="With keyboard"

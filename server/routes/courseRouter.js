@@ -80,7 +80,7 @@ const createCourse = async (req, res) => {
 			if(req.body.topics.courseFormat === 'single') {
 				const topicInfo = {
 					course_id: course.id ,
-					name: req.body.topics.nameOfTopics ? req.body.topics.nameOfTopics: 'Topic 1',
+					name: req.body.topics.nameOfTopics ? req.body.topics.nameOfTopics: 'Session 1',
 					createdAt: new Date(),
 					createdBy: req.user.id,
 					updatedAt: null,

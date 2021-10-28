@@ -108,6 +108,8 @@ export default function Enrollment(props) {
 
 	const [isLoading, setLoading] = useState(false)
 
+  const [userRoleList, setUserRoleList] = useState([]);
+	const [filterEnroll, setFilterEnroll] = useState(6)
 
 	async function getDataUserList(){
 			setLoading(true)
@@ -156,8 +158,18 @@ export default function Enrollment(props) {
 		}
 	}
 
+	async function getUserRole() {
+		try {
+			const { data } = await axios.get('/api/user/roles')	
+			setUserRoleList(data.data)
+		} catch (error) {
+			alert(error)	
+		}
+	}
+
   useEffect(() => {
 		if (refresh) {
+			getUserRole()
 			getTopicList()
 			getCourseData()
   	  getDataCategoryList();
@@ -219,6 +231,7 @@ export default function Enrollment(props) {
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - topicList.length) : 0;
 
   const filteredUsers = topicList ? applySortFilter(topicList.length > 0 ? topicList : [], getComparator(order, orderBy), filterName) : [];
+  console.log(`🚀 ~ file: Enrollment.jsx ~ line 234 ~ Enrollment ~ topicList`, topicList)
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -229,9 +242,24 @@ export default function Enrollment(props) {
 	// 		</MenuItem>
 	// 	)
 	// })
+
+	const filterEnrolledUser = topicList.length === 0 ? [] : topicList.map(item => item.user_id)
+
 	const users = userList.data.length === 0 ? '' : JSON.parse(userList.data).map(item => {
 		item.label = item.firstname + ' ' + item.lastname
 		return item
+	}).filter(item => parseInt(item.role_id) === filterEnroll).filter(function(item) { return this.indexOf(item.id) < 0}, filterEnrolledUser)
+
+	const filterRoleMenu = userRoleList.length === 0 ? [] : userRoleList.filter(item => item.id > user.data.role_id)
+
+
+	const roleSelect = filterRoleMenu.length === 0 ? '' : filterRoleMenu.map(item => {
+	// const roleSelect = userRoleList.length === 0 ? '' : userRoleList.map(item => {
+		return (
+			<MenuItem key={item.id} value={item.id}>
+				{item.name}
+			</MenuItem>
+		)
 	})
 
   // return categoryList.data && ( 
@@ -246,7 +274,7 @@ export default function Enrollment(props) {
             Enrollment { state ? 'of ' + state.course_name : ''}
           </Typography>
         </Stack>
-        <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={5}>
+        <Stack direction="row" alignItems="center" justifyContent="flex-end" mb={5}>
 					{/* {
 						users.length > 0 &&
 						<Select
@@ -265,6 +293,28 @@ export default function Enrollment(props) {
 							{users}
 						</Select>
 					} */}
+					{
+						userRoleList.length > 0 &&
+						<Select
+							sx={{
+								marginLeft : 'auto',
+								marginRight : '20px',
+							}}
+							displayEmpty
+							value={filterEnroll}
+							onChange={(e) => setFilterEnroll(e.target.value)}
+							inputProps={{ "aria-label": "Without label" }}
+						>
+							{
+								user ?
+								user.role_id == 1 ?
+								<MenuItem value={0}>
+									<em>All</em>
+								</MenuItem> : "" : ""
+							}
+							{roleSelect}
+						</Select>
+					}
 					<Autocomplete
 						value={enroll}
 						onChange={(event, newValue) => {
@@ -411,7 +461,7 @@ export default function Enrollment(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={courseList.data ? JSON.parse(courseList.data).length : 0}
+            count={topicList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

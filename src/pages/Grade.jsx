@@ -511,7 +511,7 @@ export default function Enrollment(props) {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={courseList.data ? JSON.parse(courseList.data).length : 0}
+            count={topicList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
