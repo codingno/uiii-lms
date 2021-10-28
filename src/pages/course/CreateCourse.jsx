@@ -551,7 +551,7 @@ function CreateCourse(props) {
 										Single activity format
 									</MenuItem>
 									<MenuItem value={"topic"}>
-										Topics format
+										Sessions format
 									</MenuItem>
 									<MenuItem value={"weekly"}>
 										Weekly format

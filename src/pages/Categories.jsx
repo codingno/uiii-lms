@@ -224,7 +224,7 @@ export default function Categories(props) {
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New {!category_code ? 'Category' : 'Program Study'}
+            Add {!category_code ? 'Category' : 'Program Study'}
           </Button>)}
 					{/* } */}
         </Stack>

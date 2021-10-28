@@ -54,7 +54,7 @@ module.exports = {
             const checkActivity = "select * from topic_activity where topic_id = :id"
             const activityData = await sequelize.query(checkActivity, {type: QueryTypes.SELECT, replacements : {id}})
 						if(activityData.length > 0)
-							return callback(res => res.badRequest("Topic still have topic activity."))
+							return callback(res => res.badRequest("Session still have Session Activity."))
             const queryString = "DELETE FROM topic WHERE id = :id"
             await sequelize.query(queryString, {type: QueryTypes.DELETE, replacements : {id}})
             callback(null, {message: "successfully deleted data"})

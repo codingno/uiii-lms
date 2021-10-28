@@ -162,7 +162,7 @@ function CreateCourse(props) {
 		} catch(error) {
 			if (error.response) {
 				alert(error.response.data);
-				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code }})
+				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${topic_id}`, {state:{category_code, sub_category, course_code }})
 			}
 		}
 	}
@@ -174,7 +174,7 @@ function CreateCourse(props) {
 		} catch(error) {
 			if (error.response) {
 				alert(error.response.data);
-				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, {state:{category_code, sub_category, course_code, topic_id }})
+				navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${topic_id}`, {state:{category_code, sub_category, course_code, topic_id }})
 			}
 		}
 	}
@@ -244,11 +244,11 @@ function CreateCourse(props) {
 				attachment : attachmentData,
       });
       await dispatch(getCategoryList());
-      alert(`Topic activity created successfully.`);
+      alert(`Session activity created successfully.`);
       // props.setCreateUser(false)
       // navigate("/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/sub_category/"+categoryCode);
 			dispatch({ type : 'refresh_start'})
-			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${topic_id}`, { state: { topic_id }})
     } catch (error) {
       if (error.response) {
         alert(error.response.data);
@@ -270,12 +270,12 @@ function CreateCourse(props) {
 				attachment : attachmentData,
       });
       await dispatch(getCategoryList());
-      alert(`Topic activity updated successfully.`);
+      alert(`Session activity updated successfully.`);
       // props.setCreateUser(false)
 			// gotoTopic(course_code, topicName, courseID)
       // navigate("/dashboard/courses/sub_category/"+categoryCode);
 			dispatch({ type : 'refresh_start'})
-			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}`, { state: { topic_id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${topic_id}`, { state: { topic_id }})
     } catch (error) {
       if (error.response) {
         alert(error.response.data);
@@ -331,7 +331,7 @@ function CreateCourse(props) {
           mb={5}
         >
           <Typography variant="h4" gutterBottom>
-            {props.edit ? "Edit" : "Create"} Topic Activity {topicName.length > 0 && `of ${topicName}`}
+            {props.edit ? "Edit" : "Create"} Session Activity {topicName.length > 0 && `of ${topicName}`}
           </Typography>
         </Stack>
 
@@ -580,7 +580,7 @@ function CreateCourse(props) {
 										Single activity format
 									</MenuItem>
 									<MenuItem value={"topic"}>
-										Topics format
+										Sessions format
 									</MenuItem>
 									<MenuItem value={"weekly"}>
 										Weekly format

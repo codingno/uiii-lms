@@ -458,7 +458,7 @@ export default function Enrollment(props) {
                               <Typography variant="subtitle2" noWrap
 																onClick={() => {
 																	dispatch({type : 'refresh_start'})
-																	navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																	navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${id}`, { state: { topic_id : id }})
 																}}
 																sx={{
 																	cursor : 'pointer'

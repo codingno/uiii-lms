@@ -86,9 +86,9 @@ export default function Router() {
             { path: 'admin/:category_code/:sub_category/create', element: <CreateCourse /> },
             { path: 'admin/:category_code/:sub_category/:course_code/edit', element: <CreateCourse edit={true} /> },
 						{ path: 'admin/:category_code/:sub_category/:course_code',
-        			element: <Navigate to={`admin/${category_code}/${sub_category}/${course_code}/topic`} />, 
+        			element: <Navigate to={`admin/${category_code}/${sub_category}/${course_code}/session`} />, 
 						},
-						{ path: 'admin/:category_code/:sub_category/:course_code/topic',
+						{ path: 'admin/:category_code/:sub_category/:course_code/session',
 							children: [
 								{ element: <Topics/>},
 								{ path : 'create', element : <CreateTopic />},
@@ -150,9 +150,9 @@ export default function Router() {
             { path: 'teacher/:category_code/:sub_category/create', element: <CreateCourse /> },
             { path: 'teacher/:category_code/:sub_category/:course_code/edit', element: <CreateCourse edit={true} /> },
 						{ path: 'teacher/:category_code/:sub_category/:course_code',
-        			element: <Navigate to={`teacher/${category_code}/${sub_category}/${course_code}/topic`} />, 
+        			element: <Navigate to={`teacher/${category_code}/${sub_category}/${course_code}/session`} />, 
 						},
-						{ path: 'teacher/:category_code/:sub_category/:course_code/topic',
+						{ path: 'teacher/:category_code/:sub_category/:course_code/session',
 							children: [
 								{ element: <Topics/>},
 								{ path : 'create', element : <CreateTopic />},

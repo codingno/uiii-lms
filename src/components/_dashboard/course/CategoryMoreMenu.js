@@ -71,7 +71,7 @@ export default function UserMoreMenu(props) {
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Manage Topic" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Manage Session" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
         <MenuItem sx={{ color: 'text.secondary' }} onClick={() => props.gotoEnrollment() }>
           <ListItemIcon>

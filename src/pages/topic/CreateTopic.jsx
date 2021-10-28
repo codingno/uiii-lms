@@ -235,7 +235,7 @@ function CreateCourse(props) {
 
 	const gotoTopic = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${code}/topic`, { state : { course_name : name, course_id : id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${code}/session`, { state : { course_name : name, course_id : id }})
 		}
 	}
 
@@ -522,7 +522,7 @@ function CreateCourse(props) {
 										Single activity format
 									</MenuItem>
 									<MenuItem value={"topic"}>
-										Topics format
+										Sessions format
 									</MenuItem>
 									<MenuItem value={"weekly"}>
 										Weekly format

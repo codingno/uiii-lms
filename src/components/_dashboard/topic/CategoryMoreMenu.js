@@ -60,7 +60,7 @@ export default function UserMoreMenu(props) {
         <MenuItem sx={{ color: 'text.secondary' }} 
 				// onClick={() => navigate('/dashboard/courses/admin/edit', { state:{ code: props.code }}) }
 						onClick={() => {
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/edit`, {state:{ code : props.code }})
+							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/session/edit`, {state:{ code : props.code }})
 						}}
 				>
           <ListItemIcon>

@@ -181,7 +181,7 @@ export default function Courses(props) {
 
 	const gotoTopic = (code, name, id) => {
 		if(category_code && sub_category && code) {
-			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${code}/topic`, { state : { course_name : name, course_id : id }})
+			navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${code}/session`, { state : { course_name : name, course_id : id }})
 		}
 	}
 
@@ -222,7 +222,7 @@ export default function Courses(props) {
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New Courses
+            Add Courses
           </Button>
         </Stack>
 
@@ -291,7 +291,7 @@ export default function Courses(props) {
 														<Button
 															onClick={() => gotoTopic(code, name, id)}
 														>
-															Manage Topic
+															Manage Session
 														</Button>
 													</TableCell>
                           <TableCell align="left">

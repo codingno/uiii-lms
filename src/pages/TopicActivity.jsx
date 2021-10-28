@@ -210,14 +210,14 @@ export default function Topics(props) {
 
   // return categoryList.data && ( 
   return ( 
-    <Page title="Topic Activity | UIII LMS">
+    <Page title="Session Activity | UIII LMS">
       <Container>
 				{/* <Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
 				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Topic Activity { topicName.length > 0 ? 'of ' + topicName : ''}
+            Session Activity { topicName.length > 0 ? 'of ' + topicName : ''}
           </Typography>
           <Button
             variant="contained"
@@ -225,11 +225,11 @@ export default function Topics(props) {
             // to="#"
 						// onClick={() => setCreateUser(true)}
 						onClick={() => {
-							navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${topic_id}/create`, {state:{category_code, sub_category, course_code }})
+							navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${topic_id}/create`, {state:{category_code, sub_category, course_code }})
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New Topic Activity
+            Add Session Activity
           </Button>
         </Stack>
 

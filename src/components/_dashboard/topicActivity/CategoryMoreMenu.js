@@ -62,7 +62,7 @@ export default function UserMoreMenu(props) {
 						onClick={() => {
 							dispatch({ type : 'refresh_start'})
 							// navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/edit`, {state:{ code : props.code }})
-							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/topic/${topic_id}/edit`, {state:{ topic_activity_id : props.code }})
+							navigate(`/dashboard/courses/admin/${category_code}/${sub_category}/${course_code}/session/${topic_id}/edit`, {state:{ topic_activity_id : props.code }})
 						}}
 				>
           <ListItemIcon>

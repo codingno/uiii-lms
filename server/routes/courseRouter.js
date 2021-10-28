@@ -118,7 +118,7 @@ const createCourse = async (req, res) => {
 				async.eachSeries(arrayTopics, async.ensureAsync(function createEachTopic(topicNumber, nextTopic) {
 					const topicInfo = {
 						course_id: course.id ,
-						name: 'Topic ' + topicNumber,
+						name: 'Session ' + topicNumber,
 						createdAt: new Date(),
 						createdBy: req.user.id,
 						updatedAt: null,

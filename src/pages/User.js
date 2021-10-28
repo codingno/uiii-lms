@@ -176,7 +176,7 @@ export default function User(props) {
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New User
+            Add User
           </Button>
         </Stack>
 

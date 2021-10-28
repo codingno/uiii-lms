@@ -181,7 +181,7 @@ export default function Topics(props) {
   };
 
 	function gotoAttendance(id) {
-		navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${id}/attend`)
+		navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${id}/attend`)
 	}
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - topicList.length) : 0;
@@ -192,14 +192,14 @@ export default function Topics(props) {
 
   // return categoryList.data && ( 
   return ( 
-    <Page title="Topics | UIII LMS">
+    <Page title="Sessions | UIII LMS">
       <Container>
 				{/* <Stack sx={{ marginBottom: '3em'}}>
 					<BreadCrumb />
 				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Topics { courseData ? 'of ' + courseData.name : ''}
+            Sessions { courseData ? 'of ' + courseData.name : ''}
           </Typography>
           <Button
             variant="contained"
@@ -211,7 +211,7 @@ export default function Topics(props) {
 						}}
             startIcon={<Icon icon={plusFill} />}
           >
-            New Topic
+            Add Session
           </Button>
         </Stack>
 
@@ -268,7 +268,7 @@ export default function Topics(props) {
                               <Typography variant="subtitle2" noWrap
 																onClick={() => {
 																	dispatch({type : 'refresh_start'})
-																	navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/topic/${id}`, { state: { topic_id : id }})
+																	navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${id}`, { state: { topic_id : id }})
 																}}
 																sx={{
 																	cursor : 'pointer'

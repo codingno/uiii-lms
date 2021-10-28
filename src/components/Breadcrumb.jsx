@@ -73,8 +73,8 @@ export default function BasicBreadcrumbs() {
 					return ""
 				if(item === 'admin')
 					nameLink = 'Courses'
-				if(item === 'topic')
-					nameLink = 'Topic'
+				if(item === 'session')
+					nameLink = 'Session'
 
 				return (
 					// <Link underline="hover" color="inherit" onClick={() => navigate(url)}>
