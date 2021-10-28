@@ -97,7 +97,7 @@ export default function Courses(props) {
 
 	const [isLoading, setLoading] = useState(false)
   const courses = courseList.data.length > 2 ? JSON.parse(courseList.data).filter(data => {
-    return (user.role_id == 1 || data.user_enrollment.split(',').indexOf(user.data.id.toString()) >= 0 || data.createdBy == user.id)
+    return (user.role_id == 1 || (data.user_enrollment && data.user_enrollment.split(',').indexOf(user.data.id.toString()) >= 0) || data.createdBy == user.id)
     
   }) : []
 	async function getDataCategoryList(){
