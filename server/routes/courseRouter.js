@@ -14,6 +14,14 @@ const getCourseInfo = async (req, res) => {
 		res.json({err, data : result})
 	})
 }
+const getCourseInfoEnroll = async (req, res) => {
+	const id = req.params.course_id
+
+    courseService.findByIdWithEnrollment(id, function(err, result){
+		console.log({result});
+		res.json({err, data : result})
+	})
+}
 const getAllCourse = async (req, res) => {
 	courseService.findAll(req, function(err, result){
 		res.ok({err, data : result})
@@ -194,6 +202,7 @@ const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/pol
 route.get('/', getAllCourse )
 route.get('/user', getCourseUser )
 route.get('/info/:course_id', getCourseInfo )
+route.get('/info_enroll/:course_id', getCourseInfoEnroll )
 route.post('/create', isTeacher, createCourse )
 route.patch('/update', isTeacher, updateCourse )
 route.post('/createCourseCategory', createCourseCategory )

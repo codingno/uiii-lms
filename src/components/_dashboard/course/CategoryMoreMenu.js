@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { useRef, useState } from 'react';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
@@ -17,6 +17,7 @@ export default function UserMoreMenu(props) {
   const ref = useRef(null);
 	const { category_code, sub_category } = useParams()
   const [isOpen, setIsOpen] = useState(false);
+  const {user} = useSelector(state => state)
 
 	const [disableDeleteButton, setDisableDeleteButton] = useState(false)
 
@@ -79,12 +80,15 @@ export default function UserMoreMenu(props) {
           </ListItemIcon>
           <ListItemText primary="Manage Enrollment" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-        <MenuItem sx={{ color: 'text.secondary' }} onClick={() => props.gotoGrade() }>
-          <ListItemIcon>
-            <Icon icon={editFill} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Manage Grade" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
+        {
+          user.data && user.data.role_id == 4 && (
+          <MenuItem sx={{ color: 'text.secondary' }} onClick={() => props.gotoGrade() }>
+            <ListItemIcon>
+              <Icon icon={editFill} width={24} height={24} />
+            </ListItemIcon>
+            <ListItemText primary="Manage Grade" primaryTypographyProps={{ variant: 'body2' }} />
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

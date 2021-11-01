@@ -51,6 +51,20 @@ module.exports = {
             callback(err, null)
         }
     },
+    findByIdWithEnrollment: async function(course_id, callback){
+        try {
+            let condition = isNaN(parseInt(course_id)) ? ` c.code = "${course_id}" ` : ` c.id = ${course_id}`
+            const enrollment = "SELECT ua.email from enrollment e LEFT JOIN user_auth ua ON e.user_id = ua.user_id WHERE e.course_id = c.id"
+            const queryString = "SELECT c.*, ct.id as category, ct.name as category_name, ct.code as category_code, json_arrayagg(ua.email) emails FROM courses c LEFT JOIN course_categories cc ON cc.course = c.id LEFT JOIN categories ct ON ct.id = cc.category LEFT JOIN enrollment e ON e.course_id = c.id LEFT JOIN user_auth ua ON e.user_id = ua.user_id WHERE " + condition + " GROUP BY c.id"
+            const courses = await sequelize.query(queryString, {type: QueryTypes.SELECT})
+						if(courses.length === 0)
+							return callback("No Courses found.", null)
+            courses[0].emails = JSON.parse(courses[0].emails)
+            callback(null, courses[0])
+        } catch (err) {
+            callback(err, null)
+        }
+    },
     delete: async function(id, callback){
         try {
             const queryString = "DELETE FROM courses WHERE id = " + id
