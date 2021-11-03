@@ -46,10 +46,10 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
+  if (b[orderBy].toLowerCase() < a[orderBy].toLowerCase()) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (b[orderBy].toLowerCase() > a[orderBy].toLowerCase()) {
     return 1;
   }
   return 0;
@@ -209,7 +209,7 @@ export default function User(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, username, role_name, email, firstname, lastname } = row;
+                      const { id, username, role_name, email, name, firstname, lastname } = row;
                       const isItemSelected = selected.indexOf(username) !== -1;
 
                       return (
@@ -231,7 +231,8 @@ export default function User(props) {
                             <Stack direction="row" alignItems="center" spacing={2}>
                               {/* <Avatar alt={name} src={avatarUrl} /> */}
                               <Typography variant="subtitle2" noWrap>
-                                {firstname + ' ' + lastname}
+                                {/* {firstname + ' ' + lastname} */}
+																{name}
                               </Typography>
                             </Stack>
                           </TableCell>

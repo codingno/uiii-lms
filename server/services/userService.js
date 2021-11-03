@@ -52,7 +52,7 @@ module.exports = {
   },
   findAll: async function (callback) {
     try {
-      const queryString = "SELECT u.*, CONCAT(ur.role_id) role_id, CONCAT(r.name) role_name, ua.email FROM users u LEFT JOIN user_role ur ON u.id = ur.user_id LEFT JOIN user_auth ua ON  ua.user_id = u.id LEFT Join roles r ON ur.role_id = r.id GROUP BY u.id"
+      const queryString = "SELECT u.*, CONCAT(u.firstname, ' ', u.lastname) name, CONCAT(ur.role_id) role_id, CONCAT(r.name) role_name, ua.email FROM users u LEFT JOIN user_role ur ON u.id = ur.user_id LEFT JOIN user_auth ua ON  ua.user_id = u.id LEFT Join roles r ON ur.role_id = r.id GROUP BY u.id"
       const users = await sequelize.query(queryString)
       callback(null, users[0])
     } catch (err) {

@@ -296,7 +296,7 @@ export default function Categories(props) {
                           {/* <TableCell align="left">{position || "None"}</TableCell> */}
                           <TableCell align="right">{status || "None"}</TableCell>
                           {user.data.role_id == 1 &&(<TableCell align="right">
-                            <CategoryMoreMenu code={code} category_code={category_code} />
+                            <CategoryMoreMenu code={code} category_code={category_code} category_name={name} />
                           </TableCell>)}
                         </TableRow>
                       );

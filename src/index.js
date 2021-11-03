@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import createStore from './store';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import idLocale from 'date-fns/locale/id'
 
 //
 import App from './App';
@@ -23,7 +24,7 @@ const getUserInfo = localStorage.getItem("getUserInfo");
 store.dispatch({type : 'getUserInfo', data : JSON.parse(getUserInfo)})
 
 ReactDOM.render(
-			<LocalizationProvider dateAdapter={AdapterDateFns}>
+			<LocalizationProvider dateAdapter={AdapterDateFns} locale={idLocale}>
 	<HelmetProvider>
 		<Provider store={ store } >
 			<BrowserRouter>

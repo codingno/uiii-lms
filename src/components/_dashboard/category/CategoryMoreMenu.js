@@ -12,7 +12,7 @@ import axios from 'axios';
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu({ code, category_code }) {
+export default function UserMoreMenu({ code, category_code, category_name }) {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
   const ref = useRef(null);
@@ -22,13 +22,15 @@ export default function UserMoreMenu({ code, category_code }) {
 
 	async function deleteCategory(category_code) {
 		setDisableDeleteButton(true)
-		try {
-			await axios.delete('/api/category/delete/' + category_code)	
-			alert("Category successfully deleted")
-		} catch (error) {
-			alert(error.response.data)	
+		if(window.confirm("Are you sure to delete " + category_name + "?")) {
+			try {
+				await axios.delete('/api/category/delete/' + category_code)	
+				alert("Category successfully deleted")
+			} catch (error) {
+				alert(error.response.data)	
+			}
+			dispatch({ type : 'refresh_start'})
 		}
-		dispatch({ type : 'refresh_start'})
 		setDisableDeleteButton(false)
 	}
 

@@ -311,6 +311,7 @@ export default function Courses(props) {
                           {<TableCell align="right">
                             <CategoryMoreMenu 
 															code={code} 
+															name={name}
 															gotoTopic={() => gotoTopic(code, name, id)} 
 															gotoEnrollment={() => gotoEnrollment(code, name, id)} 
 															gotoGrade={() => gotoGrade(code, name, id)} 

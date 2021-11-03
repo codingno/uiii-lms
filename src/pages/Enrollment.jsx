@@ -433,7 +433,7 @@ export default function Enrollment(props) {
 													</TableCell> */}
                           {/* <TableCell align="right">{id || "None"}</TableCell> */}
                           <TableCell align="right">
-                            <CategoryMoreMenu code={id} />
+                            <CategoryMoreMenu code={id} name={name} />
                           </TableCell>
                         </TableRow>
                       );

@@ -23,13 +23,15 @@ export default function UserMoreMenu(props) {
 
 	async function deleteCategory(code) {
 		setDisableDeleteButton(true)
-		try {
-			const { data } = await axios.delete('/api/course/delete/' + code)	
-			alert(data.message)
-		} catch (error) {
-			alert(error.response.data)	
+		if(window.confirm("Are you sure to delete " + props.name + " course?")) {
+			try {
+				const { data } = await axios.delete('/api/course/delete/' + code)	
+				alert(data.message)
+			} catch (error) {
+				alert(error.response.data)	
+			}
+			dispatch({ type : 'refresh_start'})
 		}
-		dispatch({ type : 'refresh_start'})
 		setDisableDeleteButton(false)
 	}
 

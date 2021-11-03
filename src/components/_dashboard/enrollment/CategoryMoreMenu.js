@@ -37,9 +37,11 @@ export default function UserMoreMenu(props) {
       >
         <MenuItem sx={{ color: 'text.secondary' }}
 					onClick={async () => {
-						dispatch({type : 'refresh_start'})
-						// alert(props.code)
-						await axios.post('/api/enrollment/delete', { id : props.code })
+						if(window.confirm("Are you sure to delete " + props.name + "?")) {
+							// alert(props.code)
+							await axios.post('/api/enrollment/delete', { id : props.code })
+							dispatch({type : 'refresh_start'})
+						}
 					}}
 				>
           <ListItemIcon>
