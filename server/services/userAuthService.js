@@ -3,6 +3,11 @@ const {
     QueryTypes
 } = require('sequelize')
 const bcrypt = require('bcrypt')
+const errorWithStatus = (status, message) => {
+	const error = new Error(message)
+	error.status = status
+	return error
+}
 module.exports = {
     create: async function (data, callback) {
         try {
@@ -118,5 +123,50 @@ module.exports = {
                 }
             }
         })
+    },
+		checkPassword: async function (user_id, password, currentPassword) {
+			const userInfo = await sequelize.query("SELECT * FROM user_auth WHERE user_id = :user_id", {
+				type : sequelize.SELECT,
+				replacements : {user_id}
+			})	
+
+			if(userInfo.length === 0)
+				throw errorWithStatus(400, 'User not found.')
+
+			const compared = bcrypt.compare(currentPassword, userInfo[0].password)
+				// , async function (err, result) {
+				// if(err)
+				// 	throw Error('System failure occurs.')
+			if(!compared) 
+				throw errorWithStatus(400, 'Wrong Current Password')
+			
+			const isChanged = await this.changePassword({ user_id, password })
+			
+			return isChanged
+
+			// });
+		},
+    changePassword: async function (data) {
+				// try {
+        const hash = await bcrypt.hash(data.password, 8)
+				//  async function (errHash, hash) {
+        //     if (errHash)
+				// 			throw Error(errHash)
+						data.password = hash
+
+						console.log({data})
+						
+						const queryString = "UPDATE user_auth SET password =:password WHERE user_id =:user_id"
+						const user_auth_updated = await sequelize.query(queryString, {
+								type: QueryTypes.UPDATE,
+								replacements: data
+						})
+						if (user_auth_updated) 
+								return user_auth_updated
+						throw Error('Change password failed.')
+				// } catch (error) {
+				// 	throw Error(error)	
+				// }
+        // })
     }
 }

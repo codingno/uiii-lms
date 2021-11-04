@@ -4,6 +4,7 @@ const {
 } = require('sequelize')
 const userRoleService = require('./userRoleService')
 const userAuthService = require('./userAuthService')
+
 module.exports = {
   create: async function (data, callback) {
     this.findByUserId(data.username, async function (err, user) {
@@ -13,8 +14,8 @@ module.exports = {
         callback('username is used!')
       } else {
         try {
-          const queryString = "INSERT INTO users (firstname, lastname, username, code) " +
-            "VALUES (:firstname, :lastname, :username, :code);"
+          const queryString = "INSERT INTO users (firstname, lastname, username, code, photo) " +
+            "VALUES (:firstname, :lastname, :username, :code, :photo);"
           const user = await sequelize.query(queryString, {
             type: QueryTypes.INSERT,
             replacements: data
@@ -74,13 +75,16 @@ module.exports = {
       if (user_id == '')
         callback(null, null)
       else if (user.length > 0) {
+				const userInfo = user[0]
         const result = {
-          id: user[0].id,
-          firstname: user[0].firstname,
-          lastname: user[0].lastname,
-          username: user[0].username,
-          code: user[0].code,
-          email: user[0].email,
+					...userInfo,
+          // id: user[0].id,
+          // firstname: user[0].firstname,
+          // lastname: user[0].lastname,
+          // username: user[0].username,
+          // code: user[0].code,
+          // photo: user[0].photo,
+          // email: user[0].email,
           roles: user.map(data => {
             return {
               id: data.role_id,
@@ -124,7 +128,7 @@ module.exports = {
   },
   update: async function (data, callback) {
     try {
-      const queryString = "UPDATE users SET firstname=:firstname, lastname=:lastname, username =:username, code =:code WHERE id =:id"
+      const queryString = "UPDATE users SET firstname=:firstname, lastname=:lastname, username =:username, code =:code, photo = :photo WHERE id =:id"
       const user = await sequelize.query(queryString, {
         type: sequelize.UPDATE,
         replacements: data
@@ -141,5 +145,5 @@ module.exports = {
     } catch (err) {
       callback(err, null)
     }
-  }
+  },
 }

@@ -27,11 +27,11 @@ const MENU_OPTIONS = [
   //   icon: personFill,
   //   linkTo: '#'
   // },
-  // {
-  //   label: 'Settings',
-  //   icon: settings2Fill,
-  //   linkTo: '#'
-  // }
+  {
+    label: 'Settings',
+    icon: settings2Fill,
+    linkTo: '#'
+  }
 ];
 
 // ----------------------------------------------------------------------
@@ -56,8 +56,8 @@ export default function AccountPopover() {
 			const logout = await fetch('/api/logout')
 			localStorage.removeItem("getUserInfo")
 			localStorage.clear()
-			dispatch({type : 'logout'})
 			navigate('/login')
+			dispatch({type : 'logout'})
 		} catch(err) {
 			alert(err)
 		}
@@ -88,8 +88,11 @@ export default function AccountPopover() {
           })
         }}
       >
-        {/* <Avatar src='/static/mock-images/avatars/avatar_default.jpg' alt="photoURL" /> */}
-				<AccountCircleIcon fontSize="large" />
+				{
+					user.data.photo ?
+        	<Avatar src={window.location.origin + "/" + user.data.photo} alt="photo" /> :
+					<AccountCircleIcon fontSize="large" />
+				}
       </IconButton>
 
       <MenuPopover
@@ -112,7 +115,7 @@ export default function AccountPopover() {
         {MENU_OPTIONS.map((option) => (
           <MenuItem
             key={option.label}
-            to={option.linkTo}
+            to={option.label === 'Settings' ? `/dashboard/user/${user.data.id}/edit` : option.linkTo}
             component={RouterLink}
             onClick={handleClose}
             sx={{ typography: 'body2', py: 1, px: 2.5 }}

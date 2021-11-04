@@ -32,7 +32,8 @@ module.exports.passport = async function () {
             email: user_login[0].email,
             name: user_login[0].username,
             role: user_login[0].role,
-            role_id: user_login[0].role_id
+            role_id: user_login[0].role_id,
+						photo : user_login[0].photo,
           };
           done(null, allowedInfo);
         } else done("invalid userid!");
@@ -88,6 +89,7 @@ module.exports.passport = async function () {
               email: user_login[0].email,
               role: user_login[0].role,
               role_id: user_login[0].role_id,
+							photo : user_login[0].photo,
             };
             req.user = returnuser_login
 

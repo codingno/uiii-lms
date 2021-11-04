@@ -49,14 +49,15 @@ DashboardNavbar.propTypes = {
 
 export default function DashboardNavbar({ onOpenSidebar }) {
 	const location = useLocation()
-	const path = location.pathname.split('/').pop()
+	const path = location.pathname.split('/')
 	const nonBreadCrumbs = [
 		'app',
 		'user',
 		'calendar',
 	]
-	const isBreadCrumbs = nonBreadCrumbs.indexOf(path) < 0
-  return (
+	const isBreadCrumbs = path.filter(item => nonBreadCrumbs.indexOf(item) >= 0).length === 0
+  
+	return (
     <RootStyle>
       <ToolbarStyle>
         <MHidden width="lgUp">

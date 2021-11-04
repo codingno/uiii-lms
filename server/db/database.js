@@ -11,9 +11,9 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
   dialect: 'mysql',
 	// disable logging; default: console.log
   logging: false,
-	dialectOptions: {
-		useUTC: true, // -->Add this line. for reading from database
-	},
+	// dialectOptions: {
+	// 	useUTC: true, // -->Add this line. for reading from database
+	// },
 	timezone: '+07:00',
 });
 

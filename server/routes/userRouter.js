@@ -6,7 +6,7 @@ const route = express.Router()
 const userService = require('../services/userService')
 const userRoleService = require('../services/userRoleService')
 const roleService = require('../services/roleService')
-// const userAuthService = require('../services/userAuthService')
+const userAuthService = require('../services/userAuthService')
 
 const getUserInfo = async (req, res) => {
 	const user_id = req.params.user_id
@@ -46,6 +46,7 @@ const createUser = async (req, res) => {
 		lastname: req.body.lastname ? req.body.lastname : '',
 		email: req.body.email ? req.body.email : '',
 		code: req.body.code ? req.body.code : '',
+		photo: req.body.photo ? req.body.photo : '',
 	}
 	userService.create(userInfo, function(err1, data1){
 		if(err1)
@@ -53,7 +54,7 @@ const createUser = async (req, res) => {
 		else {
 			userRoleService.create({user_id: data1[0], role_id: req.body.role_id}, function(err, data){
 				if(err)
-					res.internalServerError({message : err, data})
+					res.internalServerError(err)
 				else {
 					data1.role_id = data.role_id
 					res.ok({err, data: data1})
@@ -70,6 +71,7 @@ const updateUser = async (req, res) => {
 		lastname: req.body.lastname ? req.body.lastname : '',
 		email: req.body.email ? req.body.email : '',
 		code: req.body.code ? req.body.code : '',
+		photo: req.body.photo ? req.body.photo : '',
 	}
 	userService.update(userInfo, function(err1, data1){
 		if(err1)
@@ -95,6 +97,19 @@ function deleteUser(req, res) {
 	})
 }
 
+async function changePasswordUser(req, res) {
+	if(!req.body.password || !req.body.currentPassword)
+		return res.badRequest('Parameter missing.')
+	try {
+		userAuthService.checkPassword(req.params.user_id, req.body.password, req.body.currentPassword)
+		return res.ok('Password Changed')
+	} catch (error) {
+		if(error.status === 404)
+			return res.badRequest(error)
+		return res.internalServerError(error)		
+	}	
+}
+
 const { isAdmin, isLogin, isNonEditTeacher } = require('../config/policies')
 
 route.get('/', isNonEditTeacher, getAllUser )
@@ -102,7 +117,8 @@ route.get('/info/:user_id', isLogin, getUserInfo )
 route.get('/roles', isNonEditTeacher, getAllRoles )
 route.put('/create', isAdmin, createUser )
 route.put('/createUserRole', isAdmin, createUserRole )
-route.patch('/update', isAdmin, updateUser )
+route.patch('/update', isLogin, updateUser )
+route.patch('/:user_id/changepass', isLogin, changePasswordUser )
 route.delete('/delete/:id', isAdmin, deleteUser )
 
 module.exports = route

@@ -54,7 +54,7 @@ export default function Router() {
 					children: [
 						{ element: <User />,},
 						{ path: 'create', element: <CreateUser /> },
-						{ path: 'edit', element: <CreateUser edit={true} /> },
+						{ path: ':user_id/edit', element: <CreateUser edit={true} /> },
 					]
 			 	},
         {

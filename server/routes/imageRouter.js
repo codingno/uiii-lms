@@ -33,5 +33,6 @@ const uploadImage =
 const { isAdmin, isLogin, isNonEditTeacher } = require('../config/policies')
 
 route.post('/upload/course',upload.single("course"), uploadImage)
+route.post('/upload/user', isLogin, upload.single("user"), uploadImage)
 
 module.exports = route
