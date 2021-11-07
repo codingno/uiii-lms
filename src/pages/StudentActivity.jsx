@@ -47,14 +47,14 @@ import axios from 'axios';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'attendAt', label: 'Attended At', alignRight: false },
-  { id: 'description', label: 'Description', alignRight: false },
+  { id: 'createdAt', label: 'createdAt', alignRight: false },
+  { id: 'attachment', label: 'Attachment', alignRight: false },
   // { id: 'code', label: 'Course Code', alignRight: false },
   // { id: 'category', label: 'Category', alignRight: false },
   // { id: 'position', label: 'Position', alignRight: false },
   // { id: 'startDate', label: 'Start Date', alignRight: false },
   // { id: 'endDate', label: 'End Date', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: true },
+  // { id: 'status', label: 'Status', alignRight: true },
   { id: '' }
 ];
 
@@ -90,7 +90,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Enrollment(props) {
-	const {category_code, sub_category, course_code, topic_id } = useParams()
+	const {category_code, sub_category, course_code, topic_id, topic_activity } = useParams()
   const { state } = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -152,7 +152,7 @@ export default function Enrollment(props) {
 
 	async function getCourseGrade() {
 		try {
-			const { data } = await axios.get('/api/attend/info/' + course_code + '/session/' + topic_id)	
+			const { data } = await axios.get('/api/activityStudent/' + topic_activity)	
 			const addLabel = Array.isArray(data) ? data.map(item => { item.label = item.name; return item; }) : []
 			setCourseGrade(addLabel)
 			const enroll = await axios.get('/api/enrollment/course/' + course_code)	
@@ -332,7 +332,7 @@ export default function Enrollment(props) {
 	let valueDescription = {}
   // return categoryList.data && ( 
   return ( 
-    <Page title="Attendance | UIII LMS">
+    <Page title="Student Activity | UIII LMS">
       <Container
 				sx={{
 					mt : 2,
@@ -402,7 +402,7 @@ export default function Enrollment(props) {
 				</Stack> */}
         <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Attendance { courseData ? 'of ' + courseData.name : ''}
+            Student Activity { courseData ? 'of ' + courseData.name : ''}
           </Typography>
         </Stack>
 				{/* {
@@ -463,9 +463,10 @@ export default function Enrollment(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, attendAt, description, status, enroll_user_id, enroll_course_id } = row;
+                      // const { id, name, attendAt, description, status, enroll_user_id, enroll_course_id } = row;
+                      const { id, firstname, lastname, attachment, createdAt } = row;
                       const isItemSelected = selected.indexOf(id) !== -1;
-											valueDescription[enroll_user_id] = description
+											// valueDescription[enroll_user_id] = description
 
                       return (
                         <TableRow
@@ -482,41 +483,36 @@ export default function Enrollment(props) {
                               onChange={(event) => handleClick(event, id)}
                             />
                           </TableCell>
+                          <TableCell align="left">{firstname + ' ' + lastname}</TableCell>
+													{
+														attachment ?
+														<>
+                          <TableCell align="left">{createdAt && new Date(createdAt).toLocaleString()}</TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              {/* <Avatar alt={name} src={avatarUrl} /> */}
-                              <Typography variant="subtitle2" noWrap
-																onClick={() => {
-																	dispatch({type : 'refresh_start'})
-																	navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${id}`, { state: { topic_id : id }})
-																}}
-																sx={{
-																	cursor : 'pointer'
-																}}
+															<a href={`${window.location.origin}/${attachment}`} 
+															target="_blank"
+															style={{
+																textDecoration : 'none'
+															}} rel="noreferrer"
 															>
-																{name}
-                              </Typography>
+																<Button
+            											variant="contained"
+																>
+																	Link
+																</Button>
+															</a>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{attendAt && new Date(attendAt).toLocaleString()}</TableCell>
+													 </>
+													 :
+													 <>
                           <TableCell align="left">
-														{/* {
-															description ||
-															
-														} */}
-														<FormControl>
-															<OutlinedInput defaultValue={valueDescription[enroll_user_id]} onChange={e => valueDescription[enroll_user_id] = e.target.value} />
-														</FormControl>
-													</TableCell>
-                          <TableCell align="right">
-														<Select
-															value={(status && attendStatus.indexOf(status)) || 1}
-															onChange={e => changeStudentAttend(e.target.value, id, enroll_user_id, enroll_course_id, valueDescription[enroll_user_id])}
-															inputProps={{ 'aria-label': 'Without label' }}
-														>
-															{attendStatusList}
-														</Select>
-													</TableCell>
+                          </TableCell>
+                          <TableCell align="left">
+                          </TableCell>
+													 </>
+													}
                           {/* <TableCell align="left">{ startDate && new Date(startDate).toDateString() + ", " + new Date(startDate).toLocaleTimeString()}</TableCell> */}
                           {/* <TableCell align="left">{ startDate}</TableCell>
                           <TableCell align="left">{ endDate}</TableCell> */}
@@ -531,7 +527,7 @@ export default function Enrollment(props) {
 													</TableCell> */}
                           {/* <TableCell align="right">{id || "None"}</TableCell> */}
                           <TableCell align="right">
-                            <CategoryMoreMenu code={id} editGrade={() => changeStudentAttend(status, id, enroll_user_id, enroll_course_id, valueDescription[enroll_user_id])} />
+                            {/* <CategoryMoreMenu code={id} editGrade={() => changeStudentAttend(status, id, enroll_user_id, enroll_course_id, valueDescription[enroll_user_id])} /> */}
                           </TableCell>
                         </TableRow>
                       );

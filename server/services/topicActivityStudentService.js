@@ -42,7 +42,7 @@ module.exports = {
         try {
             const condition = ` AND ta.id = ${topic_activity_id}`
             const queryString = `SELECT 
-            u.firstname, u.lastname, tas.attachment, tas.createdAt
+            u.id, u.firstname, u.lastname, tas.attachment, tas.createdAt
             FROM
                 enrollment e
                     LEFT JOIN

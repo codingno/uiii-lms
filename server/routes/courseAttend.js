@@ -114,7 +114,7 @@ function updateCourseAttend(req, res) {
 }
 
 const { isAdmin, isLogin, isTeacher, isNonEditTeacher } = require('../config/policies')
-route.get('/info/:course_code/topic/:topic_id', getCourseAttendByTopic )
+route.get('/info/:course_code/session/:topic_id', getCourseAttendByTopic )
 route.post('/create',isLogin, createCourseAttend )
 route.patch('/update', isTeacher, updateCourseAttend )
 // route.post('/createCourseCategory', createCourseCategory )

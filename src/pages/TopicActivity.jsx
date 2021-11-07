@@ -38,7 +38,7 @@ import axios from 'axios';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  // { id: 'name', label: 'Name', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
   // { id: 'shortname', label: 'Short Name', alignRight: false },
   // { id: 'code', label: 'Course Code', alignRight: false },
   // { id: 'category', label: 'Category', alignRight: false },
@@ -202,6 +202,10 @@ export default function Topics(props) {
     setFilterName(event.target.value);
   };
 
+	function gotoStudentActivity(id) {
+		navigate(`/dashboard/courses/${user.data.role_id == 3 || user.data.id == 4 ? 'teacher' : user.data.role}/${category_code}/${sub_category}/${course_code}/session/${topic_id}/${id}`)
+	}
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - topicList.length) : 0;
 
   const filteredUsers = topicList ? applySortFilter(topicList.length > 0 ? topicList : [], getComparator(order, orderBy), filterName) : [];
@@ -262,7 +266,7 @@ export default function Topics(props) {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, activity_id, attachment } = row;
+                      const { id, name, activity_id, attachment } = row;
 											const activityData = activityList.filter(item => item.id === activity_id)
 											let activity_name = ""
 											if(activityData.length > 0)
@@ -284,6 +288,7 @@ export default function Topics(props) {
                               onChange={(event) => handleClick(event, id)}
                             />
                           </TableCell>
+                          <TableCell align="left">{name}</TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               <Typography variant="subtitle2" noWrap
@@ -344,7 +349,10 @@ export default function Topics(props) {
 													</TableCell> */}
                           {/* <TableCell align="right">{id || "None"}</TableCell> */}
                           <TableCell align="right">
-                            <CategoryMoreMenu code={id} />
+                            <CategoryMoreMenu 
+															code={id}  
+															gotoStudentActivity={() => gotoStudentActivity(id)} 
+															/>
                           </TableCell>
                         </TableRow>
                       );

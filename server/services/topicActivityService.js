@@ -3,8 +3,8 @@ const { QueryTypes } = require('sequelize')
 module.exports = {
     create: async function(data, callback){
         try {
-            const queryString = "INSERT INTO topic_activity (topic_id, activity_id, attachment, createdAt, createdBy, updatedAt, updatedBy) " +
-            "VALUES (:topic_id, :activity_id, :attachment, :createdAt, :createdBy, :updatedAt, :updatedBy);"
+            const queryString = "INSERT INTO topic_activity (topic_id, name, activity_id, attachment, createdAt, createdBy, updatedAt, updatedBy) " +
+            "VALUES (:topic_id, :name, :activity_id, :attachment, :createdAt, :createdBy, :updatedAt, :updatedBy);"
             const topic_activity = await sequelize.query(queryString,{type: QueryTypes.INSERT, replacements: data})
             if(topic_activity){
                 callback(null, topic_activity)
@@ -60,7 +60,7 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE topic_activity SET topic_id=:topic_id, activity_id=:activity_id, attachment=:attachment, updatedAt=:updatedAt, updatedBy=:updatedBy WHERE id =:id"
+           const queryString = "UPDATE topic_activity SET topic_id=:topic_id, name=:name, activity_id=:activity_id, attachment=:attachment, updatedAt=:updatedAt, updatedBy=:updatedBy WHERE id =:id"
            const topic_activity_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
            if (topic_activity_updated){
                callback(null, topic_activity_updated)

@@ -29,6 +29,7 @@ import Enrollment from './pages/Enrollment'
 import CalendarLayout from './pages/Calendar';
 import Grade from './pages/Grade'
 import Attendance from './pages/Attendance'
+import StudentActivity from './pages/StudentActivity'
 // import LabTabs from './pages/courseDetail';
 
 // ----------------------------------------------------------------------
@@ -97,6 +98,7 @@ export default function Router() {
 									children: [
 										{ element : <TopicActivity /> },
 										{ path : 'attend', element : <Attendance />},
+										{ path : ':topic_activity/student_activity', element : <StudentActivity />},
 										{ path : 'create', element : <CreateTopicActivity />},
 										{ path : 'edit', element : <CreateTopicActivity edit={true} />},
 									]
@@ -161,6 +163,8 @@ export default function Router() {
 									children: [
 										{ element : <TopicActivity /> },
 										{ path : 'attend', element : <Attendance />},
+										{ path : ':topic_activity', element : <StudentActivity/>},
+										{ path : ':topic_activity/student_activity', element : <StudentActivity />},
 										{ path : 'create', element : <CreateTopicActivity />},
 										{ path : 'edit', element : <CreateTopicActivity edit={true} />},
 									]

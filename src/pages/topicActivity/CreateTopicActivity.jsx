@@ -89,6 +89,7 @@ function CreateCourse(props) {
 
   const [topicName, setTopicName] = useState("");
   const [attachment, setAttachment] = useState("");
+  const [currentAttachment, setCurrentAttachment] = useState("");
   const [courseFormat, setCourseFormat] = useState("single");
   const [courseCategoryName, setCourseCategoryName] = useState("");
   // const [categoryCode, setCategoryCode] = useState(state.category_code);
@@ -155,8 +156,10 @@ function CreateCourse(props) {
 			const topic = await axios.get("/api/activity/topic_activity/" + state.topic_activity_id)
 			const { data } = topic.data
 			setTopicActivityID(data.id)
+			setName(data.name)
 			setActivityType(data.activity_id)
 			setAttachment(data.attachment)
+			setCurrentAttachment(data.attachment)
 			// setStartDate(data.startDate)
 			// setEndDate(data.endDate)
 		} catch(error) {
@@ -211,7 +214,7 @@ function CreateCourse(props) {
   }, [mainCategories]);
 
 	const uploadImage = async () => {
-		if(courseImage === "")
+		if(attachment === "")
 			return null
 		const folderList = JSON.parse(JSON.stringify(activityList)).map(item => { item.name = item.name === 'Quiz' ? 'quizzess' : item.name.toLowerCase() + 's'; return item})
 		const folderTarget = folderList.filter(item => item.id === activityType)[0].name
@@ -239,6 +242,7 @@ function CreateCourse(props) {
 			}
 
       await axios.post("/api/activity/create", {
+				name,
 				topic_id,
 				activity_id : activityType,
 				attachment : attachmentData,
@@ -260,11 +264,14 @@ function CreateCourse(props) {
     try {
 			let attachmentData = attachment
 			if(activityType !== 6) {
-				const imageFile = await uploadImage()
-				attachmentData = imageFile.data
+				if(attachment !== currentAttachment) {
+					const imageFile = await uploadImage()
+					attachmentData = imageFile.data
+				}
 			}
       await axios.post("/api/activity/update", {
 				id : topicActivityID,
+				name,
 				topic_id,
 				activity_id : activityType,
 				attachment : attachmentData,
@@ -352,7 +359,7 @@ function CreateCourse(props) {
 								/>
 							</FormControl>
 						</Stack> */}
-            {/* <FormContainer label="Name" value={name} setValue={setName} /> */}
+            <FormContainer label="Name" value={name} setValue={setName} />
             {/* <FormContainer
               label="Course Code"
               value={code}

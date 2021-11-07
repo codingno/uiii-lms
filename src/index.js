@@ -24,7 +24,7 @@ const getUserInfo = localStorage.getItem("getUserInfo");
 store.dispatch({type : 'getUserInfo', data : JSON.parse(getUserInfo)})
 
 ReactDOM.render(
-			<LocalizationProvider dateAdapter={AdapterDateFns} locale={idLocale}>
+			<LocalizationProvider dateAdapter={AdapterDateFns} >
 	<HelmetProvider>
 		<Provider store={ store } >
 			<BrowserRouter>

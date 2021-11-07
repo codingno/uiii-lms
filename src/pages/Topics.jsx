@@ -293,7 +293,11 @@ export default function Topics(props) {
 													</TableCell> */}
                           {/* <TableCell align="right">{id || "None"}</TableCell> */}
                           <TableCell align="right">
-                            <CategoryMoreMenu code={id} name={name} gotoAttendance={() => gotoAttendance(id)} />
+                            <CategoryMoreMenu 
+															code={id} 
+															name={name} 
+															gotoAttendance={() => gotoAttendance(id)} 
+															/>
                           </TableCell>
                         </TableRow>
                       );

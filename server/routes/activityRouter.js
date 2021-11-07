@@ -39,6 +39,7 @@ const getActivity = async (req, res) => {
 const createTopicActivity = async (req, res) => {
 	const topicActivityInfo = {
 		topic_id: req.body.topic_id ? req.body.topic_id : '',
+		name : req.body.name || '',
 		activity_id: req.body.activity_id ? req.body.activity_id : '',
 		attachment: req.body.attachment ? req.body.attachment : '',
 		createdAt: new Date(),
@@ -58,6 +59,7 @@ const createTopicActivity = async (req, res) => {
 const updateTopicActivity = async (req, res) => {
 	const courseInfo = {
 		id: req.body.id ? req.body.id : '',
+		name : req.body.name || '',
 		topic_id: req.body.topic_id ? req.body.topic_id : '',
 		activity_id: req.body.activity_id ? req.body.activity_id : '',
 		attachment: req.body.attachment ? req.body.attachment : '',
