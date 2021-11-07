@@ -153,7 +153,7 @@ export default function Enrollment(props) {
 	async function getCourseGrade() {
 		try {
 			const { data } = await axios.get('/api/grade/course/' + course_code)	
-			const addLabel = data.map(item => { item.label = item.name; return item; })
+			const addLabel = Array.isArray(data) ? data.map(item => { item.label = item.name; return item; }) : []
 			setCourseGrade(addLabel)
 			const enroll = await axios.get('/api/enrollment/course/' + course_code)	
 			const enrollData = enroll.data.data

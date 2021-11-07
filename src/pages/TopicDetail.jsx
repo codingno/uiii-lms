@@ -147,7 +147,7 @@ export default function CustomizedAccordions(topic) {
                           const index = item.activity.findIndex(activity => {
                             return activity.activity_id === 1
                           })
-                          if(item.activity[index].attachment_user === ""){
+                          if(item.activity[index].attachment_user === null){
                             await axios.post("/api/activityStudent/create", {
                               topic_activity_id: item.activity[index].id,
                               attachment : attachmentData,

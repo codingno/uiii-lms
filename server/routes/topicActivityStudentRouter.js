@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize')
+const moment = require('moment')
 const express = require('express')
 const route = express.Router()
 const async = require('async')
@@ -37,8 +38,20 @@ const updateTopicActivity = async (req, res) => {
 
 	})
 }
+const findActivityStudent = async (req, res) => {
+	topicActivityStudentService.findByTopic(req.params.topic_activity_id, function(err, data){
+		if(err)
+			return err(res)
+		data.map(item => {
+			item.createdAt = moment(item.createdAt).utc().format('MMMM Do YYYY, h:mm a')
+			return item
+		})	
+		return res.ok(data)
+	})
+}
 
 route.post('/create', isStudent, createTopicActivity )
 route.post('/update', isStudent, updateTopicActivity )
+route.get('/:topic_activity_id', findActivityStudent )
 
 module.exports = route

@@ -38,10 +38,24 @@ module.exports = {
             callback(err, null)
         }
     },
-    findByTopic: async function(topic_id,callback){
+    findByTopic: async function(topic_activity_id,callback){
         try {
-            const condition = ` ta.topic_id = ${topic_id}`
-            const queryString = "SELECT ta.*, a.name activity_name FROM topic_activity ta LEFT JOIN activity a ON ta.activity_id = a.id WHERE " + condition
+            const condition = ` AND ta.id = ${topic_activity_id}`
+            const queryString = `SELECT 
+            u.firstname, u.lastname, tas.attachment, tas.createdAt
+            FROM
+                enrollment e
+                    LEFT JOIN
+                users u ON e.user_id = u.id
+                    LEFT JOIN
+                topic t ON t.course_id = e.course_id
+                    LEFT JOIN
+                topic_activity ta ON ta.topic_id = t.id
+                    LEFT JOIN
+                topic_activity_student tas ON tas.user_id = u.id AND tas.topic_activity_id = ta.id
+                    LEFT JOIN
+                user_role ur ON ur.user_id = u.id
+            WHERE ur.role_id = 6 ${condition};`
             const topic_activity = await sequelize.query(queryString, {type: QueryTypes.SELECT})
             callback(null, topic_activity)
         } catch (err) {

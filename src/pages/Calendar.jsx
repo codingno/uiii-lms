@@ -14,7 +14,7 @@ export default function CalenderLayout() {
         orientation="landscape"
         openTo="day"
         value={value}
-        shouldDisableDate={isWeekend}
+        // shouldDisableDate={isWeekend}
         onChange={(newValue) => {
           setValue(newValue);
         }}
