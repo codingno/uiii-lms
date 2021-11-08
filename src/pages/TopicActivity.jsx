@@ -351,6 +351,7 @@ export default function Topics(props) {
                           <TableCell align="right">
                             <CategoryMoreMenu 
 															code={id}  
+															name={name}
 															gotoStudentActivity={() => gotoStudentActivity(id)} 
 															/>
                           </TableCell>

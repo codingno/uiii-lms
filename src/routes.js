@@ -98,6 +98,7 @@ export default function Router() {
 									children: [
 										{ element : <TopicActivity /> },
 										{ path : 'attend', element : <Attendance />},
+										{ path : ':topic_activity', element : <StudentActivity/>},
 										{ path : ':topic_activity/student_activity', element : <StudentActivity />},
 										{ path : 'create', element : <CreateTopicActivity />},
 										{ path : 'edit', element : <CreateTopicActivity edit={true} />},

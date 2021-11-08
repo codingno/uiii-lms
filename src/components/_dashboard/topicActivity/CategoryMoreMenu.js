@@ -20,15 +20,17 @@ export default function UserMoreMenu(props) {
 
 	const [disableDeleteButton, setDisableDeleteButton] = useState(false)
 
-	async function deleteCategory(category_code) {
+	async function deleteCategory(category_code, name) {
 		setDisableDeleteButton(true)
-		try {
-			const { data } = await axios.delete('/api/topic/activity/delete/' + category_code)	
-			alert(data.message)
-		} catch (error) {
-			alert(error.response.data)	
+		if(window.confirm("Are you sure to delete " + ( name || "" ) + " session activity?")) {
+			try {
+				const { data } = await axios.delete('/api/topic/activity/delete/' + category_code)	
+				alert(data.message)
+			} catch (error) {
+				alert(error.response.data)	
+			}
+			dispatch({ type : 'refresh_start'})
 		}
-		dispatch({ type : 'refresh_start'})
 		setDisableDeleteButton(false)
 	}
 
@@ -49,7 +51,7 @@ export default function UserMoreMenu(props) {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }}
-					onClick={() => deleteCategory(props.code)} disabled={disableDeleteButton}
+					onClick={() => deleteCategory(props.code, props.name)} disabled={disableDeleteButton}
 				>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
