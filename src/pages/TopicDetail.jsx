@@ -6,7 +6,7 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import { DateRange } from '@mui/icons-material';
-import { Button, Stack, Input } from '@mui/material';
+import { Button, Stack, Input, ListItemText } from '@mui/material';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 const Accordion = styled((props) => (
@@ -51,6 +51,8 @@ export default function CustomizedAccordions(topic) {
   const dispatch = useDispatch()
   const [attachmentFile, setAttachment] = React.useState("");
   const [attachImage, setAttachImage] = React.useState("");
+  let prev_activity_id = -1
+  let show_activity_name = false
   
 	const uploadImage = async (folderTarget, courseImage) => {
 		if(courseImage === "")
@@ -81,6 +83,13 @@ export default function CustomizedAccordions(topic) {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
+            {item.description &&(
+              <>
+              <b>Description</b>
+              <br/>
+              {item.description}
+              </>
+            )}
             <b>Start Date:</b>
             <br />
             <DateRange /> {item.startDateString}
@@ -113,136 +122,75 @@ export default function CustomizedAccordions(topic) {
                 >
                     Attend
                 </Button>
-                <>
-                {item.activity.length > 0 ?
-                item.activity.map(activity =>{
-                    return (
-                      <>
-                        <Button key={activity.id} variant="contained" href={activity.activity_id === 6 ? activity.attachment : '/' + activity.attachment} target="_blank">{activity.activity_name}</Button> 
-                      </>
-                    )
-                }) 
-                : <></>}
-                </>
             </Stack>
-            <Stack direction="row" spacing={2} sx={{mt: '5px'}} >
-                {item.activity.findIndex(activity => {
-                  return activity.activity_id === 1
-                }) >= 0 && (
+            <>
+            {item.activity.length > 0 ?
+            item.activity.map(activity =>{
+                if(prev_activity_id != activity.activity_id){
+                  show_activity_name = true
+                  prev_activity_id = activity.activity_id
+                }
+                else
+                  show_activity_name = false
+                return (
                   <>
-									<label htmlFor="contained-button-file">
-										<Input id="contained-button-file" multiple type="file" 
-											sx={{ display : 'none'}}
-											// onChange={(e) => e.target.files[0] && setCourseImage(e.target.files[0])}
-											onChange={async (e) => {
-                        try {
-                          let file = null
-                          if(e.target.files[0]) {
-                            file = e.target.files[0]	
-                            setAttachment(file.name)
-                            // setAttachImage(file)
-                          }
-                          const imageFile = await uploadImage('Assignment_student', file)
-                          let attachmentData = imageFile.data
-                          const index = item.activity.findIndex(activity => {
-                            return activity.activity_id === 1
-                          })
-                          if(item.activity[index].attachment_user === null){
-                            await axios.post("/api/activityStudent/create", {
-                              topic_activity_id: item.activity[index].id,
-                              attachment : attachmentData,
-                            });
-                            // setAttachImage(attachmentData)
-                            dispatch({type:'reset_getTopicCourse'})                   
-                          }
-                          else {
-                            await axios.post("/api/activityStudent/update", {
-                              topic_activity_id: item.activity[index].id,
-                              attachment : attachmentData,
-                            });                    
-                            setAttachImage(attachmentData)                   
-                            dispatch({type:'reset_getTopicCourse'})                   
-                          }
-                        } catch (error) {
-                          
-                        }
-                      }}
-										/>
-										<Button variant="contained" component="span">
-											Upload Assignment
-										</Button>
-									</label>
-                  {
-                      item.activity[item.activity.findIndex(activity => {
-                        return activity.activity_id === 1
-                      })].attachment_user &&
-                      <Button key={item.id} variant="contained" href={'/'+item.activity[item.activity.findIndex(activity => {
-                        return activity.activity_id === 1
-                      })].attachment_user} target="_blank">Show My Assignment</Button> 
+                  {show_activity_name ? 
+                  <Stack direction="row" spacing={2} sx={{mt: '5px'}}>
+                    <b>{activity.activity_name + ' :'}</b> 
+                  </Stack>:<></>
                   }
-                  {
-                  }
+                  <Stack direction="row" spacing={2} sx={{mt: '5px'}}>
+                    <ListItemText>
+                    {activity.name}
+                    </ListItemText>
+                    <Button key={activity.id} variant="contained" href={activity.activity_id === 6 ? activity.attachment : '/' + activity.attachment} target="_blank">{activity.activity_id == 6 ? 'link' : 'unduh'}</Button> 
+                    {(activity.activity_id == 1 || activity.activity_id == 3) && (<label key={"label"+activity.id} htmlFor={"contained-button-file"+ activity.id}>
+                      <Input id={"contained-button-file"+ activity.id} key={"input"+activity.id} multiple type="file" 
+                        sx={{ display : 'none'}}
+                        // onChange={(e) => e.target.files[0] && setCourseImage(e.target.files[0])}
+                        onChange={async (e) => {
+                          try {
+                            let file = null
+                            if(e.target.files[0]) {
+                              file = e.target.files[0]	
+                              setAttachment(file.name)
+                              // setAttachImage(file)
+                            }
+                            const imageFile = await uploadImage(activity.activity_id == 1 ?'Assignment_student' : 'Quiz_student', file)
+                            let attachmentData = imageFile.data
+                            if(activity.attachment_user === null){
+                              await axios.post("/api/activityStudent/create", {
+                                topic_activity_id: activity.id,
+                                attachment : attachmentData,
+                              });
+                              // setAttachImage(attachmentData)
+                              dispatch({type:'reset_getTopicCourse'})                   
+                            }
+                            else {
+                              await axios.post("/api/activityStudent/update", {
+                                topic_activity_id: activity.id,
+                                attachment : attachmentData,
+                              });                    
+                              setAttachImage(attachmentData)                   
+                              dispatch({type:'reset_getTopicCourse'})                   
+                            }
+                          } catch (error) {
+                            
+                          }
+                        }}
+                      />
+                      <Button key={"upload"+activity.id} variant="contained" component="span">
+                        Upload
+                      </Button>
+                    </label>)}
+                    {activity.attachment_user && (
+                    <Button key={"show"+activity.id} variant="contained" href={'/'+activity.attachment_user} target="_blank">Show my file</Button>)} 
+                  </Stack>
                   </>
-                )}
-                {item.activity.findIndex(activity => {
-                  return activity.activity_id === 3
-                }) >= 0 && (
-                  <>
-									<label htmlFor="contained-button-file">
-										<Input id="contained-button-file" multiple type="file" 
-											sx={{ display : 'none'}}
-											// onChange={(e) => e.target.files[0] && setCourseImage(e.target.files[0])}
-											onChange={async (e) => {
-                        try {
-                          let file = null
-                          if(e.target.files[0]) {
-                            file = e.target.files[0]	
-                            setAttachment(file.name)
-                            // setAttachImage(file)
-                          }
-                          const imageFile = await uploadImage('Quiz_student', file)
-                          let attachmentData = imageFile.data
-                          const index = item.activity.findIndex(activity => {
-                            return activity.activity_id === 3
-                          })
-                          if(item.activity[index].attachment_user === ""){
-                            await axios.post("/api/activityStudent/create", {
-                              topic_activity_id: item.activity[index].id,
-                              attachment : attachmentData,
-                            });
-                            // setAttachImage(attachmentData)
-                            dispatch({type:'reset_getTopicCourse'})                   
-                          }
-                          else {
-                            await axios.post("/api/activityStudent/update", {
-                              topic_activity_id: item.activity[index].id,
-                              attachment : attachmentData,
-                            });                    
-                            setAttachImage(attachmentData)                   
-                            dispatch({type:'reset_getTopicCourse'})                   
-                          }
-                        } catch (error) {
-                          
-                        }
-                      }}
-										/>
-										<Button variant="contained" component="span">
-											Upload Quiz
-										</Button>
-									</label>
-                  {
-                      item.activity[item.activity.findIndex(activity => {
-                        return activity.activity_id === 3
-                      })].attachment_user &&
-                      <Button key={item.id} variant="contained" href={'/'+item.activity[item.activity.findIndex(activity => {
-                        return activity.activity_id === 1
-                      })].attachment_user} target="_blank">Show My Quiz</Button> 
-                  }
-                  {
-                  }
-                  </>
-                )}
-            </Stack>
+                )
+            }) 
+            : <></>}
+            </>
           </Typography>
         </AccordionDetails>
       </Accordion>
