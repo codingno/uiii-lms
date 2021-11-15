@@ -49,13 +49,14 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'createdAt', label: 'createdAt', alignRight: false },
   { id: 'attachment', label: 'Attachment', alignRight: false },
-  // { id: 'code', label: 'Course Code', alignRight: false },
+  { id: 'grade', label: 'Grade', alignRight: false },
   // { id: 'category', label: 'Category', alignRight: false },
   // { id: 'position', label: 'Position', alignRight: false },
   // { id: 'startDate', label: 'Start Date', alignRight: false },
   // { id: 'endDate', label: 'End Date', alignRight: false },
   // { id: 'status', label: 'Status', alignRight: true },
-  { id: '' }
+  { id: '' },
+  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -110,6 +111,7 @@ export default function Enrollment(props) {
 	const [searchEnroll, setSearchEnroll] = useState("")
 
 	const [openModal, setOpenModal] = useState(false)
+	const [editGradeActivity, setEditGradeActivity] = useState(null)
 	const [grade, setGrade] = useState(0)
 	const [courseGrade, setCourseGrade] = useState([])
 	const [isEdit, setEdit] = useState(false)
@@ -261,10 +263,10 @@ export default function Enrollment(props) {
 	async function updateGrade() {
 		try {
 			const body = {
-				id : enroll.id, 
+				id : editGradeActivity.id, 
 				grade,
 			}
-			const { data } = await axios.patch('/api/grade/update', body)
+			const { data } = await axios.post('/api/activityStudent/update', body)
 			alert("Grade updated.")			
 			setEdit(false)
 			setEnroll(null)
@@ -354,17 +356,17 @@ export default function Enrollment(props) {
 						}}
 					>
 						{
-							!enroll ?
-						<Typography id="modal-modal-title" variant="h6" component="h2">
-							Please choose user first.
-						</Typography>
-						:
+						// 	!enroll ?
+						// <Typography id="modal-modal-title" variant="h6" component="h2">
+						// 	Please choose user first.
+						// </Typography>
+						// :
 						<>
 							<Typography id="modal-modal-title" variant="h6" component="h2">
-								{isEdit ? 'Update' : 'Submit' } {courseData.name} grade 
+								{isEdit ? 'Update' : 'Submit' } { courseData ? courseData.name : '' } grade 
 							</Typography>
 							<Typography id="modal-modal-title" variant="h6" component="h2">
-								for {enroll.name}
+								for {editGradeActivity ? editGradeActivity.name : ''}
 							</Typography>
 							<FormControl 
 								sx={{
@@ -464,7 +466,7 @@ export default function Enrollment(props) {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       // const { id, name, attendAt, description, status, enroll_user_id, enroll_course_id } = row;
-                      const { id, firstname, lastname, attachment, createdAt } = row;
+                      const { id, firstname, lastname, attachment, createdAt, grade, tas_id } = row;
                       const isItemSelected = selected.indexOf(id) !== -1;
 											// valueDescription[enroll_user_id] = description
 
@@ -487,7 +489,8 @@ export default function Enrollment(props) {
 													{
 														attachment ?
 														<>
-                          <TableCell align="left">{createdAt && new Date(createdAt).toLocaleString()}</TableCell>
+                          {/* <TableCell align="left">{createdAt && new Date(createdAt).toLocaleString()}</TableCell> */}
+                          <TableCell align="left">{createdAt}</TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
 															<a href={`${window.location.origin}/${attachment}`} 
@@ -504,9 +507,30 @@ export default function Enrollment(props) {
 															</a>
                             </Stack>
                           </TableCell>
+                          <TableCell align="left">{grade}</TableCell>
+                          <TableCell align="left">
+														<Button
+															sx={{
+																marginLeft : '30px'
+															}}
+															variant="contained"
+															onClick={() => {
+																setOpenModal(true)
+																setEdit(true)
+																setEditGradeActivity({id : tas_id, name : firstname + ' ' + lastname })
+															}}
+															// startIcon={<Icon icon={plusFill} />}
+														>
+															Manage Grade
+														</Button>
+													</TableCell>
 													 </>
 													 :
 													 <>
+                          <TableCell align="left">
+                          </TableCell>
+                          <TableCell align="left">
+                          </TableCell>
                           <TableCell align="left">
                           </TableCell>
                           <TableCell align="left">

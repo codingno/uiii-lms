@@ -3,8 +3,8 @@ const { QueryTypes } = require('sequelize')
 module.exports = {
     create: async function(data, callback){
         try {
-            const queryString = "INSERT INTO topic_activity_student (topic_activity_id, user_id, attachment, createdAt) " +
-            "VALUES (:topic_activity_id, :user_id, :attachment, :createdAt);"
+            const queryString = "INSERT INTO topic_activity_student (topic_activity_id, user_id, attachment, createdAt, grade) " +
+            "VALUES (:topic_activity_id, :user_id, :attachment, :createdAt, :grade);"
             const topic_activity = await sequelize.query(queryString,{type: QueryTypes.INSERT, replacements: data})
             if(topic_activity){
                 callback(null, topic_activity)
@@ -42,7 +42,7 @@ module.exports = {
         try {
             const condition = ` AND ta.id = ${topic_activity_id}`
             const queryString = `SELECT 
-            u.id, u.firstname, u.lastname, tas.attachment, tas.createdAt
+            u.id, u.firstname, u.lastname, tas.attachment, tas.createdAt, tas.grade, tas.id tas_id
             FROM
                 enrollment e
                     LEFT JOIN
@@ -57,9 +57,11 @@ module.exports = {
                 user_role ur ON ur.user_id = u.id
             WHERE ur.role_id = 6 ${condition};`
             const topic_activity = await sequelize.query(queryString, {type: QueryTypes.SELECT})
+            console.log(`🚀 ~ file: topicActivityStudentService.js ~ line 60 ~ findByTopic:function ~ queryString`, queryString)
+            console.log(`🚀 ~ file: topicActivityStudentService.js ~ line 60 ~ findByTopic:function ~ topic_activity`, topic_activity)
             callback(null, topic_activity)
         } catch (err) {
-            callback(err, null)
+            callback(res => res.internalServerError(err))
         }
     },
     delete: async function(id, callback){
@@ -74,8 +76,14 @@ module.exports = {
     },
     update: async function(data, callback){
         try {
-           const queryString = "UPDATE topic_activity_student SET attachment=:attachment, createdAt = NOW() WHERE topic_activity_id=:topic_activity_id AND user_id=:user_id"
+					 const attachment = data.attachment ? "attachment=:attachment," : ""
+					 const grade = data.grade ? ", grade = :grade" : ""
+					 const condition = data.id ? " WHERE id = :id" : "WHERE topic_activity_id=:topic_activity_id AND user_id=:user_id"
+           const queryString = `UPDATE topic_activity_student SET ${attachment} createdAt = NOW()${grade} ${condition}`
            const topic_activity_updated = await sequelize.query(queryString, {type: QueryTypes.UPDATE, replacements: data})
+           console.log(`🚀 ~ file: topicActivityStudentService.js ~ line 84 ~ update:function ~ data`, data)
+           console.log(`🚀 ~ file: topicActivityStudentService.js ~ line 84 ~ update:function ~ queryString`, queryString)
+           console.log(`🚀 ~ file: topicActivityStudentService.js ~ line 84 ~ update:function ~ topic_activity_updated`, topic_activity_updated)
            if (topic_activity_updated){
                callback(null, topic_activity_updated)
            }

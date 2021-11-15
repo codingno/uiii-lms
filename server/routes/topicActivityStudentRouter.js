@@ -12,6 +12,7 @@ const createTopicActivity = async (req, res) => {
 		topic_activity_id: req.body.topic_activity_id ? req.body.topic_activity_id : '',
 		user_id: req.user.id,
 		attachment: req.body.attachment ? req.body.attachment : '',
+		grade: req.body.grade ? req.body.grade : null,
 		createdAt: new Date(),
     }
 	topicActivityStudentService.create(topicActivityInfo, function(err, result){
@@ -25,10 +26,11 @@ const createTopicActivity = async (req, res) => {
 }
 const updateTopicActivity = async (req, res) => {
 	const courseInfo = {
-		// id: req.body.id ? req.body.id : '',
+		id: req.body.id ? req.body.id : '',
 		topic_activity_id: req.body.topic_activity_id ? req.body.topic_activity_id : '',
 		user_id: req.user.id,
 		attachment: req.body.attachment ? req.body.attachment : '',
+		grade: req.body.grade ? req.body.grade : null,
 	}
 	topicActivityStudentService.update(courseInfo, function(err, result){
 		if(err)	

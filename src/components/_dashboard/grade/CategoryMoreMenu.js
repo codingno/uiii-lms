@@ -38,7 +38,7 @@ export default function UserMoreMenu(props) {
         <MenuItem sx={{ color: 'text.secondary' }}
 					onClick={async () => {
 						// alert("Are you sure to delete " + props.row.name + " grade?")
-						if(window.confirm("Are you sure to delete " + props.row.name + " grade?")) {
+						if(window.confirm("Are you sure to delete " + props.name + " grade?")) {
 							try {
 								await axios.delete('/api/grade/delete/' + props.code)
 								alert("grade successfully deleted.")

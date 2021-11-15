@@ -10,6 +10,7 @@ module.exports = async function (req, res, next) {
     firstname: req.body.firstName ? req.body.firstName : null,
     lastname: req.body.lastName ? req.body.lastName : "",
     username: "",
+    photo : req.body.photo  ? req.body.photo  : "",
     code: null,
   };
   userService.findByUserId(req.body.email, function (err, user) {
@@ -19,19 +20,24 @@ module.exports = async function (req, res, next) {
       res.badRequest({ message: "Your email is already registered" });
     } else {
       userService.create(data, function (err, user_create) {
-        if (err) res.badRequest({ message: "System Error" });
-        else {
+        if (err) {
+        	console.log(`🚀 ~ file: registerService.js ~ line 23 ~ err`, err)
+					return res.badRequest({ message: "System Error" });
+				} else {
           const dataRole = {
             user_id: user_create[0],
             role_id: 7,
           };
           userRoleService.create(dataRole, function (err, role) {
             if (err) {
+              console.log(`🚀 ~ file: registerService.js ~ line 32 ~ err`, err)
               res.badRequest({ message: "System Error" });
             } else {
               bcrypt.hash(req.body.password, 8, async function (err, hash) {
-                if (err) res.badRequest({ messsage: err });
-                else {
+                if (err) {
+                	console.log(`🚀 ~ file: registerService.js ~ line 37 ~ err`, err)
+									res.badRequest({ messsage: err });
+								} else {
                   try {
                     const queryString =
                       "INSERT INTO user_auth (email, username, user_id, password) " +

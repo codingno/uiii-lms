@@ -353,6 +353,17 @@ export default function Enrollment(props) {
 									}}
 									onChange={e => setGrade(e.target.value)}
 								/>
+								{/* <Select
+									sx={{
+										marginLeft : 'auto',
+										marginRight : '20px',
+									}}
+									displayEmpty
+									value={grade}
+									onChange={(e) => setGrade(e.target.value)}
+									inputProps={{ "aria-label": "Without label" }}
+								>
+								</Select> */}
 								<Button
 									// sx={{
 									// 	marginLeft : '30px'
@@ -483,7 +494,7 @@ export default function Enrollment(props) {
 													</TableCell> */}
                           {/* <TableCell align="right">{id || "None"}</TableCell> */}
                           <TableCell align="right">
-                            <CategoryMoreMenu code={id} editGrade={() => editGrade(row, grade)} />
+                            <CategoryMoreMenu code={id} editGrade={() => editGrade(row, grade)} name={name} />
                           </TableCell>
                         </TableRow>
                       );
