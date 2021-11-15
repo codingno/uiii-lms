@@ -57,8 +57,6 @@ module.exports = {
                 user_role ur ON ur.user_id = u.id
             WHERE ur.role_id = 6 ${condition};`
             const topic_activity = await sequelize.query(queryString, {type: QueryTypes.SELECT})
-            console.log(`🚀 ~ file: topicActivityStudentService.js ~ line 60 ~ findByTopic:function ~ queryString`, queryString)
-            console.log(`🚀 ~ file: topicActivityStudentService.js ~ line 60 ~ findByTopic:function ~ topic_activity`, topic_activity)
             callback(null, topic_activity)
         } catch (err) {
             callback(res => res.internalServerError(err))
